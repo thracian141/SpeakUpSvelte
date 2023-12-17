@@ -56,13 +56,18 @@
     });
 
     let infoOpen = false;
+    $: { 
+        if (testData[currentIndex].wordInfo !== undefined || testData[currentIndex].wordInfo !== null || testData[currentIndex].wordInfo !== "") {
+            infoOpen = false;
+        }
+    }
 </script>
 
 <div style="font-size: 3rem; display:inline-block; width:fit-content; position:absolute; visibility:hidden;" id="answerTemp" 
     bind:clientWidth={answerTempWidth}>{testData[currentIndex].wordMeaning}</div>
-<div style="display: flex; flex-direction:row; height:100%; align-items:center; margin-left:auto; margin-right:{dropdownOpen ? "0" : "auto"}; overflow:hidden;">
+<div style="display: flex; flex-direction:row; height:100%; align-items:center; margin-left:auto; margin-right:{infoOpen ? "0" : "auto"}; overflow:hidden;">
     <a class="card-scroller" class:disabled={currentIndex <= 0} href="/" on:click={(event) => {event.preventDefault(); changeTestData(-1); dropdownOpen = false;}}>
-        <img src="src/lib/icons/chevron-compact-left.svg" alt="previous card" />
+        <img src="/icons/chevron-compact-left.svg" alt="previous card" />
     </a>
     {#if ready}
         <div in:fly={{x: direction > 0 ? 1200 : -1200, duration: 500}} 
@@ -90,19 +95,19 @@
                 <div style="margin-right: 1rem; display:block; position:relative;">
                     <a class="options-wrapper" href="/" 
                        on:click={(event) => {event.preventDefault(); dropdownOpen = !dropdownOpen;}}>
-                        <img src="src/lib/icons/three-dots-vertical.svg" id="options" alt="options"/>
+                        <img src="/icons/three-dots-vertical.svg" id="options" alt="options"/>
                     </a>
                     <div style="display: none;" class="dropdownClosed" class:dropdown={dropdownOpen}>
                         <span>
-                            <img src="src/lib/icons/flag.svg" alt="flag as important" />
+                            <img src="/icons/flag.svg" alt="flag as important" />
                             Flag as important
                         </span>
                         <span>
-                            <img src="src/lib/icons/lightbulb.svg" alt="get hint" />
+                            <img src="/icons/lightbulb.svg" alt="get hint" />
                             Get hint
                         </span>
                         <span>
-                            <img src="src/lib/icons/send-exclamation.svg" alt="report error" />
+                            <img src="/icons/send-exclamation.svg" alt="report error" />
                             Report error
                         </span>
                     </div>
@@ -116,23 +121,25 @@
                 </div>
                 <div class="part-of-speech">
                     <span>{testData[currentIndex].partOfSpeech}</span>
-                    <img src="src/lib/icons/three-dots.svg" alt="part of speech" />
+                    <img src="/icons/three-dots.svg" alt="part of speech" />
                 </div>
             </div>
             <div class="wrapper-section bottom">
                 <p>{testData[currentIndex].wordTranslation}</p>
                 <p>{testData[currentIndex].sentenceTranslation}</p>
-                <button class="etymology-button" on:click={() => infoOpen = !infoOpen}>
-                    <img src="src/lib/icons/search-tilted.svg" alt="etymology of word"/>
-                    <p>λόγος</p>
-                    <span>Information about this word</span>
-                </button>
+                {#if testData[currentIndex].wordInfo}
+                    <button class="etymology-button" on:click={() => infoOpen = !infoOpen}>
+                        <img src="/icons/search-tilted.svg" alt="etymology of word"/>
+                        <p>λόγος</p>
+                        <span>Information about this word</span>
+                    </button>
+                {/if}
             </div>
         </div>
         </div>
     {/if}
     <a class="card-scroller" class:disabled={currentIndex == testData.length-1} href="/" on:click={(event) => {event.preventDefault(); changeTestData(1); dropdownOpen = false;}}>
-        <img src="src/lib/icons/chevron-compact-right.svg" alt="next card" />
+        <img src="/icons/chevron-compact-right.svg" alt="next card" />
     </a>
     {#if infoOpen && ready && testData[currentIndex].wordInfo}
     <WordInfo wordInfo={testData[currentIndex].wordInfo} />
@@ -417,7 +424,7 @@
     }
     @font-face {
         font-family: 'lolFont';
-        src: url('src/lib/fonts/BeaufortforLOL-Bold.woff2'),
-             url('src/lib/fonts/BeaufortforLOL-Bold.ttf');
+        src: url('/fonts/BeaufortforLOL-Bold.woff2'),
+             url('/fonts/BeaufortforLOL-Bold.ttf');
     }
 </style>

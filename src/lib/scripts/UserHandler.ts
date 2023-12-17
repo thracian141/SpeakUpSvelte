@@ -60,23 +60,6 @@ export async function isLoggedIn() {
         return false;
     }
 
-    const token = cookie.split('=')[1];
-    const response = await fetch('https://localhost:5000/account/userinfo', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    });
-
-    if (!response.ok) {
-        if (browser){
-            localStorage.setItem('isLoggedIn', 'false');
-        }
-        return false;
-    }
-    if (browser){
-        localStorage.setItem('isLoggedIn', 'true');
-    }
     return true;
 }
 

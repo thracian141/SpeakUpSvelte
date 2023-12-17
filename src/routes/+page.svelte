@@ -1,7 +1,7 @@
 <script lang='ts'>
     import { onMount } from 'svelte';
     import { browser } from '$app/environment';
-    import * as UserManager from '../lib/scripts/UserManager';
+    import * as UserManager from '../lib/scripts/UserHandler';
 
     let message = '';
     onMount(async () => {

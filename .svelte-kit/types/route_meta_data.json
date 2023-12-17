@@ -1,7 +1,8 @@
 {
 	"/": [],
 	"/account": [],
-	"/authenticate": [],
+	"/authenticate/login": [],
+	"/authenticate/register": [],
 	"/decks": [],
 	"/learn": []
 }

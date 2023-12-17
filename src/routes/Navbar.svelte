@@ -2,12 +2,12 @@
     import { browser } from '$app/environment';
 	import { page } from '$app/stores';
     import {onMount} from "svelte";
-    import * as UserManager from "../lib/scripts/UserManager";
+    import * as UserHandler from "../lib/scripts/UserHandler";
     import './styles.css';
     
     let isExpanded = false;
     let isLogoutConfirmed = false;
-    let isLoggedIn = UserManager.isLoggedIn();
+    let isLoggedIn = UserHandler.isLoggedIn();
 
     if (browser && localStorage.getItem('isExpanded') === "true") {
         isExpanded = true;
@@ -55,35 +55,35 @@
 
 <nav id="nav" class={isExpanded ? 'nav-expanded' : ''} on:mouseenter={enableExpansion} on:mouseleave={disableExpansion}>
     <div class="logo" style="display: flex; flex-direction:row;">
-        <img src="src/lib/icons/speakuplogo.svg" alt="SpeakUp Logo"/>
+        <img src="/icons/speakuplogo.svg" alt="SpeakUp Logo"/>
         <p>SPEAKUP</p>
     </div>
     <ul id="mainOptions" style="list-style-type:none; padding: 12px;">
         <a href="/" class="nav-option" class:active={$page.url.pathname == "/"}>
-            <img src="src/lib/icons/homeicon.svg" alt="Home Icon" /><p>Home</p>
+            <img src="/icons/homeicon.svg" alt="Home Icon" /><p>Home</p>
         </a>
         <a href="/learn" class="nav-option" class:active={$page.url.pathname == "/learn"}>
-            <img src="src/lib/icons/cardsicon.svg" alt="Learn Icon" /><p>Learn</p>
+            <img src="/icons/cardsicon.svg" alt="Learn Icon" /><p>Learn</p>
         </a>
         <a href="/decks" class="nav-option" class:active={$page.url.pathname == "/decks"}>
-            <img src="src/lib/icons/decksicon.svg" alt="Decks Icon" /><p>Decks</p>
+            <img src="/icons/decksIcon.svg" alt="Decks Icon" /><p>Decks</p>
         </a>
         <a href="/account" class="nav-option" class:active={$page.url.pathname == "/account"}>
-            <img src="src/lib/icons/accounticon.svg" alt="Account Icon" /><p>Account</p>
+            <img src="/icons/accounticon.svg" alt="Account Icon" /><p>Account</p>
         </a>
     </ul>
     {#await isLoggedIn then bool}
         {#if !bool}
             <ul style="list-style-type:none; padding: 12px; margin-top:auto">
-                <a id="authForm" class="nav-option" href="/authenticate" class:active={$page.url.pathname == "/authenticate"}>
-                    <img src="src/lib/icons/loginicon.svg" alt="Authenticate Icon" />
+                <a id="authForm" class="nav-option" href="/authenticate/login" class:active={$page.url.pathname == "/authenticate/"}>
+                    <img src="/icons/loginicon.svg" alt="Authenticate Icon" />
                     <p style="text-overflow:clip; white-space:nowrap">Sign In</p>
                 </a>
             </ul>
         {:else}
             <ul style="list-style-type:none; padding: 12px; margin-top:auto">
                 <a id="authForm" class="nav-option" href="/" class:active={isLogoutConfirmed} on:click|preventDefault={handleLogoutClick}>
-                    <img src="src/lib/icons/logouticon.svg" alt="Authenticate Icon" />
+                    <img src="/icons/logouticon.svg" alt="Authenticate Icon" />
                     <p style="text-overflow:clip; white-space:nowrap">{isLogoutConfirmed ? 'Confirm' : 'Sign Out'}</p>
                 </a>
             </ul>
@@ -112,12 +112,17 @@
         height:3.3rem;
     }
     nav {
+        z-index: 1;
+        min-height: 100vh;
         width: 5.5rem;
         background-color: var(--el-bg-color);
         transition: width 0.3s ease-in-out;
         font-weight: bold;
         display: flex;
         flex-direction: column;
+        pointer-events:painted;
+        box-shadow: var(--bg-middle) 0 0 40px 10px;
+        overflow: hidden;
     }
     .nav-expanded {
         width: 12rem;

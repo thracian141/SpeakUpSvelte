@@ -16,7 +16,6 @@ body {
 	min-height: 100vh;
 	margin: 0;
 	background-attachment: fixed;
-	background-color: var(--bg-color);
 	background-size: 100vw 100vh;
     color: var(--fg-color);
 }
@@ -38,7 +37,7 @@ input {
 input:-webkit-autofill, input:focus, input:-webkit-autofill,
 input:-webkit-autofill:focus, input:-webkit-autofill:active,
 input:not(:placeholder-shown):focus, input:-webkit-autofill:hover {
-    -webkit-box-shadow: 0 0 0px 1000px #191919 inset !important;
+    -webkit-box-shadow: 0 0 0px 1000px var(--el-bg-color) inset !important;
     border: none!important;
     -webkit-text-fill-color: #babecc;
 }
@@ -56,7 +55,8 @@ input:not(:placeholder-shown):focus, input:-webkit-autofill:hover {
 }
 .submit-button:hover {
     cursor:pointer;
-    background-color: #aaafc3;
+    background-color: #a2a7ba;
+    box-shadow: #babecc55 0 0 3px 1px;
 }
 .avatar-xl {
     width: 200px;

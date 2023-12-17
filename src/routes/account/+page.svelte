@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import * as UserManager from '../../lib/scripts/UserManager';
+    import * as UserManager from '../../lib/scripts/UserHandler';
     console.log('Script is running');
 
     let userPromise : Promise<UserManager.User> | null;
