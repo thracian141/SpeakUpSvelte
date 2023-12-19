@@ -47,29 +47,29 @@
         <div class="form-section">
             <img src="/icons/usernameicon.svg" alt="Username Icon" class="form-icon"/>
             <p class:label-filled={username !== ''} class="form-label" >Username</p>
-            <input type="text" class="form-control" bind:value={username}/>
+            <input type="text" name="username" class="form-control" bind:value={username}/>
             <span>*</span>
         </div>
         <div class="form-section">
             <img src="/icons/person-badge.svg" alt="Display name Icon" class="form-icon"/>
-            <p class:label-filled={username !== ''} class="form-label" >Display Name</p>
-            <input type="text" class="form-control" bind:value={username}/>
+            <p class:label-filled={displayname !== ''} class="form-label" >Display Name</p>
+            <input type="text" name="fullname" class="form-control" bind:value={displayname}/>
         </div>
         <div class="form-section">
             <img src="/icons/emailicon.svg" alt="Username Icon" class="form-icon"/>
             <p class:label-filled={email !== ''} class="form-label" >Email</p>
-            <input type="text" class="form-control" bind:value={email}/>
+            <input type="text" name="email" class="form-control" bind:value={email}/>
             <span>*</span>
         </div>
         <div class="form-section">
             <img src="/icons/passwordicon.svg" alt="Username Icon" class="form-icon"/>
             <p class:label-filled={password !== ''} class="form-label" >Password</p>
-            <input type="password" class="form-control" bind:value={password} />
+            <input type="password" name="password" class="form-control" bind:value={password} />
             <span>*</span>
         </div>
         <div class="form-section">
             <p class:label-filled={confirmpassword !== ''} class="form-label" >Confirm Password</p>
-            <input type="password" class="form-control" bind:value={confirmpassword} style="padding-left: 3.5rem;" />
+            <input type="password" name="confirmpassword" class="form-control" bind:value={confirmpassword} style="padding-left: 3.5rem;" />
             <span>*</span>
         </div>
         <div style="width:80%; height:20%; display: flex; flex-direction:row; align-items:center; justify-content:space-between; 
@@ -77,7 +77,7 @@
             <button type="submit" class="submit-button" >
                 Register
             </button>
-            <a href="./login" style="font-size: 11pt !important;">Already have an account?</a>
+            <a href="../authenticate/login" style="font-size: 11pt !important;">Already have an account?</a>
         </div>
     </form>
 </div>

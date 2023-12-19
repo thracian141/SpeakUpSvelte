@@ -58,7 +58,7 @@
         <img src="/icons/speakuplogo.svg" alt="SpeakUp Logo"/>
         <p>SPEAKUP</p>
     </div>
-    <ul id="mainOptions" style="list-style-type:none; padding: 12px;">
+    <ul id="mainOptions" style="list-style-type:none; padding: 0.5rem;">
         <a href="/" class="nav-option" class:active={$page.url.pathname == "/"}>
             <img src="/icons/homeicon.svg" alt="Home Icon" /><p>Home</p>
         </a>
@@ -112,6 +112,7 @@
         height:3.3rem;
     }
     nav {
+        position:absolute;
         z-index: 1;
         min-height: 100vh;
         width: 5.5rem;
@@ -135,7 +136,7 @@
         font-size:1rem;
         justify-content: space-between;
         border-radius: 12px;
-        width:2.2rem;
+        width:52%;
         height: 3.8rem;
         transition: background-color 0.2s ease-in-out, width 0.2s ease-in-out;
         align-items: center;
@@ -159,7 +160,7 @@
         opacity: 1;
     }
     nav:hover .nav-option {
-        width:8.5rem;
+        width:80%;
     }
     .nav-option:hover {
         background-color: var(--bg-color);

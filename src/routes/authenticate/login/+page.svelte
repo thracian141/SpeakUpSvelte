@@ -56,7 +56,7 @@
             <div style="display: flex; flex-direction:column; justify-content:space-between;">
                 <a href="/" style="font-size: 11pt !important; ">Forgot your password?</a>
                 <div style="width: 100%; height:1px; background-color:var(--bg-color); margin:0.5rem 0 0.5rem 0"></div>
-                <a href="./register" style="font-size: 11pt !important;">Don't have an account?</a>
+                <a href="../authenticate/register" style="font-size: 11pt !important;">Don't have an account?</a>
             </div>
         </div>
     </form>

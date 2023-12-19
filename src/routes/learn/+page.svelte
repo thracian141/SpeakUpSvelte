@@ -1,11 +1,12 @@
 <script lang="ts">
     import WordInfo from "./WordInfo.svelte";
-    import { onMount } from "svelte";
+    import { onMount, tick } from "svelte";
     import { fly } from "svelte/transition";
     let ready = false; // Initialize with not ready.
     let direction = -1; // Direction in which the card will fly.
 
     import { testData } from "./test";
+    import Layout from "../+layout.svelte";
 
     let currentIndex = 0;
 
@@ -48,6 +49,24 @@
     let answerTempWidth : number;
     $: sentenceMeaningParts = testData[currentIndex].sentenceMeaning.split(testData[currentIndex].wordMeaning);
     let dropdownOpen = false;
+
+    function toggleDropdown() {
+        dropdownOpen = !dropdownOpen;
+
+        if (dropdownOpen) {
+            setTimeout(() => {
+                const handleClickOutside = (event: Event) => {
+                    if (!document.getElementById('dropdown')!.contains(event.target as Node)) {
+                        dropdownOpen = false;
+                        document.removeEventListener('click', handleClickOutside);
+                    }
+                };
+
+                document.addEventListener('click', handleClickOutside);
+            }, 0);
+        }
+    }
+
     onMount(async () => {
         let answerTemp = document.getElementById('answerTemp');
         answerTempWidth = answerTemp ? answerTemp.clientWidth : 0;
@@ -64,89 +83,120 @@
 </script>
 
 <div style="font-size: 3rem; display:inline-block; width:fit-content; position:absolute; visibility:hidden;" id="answerTemp" 
-    bind:clientWidth={answerTempWidth}>{testData[currentIndex].wordMeaning}</div>
-<div style="display: flex; flex-direction:row; height:100%; align-items:center; margin-left:auto; margin-right:{infoOpen ? "0" : "auto"}; overflow:hidden;">
-    <a class="card-scroller" class:disabled={currentIndex <= 0} href="/" on:click={(event) => {event.preventDefault(); changeTestData(-1); dropdownOpen = false;}}>
-        <img src="/icons/chevron-compact-left.svg" alt="previous card" />
-    </a>
+    bind:clientWidth={answerTempWidth}>{testData[currentIndex].wordMeaning}
+</div>
+<div style="display: flex; flex-direction:row; height:100%; align-items:center; margin-left:{infoOpen ? "0" : "auto"}; margin-right:{infoOpen ? "0" : "auto"}; 
+   overflow:hidden; width:100%; justify-content: center; flex-flow:row; padding:1rem;">
     {#if ready}
         <div in:fly={{x: direction > 0 ? 1200 : -1200, duration: 500}} 
-           out:fly={{x: direction > 0 ? -1200 : 1200, duration: 500}}>
-        <div class="wrapper">
-            <div class="wrapper-section top">
-                <div class="level-wrapper">
-                    <div class="bar" style="background-color: 
-                        {levelArray[0] === 1 ? fullBarColor : levelArray[0] === 0.5 ? 'var(--cyan-half)' :
-                        levelArray[0] === 0 ? 'rgb(250, 170, 90)' : 'var(--bg-color)'};"></div>
-                    <div class="bar" style="background-color: 
-                        {levelArray[1] === 1 ? fullBarColor : levelArray[1] === 0.5 ? 'var(--cyan-half)' : 'var(--bg-color)'};"></div>
-                    <div class="bar" style="background-color: 
-                        {levelArray[2] === 1 ? fullBarColor : levelArray[2] === 0.5 ? 'var(--cyan-half)' : 'var(--bg-color)'};"></div>
-                    <div class="bar" style="background-color: 
-                        {levelArray[3] === 1 ? fullBarColor : levelArray[3] === 0.5 ? 'var(--cyan-half)' : 'var(--bg-color)'};"></div>
-                    <div class="bar" style="background-color: 
-                        {levelArray[4] === 1 ? fullBarColor : levelArray[4] === 0.5 ? 'var(--cyan-half)' : 'var(--bg-color)'};"></div>
-                    {#if testData[currentIndex].wordLevel == 0}
-                        <p style="color: #faaa5a">This word is new!</p>
-                    {:else if testData[currentIndex].wordLevel == 5}
-                        <p style="color: #119854">You know this! Let's keep going.</p>
-                    {/if} 
-                </div>
-                <div style="margin-right: 1rem; display:block; position:relative;">
-                    <a class="options-wrapper" href="/" 
-                       on:click={(event) => {event.preventDefault(); dropdownOpen = !dropdownOpen;}}>
-                        <img src="/icons/three-dots-vertical.svg" id="options" alt="options"/>
-                    </a>
-                    <div style="display: none;" class="dropdownClosed" class:dropdown={dropdownOpen}>
-                        <span>
-                            <img src="/icons/flag.svg" alt="flag as important" />
-                            Flag as important
-                        </span>
-                        <span>
-                            <img src="/icons/lightbulb.svg" alt="get hint" />
-                            Get hint
-                        </span>
-                        <span>
-                            <img src="/icons/send-exclamation.svg" alt="report error" />
-                            Report error
-                        </span>
+           out:fly={{x: direction > 0 ? -1200 : 1200, duration: 500}} 
+           class="outerwrap">
+                <a class="card-scroller" class:disabled={currentIndex <= 0} href="/" on:click={(event) => {event.preventDefault(); changeTestData(-1); dropdownOpen = false;}}>
+                    <img src="/icons/chevron-compact-left.svg" alt="previous card" />
+                </a>
+                <div class="wrapper">
+                    <div class="wrapper-section top">
+                        <div class="level-wrapper">
+                            <div class="bar" style="background-color: 
+                                {levelArray[0] === 1 ? fullBarColor : levelArray[0] === 0.5 ? 'var(--cyan-half)' :
+                                levelArray[0] === 0 ? 'rgb(250, 170, 90)' : 'var(--bg-color)'};"></div>
+                            <div class="bar" style="background-color: 
+                                {levelArray[1] === 1 ? fullBarColor : levelArray[1] === 0.5 ? 'var(--cyan-half)' : 'var(--bg-color)'};"></div>
+                            <div class="bar" style="background-color: 
+                                {levelArray[2] === 1 ? fullBarColor : levelArray[2] === 0.5 ? 'var(--cyan-half)' : 'var(--bg-color)'};"></div>
+                            <div class="bar" style="background-color: 
+                                {levelArray[3] === 1 ? fullBarColor : levelArray[3] === 0.5 ? 'var(--cyan-half)' : 'var(--bg-color)'};"></div>
+                            <div class="bar" style="background-color: 
+                                {levelArray[4] === 1 ? fullBarColor : levelArray[4] === 0.5 ? 'var(--cyan-half)' : 'var(--bg-color)'};"></div>
+                            {#if testData[currentIndex].wordLevel == 0}
+                                <p style="color: #faaa5a">This word is new!</p>
+                            {:else if testData[currentIndex].wordLevel == 5}
+                                <p style="color: #119854">You know this! Let's keep going.</p>
+                            {/if} 
+                        </div>
+                        <div style="margin-right: 1rem; display:block; position:relative;">
+                            <a class="options-wrapper" href="/" 
+                            on:click={(event) => {event.preventDefault(); toggleDropdown()}}>
+                                <img src="/icons/three-dots-vertical.svg" id="options" alt="options"/>
+                            </a>
+                            <!-- svelte-ignore a11y-no-static-element-interactions -->
+                            <!-- svelte-ignore a11y-click-events-have-key-events -->
+                            <div style="display: none;" class="dropdownClosed" class:dropdown={dropdownOpen} id="dropdown"
+                            on:click|stopPropagation>
+                                <span>
+                                    <img src="/icons/flag.svg" alt="flag as important" />
+                                    Flag as important
+                                </span>
+                                <span>
+                                    <img src="/icons/lightbulb.svg" alt="get hint" />
+                                    Get hint
+                                </span>
+                                <span>
+                                    <img src="/icons/send-exclamation.svg" alt="report error" />
+                                    Report error
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wrapper-section center">
+                        <div class="sentence">
+                            <span>{sentenceMeaningParts[0]}</span>
+                            <input id="answer" style="width:{answerTempWidth+10}px" autocomplete="off"/>
+                            <span>{sentenceMeaningParts[1]}</span>
+                        </div>
+                        <div class="part-of-speech">
+                            <span>{testData[currentIndex].partOfSpeech}</span>
+                            <img src="/icons/three-dots.svg" alt="part of speech" />
+                        </div>
+                    </div>
+                    <div class="wrapper-section bottom">
+                        <p>{testData[currentIndex].wordTranslation}</p>
+                        <p>{testData[currentIndex].sentenceTranslation}</p>
+                        {#if testData[currentIndex].wordInfo}
+                            <button class="etymology-button" on:click={() => infoOpen = !infoOpen}>
+                                <img src="/icons/search-tilted.svg" alt="etymology of word"/>
+                                <p>λόγος</p>
+                                <span>Information about this word</span>
+                            </button>
+                        {/if}
                     </div>
                 </div>
-            </div>
-            <div class="wrapper-section center">
-                <div class="sentence">
-                    <span>{sentenceMeaningParts[0]}</span>
-                    <input id="answer" style="width:{answerTempWidth+10}px" autocomplete="off"/>
-                    <span>{sentenceMeaningParts[1]}</span>
-                </div>
-                <div class="part-of-speech">
-                    <span>{testData[currentIndex].partOfSpeech}</span>
-                    <img src="/icons/three-dots.svg" alt="part of speech" />
-                </div>
-            </div>
-            <div class="wrapper-section bottom">
-                <p>{testData[currentIndex].wordTranslation}</p>
-                <p>{testData[currentIndex].sentenceTranslation}</p>
-                {#if testData[currentIndex].wordInfo}
-                    <button class="etymology-button" on:click={() => infoOpen = !infoOpen}>
-                        <img src="/icons/search-tilted.svg" alt="etymology of word"/>
-                        <p>λόγος</p>
-                        <span>Information about this word</span>
-                    </button>
-                {/if}
-            </div>
-        </div>
+                <a class="card-scroller" class:disabled={currentIndex == testData.length-1} href="/" on:click={(event) => {event.preventDefault(); changeTestData(1); dropdownOpen = false;}}>
+                    <img src="/icons/chevron-compact-right.svg" alt="next card" />
+                </a>
         </div>
     {/if}
-    <a class="card-scroller" class:disabled={currentIndex == testData.length-1} href="/" on:click={(event) => {event.preventDefault(); changeTestData(1); dropdownOpen = false;}}>
-        <img src="/icons/chevron-compact-right.svg" alt="next card" />
-    </a>
     {#if infoOpen && ready && testData[currentIndex].wordInfo}
-    <WordInfo wordInfo={testData[currentIndex].wordInfo} />
-{/if}
+        <WordInfo wordInfo={testData[currentIndex].wordInfo} />
+    {/if}
 </div>
 
 <style>
+    .outerwrap{
+        display: flex; 
+        flex-direction:row; 
+        flex-grow: 3; 
+        min-width: 80%;
+        max-width:70rem; 
+        height: 35rem;
+        align-items: center;
+    }
+    .wrapper {
+        display: flex;
+        flex-direction: column;
+        border-radius: 1rem;
+        background-color: var(--el-bg-color);
+        margin: 0;
+        align-self: center;
+        text-align: center;
+        align-items: center;
+        padding: 1rem;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2) !important;
+        position: relative;
+        height: 100%;
+        width:100%;
+        overflow: hidden;
+    }
     .etymology-button {
         background-color: #00000000;
         position: absolute;
@@ -244,6 +294,7 @@
         visibility: visible;
         height: 12rem;
         box-shadow: 1px 1px 3px 2px rgba(0, 0, 0, 0.2);
+        z-index: 2;
     }
     .dropdownClosed > span {
         flex-grow: 1;
@@ -368,21 +419,6 @@
         justify-content: center;
         align-items: center;
         width: 100%;
-    }
-    .wrapper {
-        display: flex;
-        flex-direction: column;
-        border-radius: 12px;
-        background-color: var(--el-bg-color);
-        margin: 0;
-        align-self: center;
-        text-align: center;
-        align-items: center;
-        padding: 1rem;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2) !important;
-        position: relative;
-        height: 35rem;
-        width: 60rem;
     }
     #options {
         height:2.6rem;
