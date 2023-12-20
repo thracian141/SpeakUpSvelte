@@ -75,7 +75,7 @@
     {#await isLoggedIn then bool}
         {#if !bool}
             <ul style="list-style-type:none; padding: 12px; margin-top:auto">
-                <a id="authForm" class="nav-option" href="/authenticate/login" class:active={$page.url.pathname == "/authenticate/"}>
+                <a id="authForm" class="nav-option" href="/authenticate/login" class:active={$page.url.pathname == "/authenticate/login"}>
                     <img src="/icons/loginicon.svg" alt="Authenticate Icon" />
                     <p style="text-overflow:clip; white-space:nowrap">Sign In</p>
                 </a>

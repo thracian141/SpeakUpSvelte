@@ -1,53 +1,103 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import * as UserManager from '../../lib/scripts/UserHandler';
-    console.log('Script is running');
-
-    let userPromise : Promise<UserManager.User> | null;
-    let profilePicturePromise : Promise<string>;
-
-    onMount(async () => {
-        console.log('onMount is running');
-        userPromise = UserManager.getUser();
-        profilePicturePromise = userPromise
-            .then(user => {
-                if (user.profilePictureUrl) {
-                    return UserManager.getPfp(user.profilePictureUrl);
-                } else {
-                    throw new Error("Profile picture URL is undefined");
-                }
-            }).then(pfp => {
-                if (pfp) {
-                    return pfp;
-                } else {
-                    throw new Error("Profile picture is undefined");
-                }
-            });
-    });
+    let src = "https://scontent-sof1-2.xx.fbcdn.net/v/t39.30808-6/357485541_6832060806826430_2842325194166617258_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=efb6e6&_nc_ohc=S7eDGNgYEQgAX-5ctHK&_nc_ht=scontent-sof1-2.xx&oh=00_AfDhUkkZ0AjW5UnPfpft-a8bdafv3KNi1JjW_CFSPCWhzQ&oe=65885E43"
+    let hoverPfp = false;
 </script>
 
-
-{#await userPromise then user}
-    <div class="userinfo-wrapper">
-        {#await profilePicturePromise then pfp}
-            <img src={pfp} alt="Avatar" class="avatar-xl" style="margin-top: 1rem;"/>
-        {/await}
+<div class="wrapper">
+    <div class="inner-wrap left">
+        <!-- svelte-ignore a11y-no-static-element-interactions -->
+        <div class="pfp-wrap" on:mouseenter={()=>hoverPfp = true} on:mouseleave={()=> hoverPfp = false} on:click={()=>alert("You've been banned for trying to change the default PFP.")}>
+            <div class="shadow"></div>
+            <span style="opacity: {hoverPfp ? "1" : "0"}">Change photo?</span>
+            <img {src} alt="profile" class="pfp"/>
+        </div>
+        <div class="fields-wrap">
+            <div>
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" value="Username" disabled/>
+            </div>
+        </div>
     </div>
-{/await}
+    <div class="inner-wrap right">
+        
+    </div>
+</div>
+
 
 <style>
-    .userinfo-wrapper {
+    .fields-wrap {
         display: flex;
         flex-direction: column;
-        height: 36rem;
-        width: 70rem;
-        border-radius: 12px;
+        gap: 1rem;
+        width:100%;
+        height:60%;
         background-color: var(--el-bg-color);
-        margin: auto;
-        align-self: center;
-        text-align: center;
-        align-items: center;
+        justify-self: flex-end;
+        border-radius: 0.6rem;
+    }
+    .pfp-wrap {
+        height: 14rem;
+        width: 14rem;
+        position: relative;
+        display: flex;
+        border-radius: 2rem;
+        outline: 0.8rem solid var(--bg-highlight);
+        justify-content: center;
+    }
+        .pfp-wrap > span {
+            color: var(--fg-color);
+            position: absolute;
+            z-index: 13;
+            top:40%;
+            text-align: center;
+            transition: opacity 0.2s ease-in-out;
+        }
+        .pfp-wrap:hover {
+            cursor: pointer;
+        }
+        .pfp-wrap:hover .shadow {
+            box-shadow: 0 0 10rem 10rem inset #00000090;
+            content: "Change photo?";
+        }
+    .shadow {
+        border-radius: 2rem;
+        height: 14rem;
+        width: 14rem;
+        position: absolute;
+        left: 50%; 
+        top: 50%;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 0 1rem 0.5rem inset #00000080;
+        z-index: 12;
+        outline: 0.75rem solid var(--el-bg-color);
+        transition: box-shadow 0.2s ease-in-out;
+    }
+    .pfp {
+        border-radius: 2rem;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        z-index: 0;
+    }
+    .wrapper {
+        display: flex;
+        flex-direction: row;
+        flex-flow: row;
+        border-radius: 1rem;
+        background-color: var(--el-bg-color);
+        min-height:40rem;
+        min-width:60rem;
+        padding: 1.5rem;
+        gap:1rem;
+    }
+    .inner-wrap {
+        display: flex;
+        flex-direction: column;
         padding: 1rem;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2) !important;
+        align-items: center;
+        width:50%;
+        background-color: var(--bg-color);
+        border-radius: 0.6rem;
+        justify-content: space-between;
     }
 </style>

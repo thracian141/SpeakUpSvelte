@@ -1,7 +1,7 @@
 <script lang="ts">
     import WordInfo from "./WordInfo.svelte";
     import { onMount, tick } from "svelte";
-    import { fly } from "svelte/transition";
+    import { fly, slide } from "svelte/transition";
     let ready = false; // Initialize with not ready.
     let direction = -1; // Direction in which the card will fly.
 
@@ -85,12 +85,13 @@
 <div style="font-size: 3rem; display:inline-block; width:fit-content; position:absolute; visibility:hidden;" id="answerTemp" 
     bind:clientWidth={answerTempWidth}>{testData[currentIndex].wordMeaning}
 </div>
-<div style="display: flex; flex-direction:row; height:100%; align-items:center; margin-left:{infoOpen ? "0" : "auto"}; margin-right:{infoOpen ? "0" : "auto"}; 
+<div style="display: flex; flex-direction:row; height:100%; align-items:center; 
+   margin-left:{infoOpen ? "0" : "auto"}; margin-right:{infoOpen ? "0" : "auto"}; 
    overflow:hidden; width:100%; justify-content: center; flex-flow:row; padding:1rem;">
     {#if ready}
         <div in:fly={{x: direction > 0 ? 1200 : -1200, duration: 500}} 
            out:fly={{x: direction > 0 ? -1200 : 1200, duration: 500}} 
-           class="outerwrap">
+           class="outerwrap" style="flex-grow:{infoOpen ? "4" : "0"}">
                 <a class="card-scroller" class:disabled={currentIndex <= 0} href="/" on:click={(event) => {event.preventDefault(); changeTestData(-1); dropdownOpen = false;}}>
                     <img src="/icons/chevron-compact-left.svg" alt="previous card" />
                 </a>
@@ -167,17 +168,30 @@
         </div>
     {/if}
     {#if infoOpen && ready && testData[currentIndex].wordInfo}
-        <WordInfo wordInfo={testData[currentIndex].wordInfo} />
+        <div class="info-wrapper" in:slide>
+            <WordInfo wordInfo={testData[currentIndex].wordInfo} />
+        </div>
     {/if}
 </div>
 
 <style>
+    .info-wrapper {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        flex-basis: 20rem;
+        margin-right: 2rem;
+        flex-grow:1;
+        height: 35rem;
+        background-color: var(--el-bg-color);
+        border-radius: 1rem;
+        padding: 1rem;
+    }
     .outerwrap{
         display: flex; 
         flex-direction:row; 
-        flex-grow: 3; 
-        min-width: 80%;
-        max-width:70rem; 
+        flex-basis: 65rem;
         height: 35rem;
         align-items: center;
     }
@@ -195,7 +209,6 @@
         position: relative;
         height: 100%;
         width:100%;
-        overflow: hidden;
     }
     .etymology-button {
         background-color: #00000000;
