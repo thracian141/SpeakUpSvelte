@@ -181,6 +181,7 @@
         align-items: center;
         justify-content: center;
         flex-basis: 20rem;
+        max-width: 25rem;
         margin-right: 2rem;
         flex-grow:1;
         height: 35rem;
@@ -191,7 +192,8 @@
     .outerwrap{
         display: flex; 
         flex-direction:row; 
-        flex-basis: 65rem;
+        min-width: 65rem;
+        max-width: 70rem;
         height: 35rem;
         align-items: center;
     }
