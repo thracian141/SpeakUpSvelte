@@ -114,7 +114,7 @@
     nav {
         position:absolute;
         z-index: 1;
-        min-height: 100vh;
+        min-height: 100%;
         width: 5.5rem;
         background-color: var(--el-bg-color);
         transition: width 0.3s ease-in-out;

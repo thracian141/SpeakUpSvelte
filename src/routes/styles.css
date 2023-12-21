@@ -12,6 +12,7 @@
     --cyan: #4eabb9;
     --cyan-half: #4eabb970;
 }
+
 body {
 	min-height: 100vh;
 	margin: 0;
