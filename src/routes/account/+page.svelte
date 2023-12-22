@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { fade } from "svelte/transition";
+  import { fade, slide } from "svelte/transition";
 
     let src = "https://scontent-sof1-2.xx.fbcdn.net/v/t39.30808-6/357485541_6832060806826430_2842325194166617258_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=efb6e6&_nc_ohc=S7eDGNgYEQgAX-5ctHK&_nc_ht=scontent-sof1-2.xx&oh=00_AfDhUkkZ0AjW5UnPfpft-a8bdafv3KNi1JjW_CFSPCWhzQ&oe=65885E43"
     let username = "Shefa"
@@ -9,18 +9,54 @@
     let accountCreatedDate = "12.09.2013"
     
     let hoverPfp = false;
+    let editEnabled = false;
+    let currentEdit = "";
+    function handleEditClick(e : Event, button : string) {
+        e.preventDefault();
+        editEnabled = true;
+        currentEdit = button;
+        window.addEventListener('click', handleWindowClick);
+    }
+    function handleWindowClick(e : Event) {
+        if (e.target === document.querySelector('.edit-overlay')) {
+            editEnabled = false;
+            window.removeEventListener('click', handleWindowClick);
+        }
+    }
+
+    let editInput = '';
+
+    let error = "";
+$: {
+    if (currentEdit === "email") {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(editInput)) {
+            error = "Invalid email! You need an '@' symbol, and a domain.";
+        } else {
+            error = "";
+        }
+    }
+    if (currentEdit === "password") {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+        if (!passwordRegex.test(editInput)) {
+            error = "Invalid password! A valid password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number.";
+        } else {
+            error = "";
+        }
+    }
+}
 </script>
 
 <div class="wrap">
     <div class="panel">
         <div class="fields">
             <div class="top-row">
-                <div class="pfp-wrap">
+                <a href="/" class="pfp-wrap" on:click={(e) => {e.preventDefault();alert(`You've been banned for trying to change the default picture.`)}}>
                     <img {src} alt="pfp" class="pfp" />
                     <div class="pfp-overlay">Change photo?</div>
-                </div>
+                </a>
                 <div class="username-and-date">
-                    <h1 style="margin:0; margin-bottom:0.5rem;">{username}</h1>
+                    <h1 style="margin:0; margin-bottom:2.5rem;">{username}</h1>
                     <div style="display: flex;flex-direction:row;align-items:center; text-align:center">
                         <img src="/icons/calendar-event.svg" alt="account created"/>
                         <div style="display: flex;flex-direction:column; width:10rem; align-items:flex-start">
@@ -30,20 +66,225 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="user-field">
+                    <span>USERNAME</span>
+                    <p>{username}</p>
+                </div>
+                <button class="edit-button" on:click={(e) => handleEditClick(e, 'username')}>Edit</button>
+            </div>
+            <div class="row">
+                <div class="user-field">
+                    <span>DISPLAY NAME</span>
+                    <p>{displayname}</p>
+                </div>
+                <button class="edit-button" on:click={(e) => handleEditClick(e, 'display name')}>Edit</button>
+            </div>
+            <div class="row">
+                <div class="user-field">
+                    <span>EMAIL</span>
+                    <p>{email}</p>
+                </div>
+                <button class="edit-button" on:click={(e) => handleEditClick(e, 'email')}>Edit</button>
+            </div>
+            <div class="row">
+                <div class="user-field">
+                    <span>PASSWORD</span>
+                    <p style="font-size: 1.2rem; color:var(--fg-color-2)">Use a secure password.</p>
+                </div>
+                <button class="edit-button" on:click={(e) => handleEditClick(e, 'password')}>Edit</button>
+            </div>
         </div>
     </div>
     <div class="panel">
 
     </div>
 </div>
+{#if editEnabled}
+    <div class="edit-overlay" in:fade={{duration:200}} out:fade={{duration:100}}>
+        <div class="edit-wrap">
+            <a href="/" style="font-size:2rem; position:absolute; right:5%; top:5%;" 
+            on:click={(e) => {e.preventDefault(); editEnabled=false;}}><img src="/icons/x-lg.svg" alt="close"></a>
+            <h1 style="font-size:1.8rem; margin-bottom:0.5rem;">Change your {currentEdit} </h1>
+            <p style="color: var(--fg-color-2); font-size:1.1rem; margin-bottom:2rem;">Enter a new {currentEdit} and your current password.</p>
+            <div class="edit-fields" >
+                <div class="edit-row" in:slide>
+                    <span style="margin-bottom:0.5rem">{currentEdit.toUpperCase()} 
+                        <span style="color:red; font-weight:normal; margin-left:0.5rem;">{error}</span>
+                    </span>
+                    <input type="{currentEdit == "email" ? "email" : currentEdit == "password" ? "password" : "test"}" autocomplete="off" style="width:97.5%;" bind:value={editInput}/>
+                </div>
+                <div class="edit-row" in:slide>
+                    <span style="margin-bottom:0.5rem">CURRENT PASSWORD</span>
+                    <input type="password" autocomplete="off" style="width:97.5%;"/>
+                </div>
+            </div>
+        </div>
+        <div class="edit-bottom">
+            <button class="cancel-button" on:click={(e) => {e.preventDefault(); editEnabled=false;}}>
+                Cancel
+            </button>
+            <button class="confirm-button">
+                Confirm
+            </button>
+        </div>
+    </div>
+{/if}
 
 <style>
+    .cancel-button {
+        background-color: #00000000;
+        color: var(--fg-color);
+        border: none;
+        width:6rem;
+        height:3.5rem;
+        font-size: 1.1rem;
+        font-weight: bold;
+        text-align: center;
+    }
+        .cancel-button:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    .confirm-button {
+        background-color: var(--bg-color);
+        color: var(--fg-color);
+        border: none;
+        width:6rem;
+        height:3.5rem;
+        font-size: 1.1rem;
+        font-weight: bold;
+        text-align: center;
+        border-radius: 0.25rem;
+        transition: background-color 0.05s ease-in-out, color 0.05s ease-in-out;
+    }
+    .confirm-button:hover {
+        background-color: var(--bg-middle);
+        cursor: pointer;
+        color: var(--fg-color-2);
+    }
+    .edit-wrap > a > img {
+        filter: brightness(0) saturate(100%) invert(55%) sepia(9%) saturate(784%) hue-rotate(190deg) brightness(100%) contrast(98%);
+        height:1.75rem;
+    }
+    .edit-wrap > a > img:hover {
+        cursor: pointer;
+        filter: brightness(0) saturate(100%) invert(92%) sepia(3%) saturate(1364%) hue-rotate(193deg) brightness(85%) contrast(86%);
+    }
+    .edit-bottom {
+        background-color: var(--el-bg-color);
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        width:35rem;
+        height:7.5rem;
+        border-radius: 0 0 0.6rem 0.6rem;
+        padding: 2rem;
+        box-sizing: border-box;
+        justify-content: flex-end;
+    }
+    .edit-button {
+        background-color: var(--el-bg-color);
+        width:100%;
+        height:20%;
+    }
+    .edit-row > span {
+        font-size: 1rem;
+        font-weight: bold;
+        transform: scaleY(0.4);
+        color: var(--fg-color);
+    }
+    .edit-row > input, .edit-row > input::placeholder {
+        background-color: var(--el-bg-color);
+        outline: none !important;
+        border: none !important;
+        box-shadow: inset 0 0 0 999px var(--el-bg-color) !important;
+        color: var(--fg-color);
+        height:3rem;
+        font-size: 1.3rem;
+        border-radius: 0.3rem;
+        margin-top: 0.5rem;
+    }
+    .edit-fields {
+        display: flex;
+        flex-direction: column;
+        gap:1rem;
+        width:100%;
+        height:100%;
+    }
+    .edit-wrap > h1, p {
+        margin:0;
+    }
+    .edit-wrap {
+        position: relative;
+        background-color: var(--bg-color);
+        width:35rem;
+        height:21rem;
+        border-radius: 0.6rem 0.6rem 0 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-sizing: border-box;
+        padding: 1.5rem;
+    }
+    .edit-overlay {
+        position: fixed;
+        top:0;
+        left:0;
+        width:100vw;
+        height:100vh;
+        background-color: #000000a0;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .user-field {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .user-field > span {
+        font-size: 1rem;
+        font-weight: bold;
+        transform: scaleY(0.9);
+    }
+    .user-field > p {
+        font-size: 1.4rem;
+        margin: 0;
+    }
+    .row {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        box-sizing: border-box;
+        padding: 0 1rem;
+    }
+    .edit-button {
+        background-color: var(--bg-highlight);
+        color: var(--fg-color);
+        border: none;
+        width:4.5rem;
+        height:2.5rem;
+        font-size: 1.3rem;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+    }
+        .edit-button:hover {
+            background-color: var(--bg-highlight-2);
+            color: white;
+        }
     .username-and-date {
         display: flex;
         flex-direction: column;
         position: absolute;
         left:120%;
-        top:20%;
+        top:15%;
     }
         .username-and-date > div > img {
             filter: brightness(0) saturate(100%) invert(92%) sepia(3%) saturate(1186%) hue-rotate(193deg) brightness(84%) contrast(88%);
@@ -60,6 +301,10 @@
         margin-top: 1rem;
         display: flex;
         flex-direction: column;
+        padding-top: 8rem;
+        padding-bottom: 2rem;
+        box-sizing: border-box;
+        justify-content: space-between;
     }
     .top-row {
         position: absolute;
@@ -78,12 +323,29 @@
         display: flex;
         overflow: hidden;
         outline: 0.5rem solid var(--bg-color);
+        position: relative;
+        margin-left: 0.35rem;
     }
+        .pfp-wrap:hover .pfp-overlay {
+            cursor: pointer;
+            opacity: 1;
+        }
     .pfp {
         object-fit:fill;
     }
     .pfp-overlay {
-        background-color: #000000;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #00000070;
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
     }
     .panel {
         background-color: var(--el-bg-color);
