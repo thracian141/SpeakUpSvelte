@@ -13,6 +13,17 @@
     --cyan: #4eabb9;
     --cyan-half: #4eabb970;
 }
+body.light-theme {
+    --fg-color: #161616;
+    --fg-color-2: #2b2934;
+    --bg-color: #efefef;
+    --bg-middle: #dddddd;
+    --el-bg-color: #d5d5d5;
+    --bg-highlight: #f5f5f5;
+    --bg-highlight-2: #ffffff;
+    --selected-color: #8956a9;
+    --cyan: #4293a0;
+}
 
 body {
 	min-height: 100vh;

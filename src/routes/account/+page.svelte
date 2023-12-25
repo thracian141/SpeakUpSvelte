@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fade, slide } from "svelte/transition";
 
-    let src = "https://scontent-sof1-2.xx.fbcdn.net/v/t39.30808-6/357485541_6832060806826430_2842325194166617258_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=efb6e6&_nc_ohc=S7eDGNgYEQgAX-5ctHK&_nc_ht=scontent-sof1-2.xx&oh=00_AfDhUkkZ0AjW5UnPfpft-a8bdafv3KNi1JjW_CFSPCWhzQ&oe=65885E43"
+    let src = "/zdravkoqnkov.jpg"
     let username = "Shefa"
     let displayname = "John Doe"
     let email = "email@gmail.com"
@@ -28,18 +28,19 @@
 
     let error = "";
 $: {
-    if (currentEdit === "email") {
+    if (currentEdit != "email" && currentEdit != "password") {
+        error = "";
+    } else if (currentEdit === "email") {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(editInput)) {
-            error = "Invalid email! You need an '@' symbol, and a domain.";
+            error = "An email must contain an '@' symbol, and a domain.";
         } else {
             error = "";
         }
-    }
-    if (currentEdit === "password") {
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+    } else if (currentEdit === "password") {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
         if (!passwordRegex.test(editInput)) {
-            error = "Invalid password! A valid password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number.";
+            error = "A password must be at least 8 characters, 1 uppercase letter, 1 lowercase letter, and 1 number.";
         } else {
             error = "";
         }
@@ -106,15 +107,21 @@ $: {
             <a href="/" style="font-size:2rem; position:absolute; right:5%; top:5%;" 
             on:click={(e) => {e.preventDefault(); editEnabled=false;}}><img src="/icons/x-lg.svg" alt="close"></a>
             <h1 style="font-size:1.8rem; margin-bottom:0.5rem;">Change your {currentEdit} </h1>
-            <p style="color: var(--fg-color-2); font-size:1.1rem; margin-bottom:2rem;">Enter a new {currentEdit} and your current password.</p>
+            <p style="color: var(--fg-color-2); font-size:1.1rem; margin-bottom:{currentEdit=="password" ? "1rem" : "2rem"};">Enter a new {currentEdit} and your current password.</p>
             <div class="edit-fields" >
                 <div class="edit-row" in:slide>
                     <span style="margin-bottom:0.5rem">{currentEdit.toUpperCase()} 
                         <span style="color:red; font-weight:normal; margin-left:0.5rem;">{error}</span>
                     </span>
-                    <input type="{currentEdit == "email" ? "email" : currentEdit == "password" ? "password" : "test"}" autocomplete="off" style="width:97.5%;" bind:value={editInput}/>
+                    {#if currentEdit == "email"}
+                        <input type="email" autocomplete="off" style="width:97.5%;" bind:value={editInput}/>
+                    {:else if currentEdit == "password"}
+                        <input type="password" autocomplete="off" style="width:97.5%;" bind:value={editInput}/>
+                    {:else}
+                        <input type="text" autocomplete="off" style="width:97.5%;" bind:value={editInput}/>
+                    {/if}
                 </div>
-                <div class="edit-row" in:slide>
+                <div class="edit-row" in:slide style="margin-bottom: auto !important;">
                     <span style="margin-bottom:0.5rem">CURRENT PASSWORD</span>
                     <input type="password" autocomplete="off" style="width:97.5%;"/>
                 </div>

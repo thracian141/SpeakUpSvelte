@@ -395,7 +395,7 @@
             text-align: center;
             height:4rem;
         }
-            .sentence > input:focus, .sentence > input::placeholder, .sentence > input:active {
+            .sentence > input:focus, .sentence > input::placeholder, .sentence > input:active, .sentence > input:hover {
                 background-color: var(--bg-color) !important;
                 box-shadow: none !important;
                 color: var(--cyan) !important;
