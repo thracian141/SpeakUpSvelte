@@ -2,7 +2,7 @@
     --font-body: 'Lucida Sans Unicode';
     --font-important: 'Lucida Brights';
     font-family: var(--font-body);
-    --fg-color: rgba(184, 188, 202, 1);
+    --fg-color: #babecc;
     --fg-color-2: #868eac;
     --bg-color: #17191c;
     --bg-middle: rgb(20,20,22);
@@ -12,6 +12,8 @@
     --selected-color: #623d79;
     --cyan: #4eabb9;
     --cyan-half: #4eabb970;
+    --green: #4eab6e;
+    --green-half: #4eab6e70;
 }
 body.light-theme {
     --fg-color: #161616;

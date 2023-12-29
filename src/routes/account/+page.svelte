@@ -1,5 +1,6 @@
 <script lang="ts">
   import { fade, slide } from "svelte/transition";
+    import Statistics from "./Statistics.svelte";
 
     let src = "/zdravkoqnkov.jpg"
     let username = "Shefa"
@@ -97,9 +98,7 @@ $: {
             </div>
         </div>
     </div>
-    <div class="panel">
-
-    </div>
+    <Statistics />
 </div>
 {#if editEnabled}
     <div class="edit-overlay" in:fade={{duration:200}} out:fade={{duration:100}}>
