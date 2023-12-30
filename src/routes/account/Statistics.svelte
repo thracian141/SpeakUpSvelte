@@ -1,7 +1,27 @@
 <script lang="ts">
+	import { slide } from 'svelte/transition';
+    import Calendar from './Calendar.svelte';
+    let languages = ["English", "Bulgarian", "Turkish", "German"];
+    let currentLanguage = languages[0];
     let wordsTotal = 5138;
     let wordsLearnt = 2134;
     let goalWords = 3000;
+
+    let langDropdown = false;
+
+    function handleClick() {
+        langDropdown = !langDropdown;
+        if (langDropdown) {
+            setTimeout(() => {
+                document.addEventListener('click', function handleClickOutside(event) {
+                    if (!document.getElementById('lang-dropdown')?.contains(event.target as Node)) {
+                        langDropdown = false;
+                        document.removeEventListener('click', handleClickOutside);
+                    }
+                });
+            }, 0);
+        }
+    }
 
     async function handleHover(id: string) {
         const scale = await document.getElementById(id);
@@ -20,7 +40,7 @@
     <div class="top">
         <div class="words-learnt-wrap">
             <span style="font-size:0.95rem; color:var(--fg-color); margin-right:auto; margin-left:0.8rem;">{wordsTotal}</span>
-            <span style="position: absolute; right:0%; bottom:0%; font-size:0.95rem;">{Math.round((wordsLearnt/wordsTotal)*100)}%</span>
+            <span style="position: absolute; right:0%; bottom:0%; font-size:0.95rem; font-weight:bold;">{Math.round((wordsLearnt/wordsTotal)*100)}%</span>
             <span style="position: absolute; right:0%; top:5%; font-size:0.95rem;">{wordsLearnt}</span>
             <span style="position: absolute; right:0%; top:17%; font-size:0.95rem; color:var(--fg-color-2)">learnt</span>
             <span style="position: absolute; right:0%; top:44%; font-size:0.95rem;">{wordsTotal-wordsLearnt}</span>
@@ -30,11 +50,34 @@
                 <span style="position: absolute; color:var(--bg-color); left:8%; font-size:0.95rem;">{wordsLearnt}</span>
             </div>
             <span style="position: absolute; bottom:-25%; font-size:0.9rem; color:var(--fg-color); 
-              font-weight:bold; transform:scaleY(0.92)">WORDS LEARNT</span>
+              font-weight:bold; transform:scaleY(0.92)">TOTAL NUMBER</span>
+        </div>
+        <div style="display: flex; flex-direction:column; width:13rem; box-sizing:border-box; margin: 0 1rem;">
+            <div style="text-align:center; display:flex; flex-direction:column; border: 1px solid var(--bg-highlight);
+                        border-radius: 0.6rem 0.6rem 0 0; padding:0.4rem 0; position:relative;">
+                <span style="font-weight: bold; transform:scaleY(0.95); font-size:0.9rem;">LANGUAGE</span>
+                <button style="font-size: 1.5rem; cursor:pointer;" id="lang" 
+                on:click|stopPropagation={handleClick}>
+                    {currentLanguage}
+                </button>
+                {#if langDropdown}
+                    <div id="lang-dropdown" in:slide out:slide={{duration:100}}>
+                        {#each languages as language, index }
+                            <button class="lang-dropdown-option" style="cursor:pointer;" 
+                            on:click={async()=>{currentLanguage=languages[index]; langDropdown=false;}}>{language}</button>
+                        {/each}
+                    </div>
+                {/if}
+            </div>
+            <div style="font-size: 1.3rem; padding: 0.4rem 1rem 0.4rem 1rem; font-weight:bold; border: 1px solid var(--bg-highlight);
+                        border-radius:0 0 0.6rem 0.6rem; border-top:0; ">
+                You've learned <br/> 
+                <span style="color:var(--green);font-size:2rem;">{wordsLearnt}</span> words.
+            </div>
         </div>
         <div class="words-learnt-wrap">
             <span style="font-size:0.95rem; color:var(--fg-color); margin-left:auto; margin-right:0.8rem;">{goalWords}</span>
-            <span style="position: absolute; left:0%; bottom:0%; font-size:0.95rem;">{Math.round((wordsLearnt/goalWords)*100)}%</span>
+            <span style="position: absolute; left:0%; bottom:0%; font-size:0.95rem; font-weight:bold;">{Math.round((wordsLearnt/goalWords)*100)}%</span>
             <span style="position: absolute; left:0%; top:5%; font-size:0.95rem;">{wordsLearnt}</span>
             <span style="position: absolute; left:0%; top:17%; font-size:0.95rem; color:var(--fg-color-2)">learnt</span>
             <span style="position: absolute; left:0%; top:44%; font-size:0.95rem;">{goalWords-wordsLearnt}</span>
@@ -47,9 +90,50 @@
               font-weight:bold; transform:scaleY(0.92)">YOUR GOAL</span>
         </div>
     </div>
+    <Calendar />
 </div>
 
 <style>
+    #lang-dropdown {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top:100%;
+        background-color: var(--bg-middle);
+        box-sizing: border-box;
+        left:50%;
+        transform: translateX(-50%);
+        border-radius: 0.5rem;
+        border: 1px solid var(--bg-highlight);
+        overflow: hidden;
+    }
+        .lang-dropdown-option {
+            padding: 0.5rem 1rem;
+            font-size: 1.2rem;
+            border: none;
+            border-bottom: 1px solid var(--bg-highlight);
+            color: var(--fg-color);
+            cursor: pointer;
+            background: none;
+            transition: background-color 0.1s ease-in-out;
+        }
+            .lang-dropdown-option:hover {
+                background-color: var(--bg-color);
+            }
+            .lang-dropdown-option:last-child {
+                border-bottom: none;
+            }
+    #lang {
+        opacity: 1;
+        cursor:pointer;
+        color: var(--cyan);
+        transition: opacity 0.1s ease-in-out;
+        background: none;
+        border: none;
+    }
+    #lang:hover {
+        opacity: 0.8;
+    }
     .your-goal {
         background: linear-gradient(to bottom, var(--green), var(--green-half)) !important;
     }
@@ -90,6 +174,7 @@
         align-items: center;
         width:100%;
         box-sizing: border-box;
+        margin-bottom: 2.5rem;
     }
     .panel {
         background-color: var(--el-bg-color);

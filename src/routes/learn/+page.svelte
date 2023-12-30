@@ -374,6 +374,7 @@
         padding: 0 1.5rem 0 1.5rem;
         text-align: left;
         margin: auto 0 auto 0;
+        font-family: var(--font-important);
     }
         .sentence > span {
             margin: 0;

@@ -68,7 +68,7 @@
         <a href="/decks" class="nav-option" class:active={$page.url.pathname == "/decks"}>
             <img src="/icons/decksIcon.svg" alt="Decks Icon" /><p>Decks</p>
         </a>
-        <a href="/account" class="nav-option" class:active={$page.url.pathname == "/account"}>
+        <a href="/account" class="nav-option" class:active={$page.url.pathname == "/account/" || $page.url.pathname == "/account"}>
             <img src="/icons/accounticon.svg" alt="Account Icon" /><p>Account</p>
         </a>
     </ul>

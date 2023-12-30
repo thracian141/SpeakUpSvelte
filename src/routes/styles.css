@@ -1,14 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif&display=swap');
+
 :root {
-    --font-body: 'Lucida Sans Unicode';
-    --font-important: 'Lucida Brights';
+    --font-body: "Noto Sans", "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;;
+    --font-important: "Noto Serif","Times New Roman",serif;
     font-family: var(--font-body);
     --fg-color: #babecc;
     --fg-color-2: #868eac;
     --bg-color: #17191c;
     --bg-middle: rgb(20,20,22);
     --el-bg-color: rgb(16, 16, 16);
-    --bg-highlight: #3a3d40;
+    --bg-highlight: #2f3336;
     --bg-highlight-2: #484c50;
+    --selected-text: #9952c6;
+    --selected-half: #9952c670;
     --selected-color: #623d79;
     --cyan: #4eabb9;
     --cyan-half: #4eabb970;
