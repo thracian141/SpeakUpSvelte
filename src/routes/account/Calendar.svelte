@@ -84,10 +84,6 @@
 
 
 <style>
-    .wrap > h1 {
-        display: inline-flexbox;
-        flex-direction: row;
-    }
     button {
         position: absolute;
         display: flex;
