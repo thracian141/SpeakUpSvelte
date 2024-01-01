@@ -2,7 +2,7 @@
     import { slide, fly } from "svelte/transition";
 
     let currentDate = new Date();
-    let dateRangeSelection = "month";
+    let dateRangeSelection = "week";
 
     let weekDates = Array.from({length: 7}, (_, i) => {
         let d = new Date(currentDate);
@@ -30,9 +30,9 @@
 <div class="wrap">
     <h3 style="margin:0; margin-bottom:1rem">Daily Goals</h3>
     {#if dateRangeSelection == "week"}
-        <div class="week-wrapper">
+        <div class="week-wrapper" in:slide out:slide>
             {#each weekDates as day (day)}
-                <div class="day-box" transition:slide|global>
+                <div class="day-box">
                     <div class="week-day-box" class:filled={hasStudied.get(day.toISOString().split('T')[0])}>
                         <i class="bi bi-check-lg"></i>
                     </div>
@@ -40,80 +40,74 @@
                 </div>
             {/each}
         </div>
+        <div in:slide out:slide>
+            {#if hasStudied.get(currentDate.toISOString().split('T')[0]) == true}
+                <h1 style="margin-bottom: 0;">You <span style="color: var(--green);">have studied</span> today.</h1>
+                <h1>Great job!</h1>        
+            {:else if hasStudied.get(currentDate.toISOString().split('T')[0]) == false}
+                <h1 style="margin-bottom: 0;">You <span style="color: var(--red);">have not studied</span> today!</h1>
+                <h1>Try to reach your daily goal.</h1>
+            {/if}
+        </div>
     {:else if dateRangeSelection == "month"}
-    <div style="display:flex; flex-direction:row; width:100%; height:100%; flex-wrap:wrap;">
         <!-- Previous month -->
-        <div class="month-wrap" style="opacity: 0.4; margin-right:3rem;">
-            <h3 style="margin-left:0.75rem;">{new Date(currentDate.getFullYear(), currentDate.getMonth() - 1).toLocaleString('en-GB', { month: 'long' })}</h3>
-            <div class="month-days">
-                {#each monthDates.filter(day => day.getMonth() !== currentDate.getMonth()) as day (day)}
-                    <div class="day-box" transition:slide|global>
-                        <div class="week-day-box month" class:filled={hasStudied.get(day.toISOString().split('T')[0])}>
-                            <i class="bi bi-check-lg"></i>
-                        </div>
-                        <span>{day.getDate()}</span>
-                    </div>
-                {/each}
+    <div class="month-wrap" style="flex-wrap:wrap;" in:slide out:slide>
+        <div class="month-text"><h3>
+            {new Date(currentDate.getFullYear(), currentDate.getMonth() - 1).toLocaleString('en-GB', { month: 'long' })}
+        </h3></div>
+        {#each monthDates.filter(day => day.getMonth() !== currentDate.getMonth()) as day (day)}
+        <div class="day-box" style="opacity: 0.4;">
+            <div class="week-day-box month" class:filled={hasStudied.get(day.toISOString().split('T')[0])}>
+                <i class="bi bi-check-lg"></i>
             </div>
+            <span>{day.getDate()}</span>
         </div>
-        <!-- Current month First 5 Days -->
-        <div class="month-wrap">
-            <h3 style="margin-left:auto; margin-right:0.75rem">{currentDate.toLocaleString('en-GB', { month: 'long' })}</h3>
-            <div class="month-days">
-                {#each monthDates.filter(day => day.getMonth() === currentDate.getMonth()).slice(0, 4) as day (day)}
-                    <div class="day-box" transition:slide|global>
-                        <div class="week-day-box month" class:filled={hasStudied.get(day.toISOString().split('T')[0])}>
-                            <i class="bi bi-check-lg"></i>
-                        </div>
-                        <span>{day.getDate()}</span>
-                    </div>
-                {/each}
+        {/each}
+        <div class="month-text"><h3>
+            {new Date(currentDate.getMonth()).toLocaleString('en-GB', { month: 'long' })}
+        </h3></div>
+        {#each monthDates.filter(day => day.getMonth() === currentDate.getMonth()) as day (day)}
+        <div class="day-box" style="">
+            <div class="week-day-box month" class:filled={hasStudied.get(day.toISOString().split('T')[0])}>
+                <i class="bi bi-check-lg"></i>
             </div>
+            <span>{day.getDate()}</span>
         </div>
-        <!-- Current month Rest of -->
-        <div class="month-wrap" style="flex-wrap: wrap;">
-            <div class="month-days" style="flex-wrap: wrap;">
-                {#each monthDates.filter(day => day.getMonth() === currentDate.getMonth()).slice(4) as day (day)}
-                    <div class="day-box" transition:slide|global>
-                        <div class="week-day-box month" class:filled={hasStudied.get(day.toISOString().split('T')[0])}>
-                            <i class="bi bi-check-lg"></i>
-                        </div>
-                        <span>{day.getDate()}</span>
-                    </div>
-                {/each}
-            </div>
-        </div>
+        {/each}
     </div>
     {/if}
-    <button on:click={() => {
-                            if (dateRangeSelection=="week")
-                                {
-                                    dateRangeSelection="month";
-                                } 
-                            else 
-                                {
-                                    dateRangeSelection="week";
-                                }
-                            }
-                    }
-    >
-        <i class="bi bi-calendar-week"></i>
-        <span>View goals for the current {dateRangeSelection}</span>
-    </button>
 </div>
+<button on:click={() => {if (dateRangeSelection=="week"){dateRangeSelection="month";} else {dateRangeSelection="week";}}}>
+    <i class="bi" class:bi-calendar3={dateRangeSelection=="week"} class:bi-calendar3-week={dateRangeSelection=="month"}></i>
+    <span>View goals for the current {dateRangeSelection}</span>
+</button>
 
 
 <style>
-    .wrap > button {
+    .wrap > h1 {
+        display: inline-flexbox;
+        flex-direction: row;
+    }
+    button {
         position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         right: 0;
         bottom:0;
+        transform: translate(-50%, -50%);
         border:none;
         background-color: var(--bg-color);
         color: var(--fg-color);
-        font-size: 2rem;
+        font-size: 1.6rem;
+        padding: 1rem;
+        width:3.5rem; 
+        height:3.5rem;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
     }
-        .wrap > button > span {
+        button > span {
             display: none;
             position: absolute;
             top:50%;
@@ -122,31 +116,55 @@
             font-size: 1rem;
             width:10rem;
         }
-        .wrap > button:hover > span {
+        button:hover {
+            background-color: var(--bg-middle);
+            color: var(--fg-color-2);
+        }
+        button:hover > span {
             display: inline-block;
+            box-sizing: border-box;
+            padding:0.5rem 0;
+            border-radius: 0.5rem;
+            margin-right: 0.25rem;
+            border: 1px solid var(--bg-highlight);
+            background-color: var(--bg-middle);
+            color: var(--fg-color) !important;
         }
     .month-wrap {
         display: flex;
-        flex-direction: column;
-    }
-        .month-wrap > h3 {
-            margin-top: 0;
-        }
-    .month-days {
-        display: flex;
         flex-direction: row;
+        position: relative;
+        justify-content:flex-start;
+        box-sizing: border-box;
+        width:100%;
+        height:100%;
     }
+        .month-text {
+            width:0;
+            overflow: visible;
+            z-index: 3;
+        }
+        .month-text > h3 {
+            margin:0;
+            line-height: 0;
+            margin-top: -0.5rem;
+            padding-left: 0.5rem;
+            width:0;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
     .month {
-        width:2rem !important;
+        width:2.2rem !important;
         border-width: 0.15rem !important;
     }
     .day-box {
-        display: flex;
+        display: inline-flex;
         flex-direction: column;
         box-sizing: border-box;
-        padding:0.5rem;
+        padding:0.6rem;
         align-items: center;
         border-radius: 0.3rem;
+        z-index: 0;
     }
     .day-box > .filled + span {
         color: var(--fg-color) !important;
@@ -203,6 +221,6 @@
         box-sizing: border-box;
         margin-top:2rem;
         flex-grow: 1;
-        position: relative;
+        overflow: hidden;
     }
 </style>

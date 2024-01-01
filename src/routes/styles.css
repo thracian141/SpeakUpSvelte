@@ -19,6 +19,8 @@
     --cyan-half: #4eabb970;
     --green: #4eab6e;
     --green-half: #4eab6e70;
+    --red: #ab4e4e;
+    --red-half: #ab4e4e70;
 }
 body.light-theme {
     --fg-color: #161616;
