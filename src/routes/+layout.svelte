@@ -2,12 +2,22 @@
     import { slide } from "svelte/transition";
     import Navbar from "./Navbar.svelte";
     import './styles.css';
+    import { onMount } from "svelte";
+    import NavbarPhone from "./NavbarPhone.svelte";
 
     let theme = 'dark';
     function changeTheme() {
         document.body.classList.toggle('light-theme');
         theme = theme === 'dark' ? 'light' : 'dark';
     }
+
+    let isNarrowScreen = false;
+    onMount(() => {
+        isNarrowScreen = window.innerWidth <= window.innerHeight;
+        window.addEventListener('resize', () => {
+            isNarrowScreen = window.innerWidth <= window.innerHeight;
+        });
+    });
 </script>
 
 <div class="app">
@@ -19,9 +29,13 @@
         {/if}
         <span>Highly experimental!</span>
     </button>
-    <Navbar />
-    <main>
-        <div class="wrap">
+    {#if !isNarrowScreen}
+        <Navbar />
+    {:else if isNarrowScreen}
+        <NavbarPhone />
+    {/if}
+    <main style="padding-left: {isNarrowScreen == true ? "0" : "5.5rem"}">
+        <div class="wrap" style="padding-left: {isNarrowScreen == true ? "0" : "1rem"};">
             <slot />
         </div>
     </main>
@@ -38,7 +52,7 @@
         height:3rem;
         color: var(--fg-color-2);
         border-radius: 50%;
-        z-index: 999;
+        z-index: 4;
         font-size: 1.5rem;
         text-align: center;
         transition: all 0.12s ease-in-out;
@@ -85,7 +99,6 @@
 		box-sizing: border-box;
         flex-grow: 1;
         background-color: #00000000;
-        padding-left: 5.5rem;
 	}
     .wrap {
         display: flex;
@@ -94,6 +107,5 @@
         justify-content: center;
         height: 100%;
         width: 100%;
-        padding: 1rem;
     }
 </style>

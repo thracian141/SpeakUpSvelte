@@ -53,7 +53,10 @@
 </script>
 
 
-<nav id="nav" class={isExpanded ? 'nav-expanded' : ''} on:mouseenter={enableExpansion} on:mouseleave={disableExpansion}>
+
+<nav id="nav" on:mouseenter={enableExpansion} on:mouseleave={disableExpansion} 
+     class={isExpanded ? 'nav-expanded' : ''}
+    >
     <div class="logo" style="display: flex; flex-direction:row;">
         <img src="/icons/speakuplogo.svg" alt="SpeakUp Logo"/>
         <p>SPEAKUP</p>
@@ -89,7 +92,6 @@
             </ul>
         {/if}
     {/await}
-
 </nav>
 
 
@@ -113,7 +115,7 @@
     }
     nav {
         position:absolute;
-        z-index: 1;
+        z-index: 5;
         min-height: 100%;
         width: 5.5rem;
         background-color: var(--el-bg-color);
@@ -128,7 +130,6 @@
     .nav-expanded {
         width: 12rem;
     }
-
     .nav-option {
         display:flex;
         flex-direction: row;
