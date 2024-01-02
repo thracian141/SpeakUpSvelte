@@ -3,7 +3,7 @@
 	import { slide } from 'svelte/transition';
     import * as UserHandler from "../lib/scripts/UserHandler";
     import { browser } from '$app/environment';
-  import { onMount } from 'svelte';
+    import { onMount } from 'svelte';
     let isOpen = false;
 
     let isLogoutConfirmed = false;
