@@ -2,7 +2,8 @@
     import { page } from '$app/stores';
 	import { slide } from 'svelte/transition';
     import * as UserHandler from "../lib/scripts/UserHandler";
-  import { browser } from '$app/environment';
+    import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
     let isOpen = false;
 
     let isLogoutConfirmed = false;
@@ -29,6 +30,15 @@
             isLogoutConfirmed = true;
         }
     }
+    onMount(async () => {
+        document.querySelectorAll('.nav-option').forEach((element) => {
+            element.addEventListener('click', () => {
+                setTimeout(() => {
+                    isOpen = false;
+                }, 100);
+            });
+        });
+    });
 </script>
 
 {#if !isOpen}
@@ -117,7 +127,7 @@
             margin-right: 1rem;
         }
         .nav-option > span {
-            font-size: 1.5rem;
+            font-size: 5.5vw;
             text-align: center;
             margin: 0;
         }
