@@ -4,7 +4,10 @@
     import './styles.css';
     import { onMount } from "svelte";
     import NavbarPhone from "./NavbarPhone.svelte";
+    import { decks } from "./decks/testDecks";
+  import { browser } from "$app/environment";
 
+    let websiteLanguage = decks[1];
     let theme = 'dark';
     function changeTheme() {
         document.body.classList.toggle('light-theme');
@@ -13,6 +16,9 @@
 
     let isNarrowScreen = false;
     onMount(() => {
+        if (browser) {
+            localStorage.setItem('websiteLanguage', JSON.stringify(websiteLanguage));
+        }
         isNarrowScreen = window.innerWidth <= window.innerHeight;
         window.addEventListener('resize', () => {
             isNarrowScreen = window.innerWidth <= window.innerHeight;

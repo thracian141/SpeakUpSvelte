@@ -1,14 +1,29 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-    import {Deck, decks}  from "./testDecks";
+    import { onDestroy, onMount } from "svelte";
+    import { Deck, decks }  from "./testDecks";
     import { browser } from "$app/environment";
-    import { fly } from "svelte/transition";
+    import { fade } from "svelte/transition";
+    import { goto } from "$app/navigation";
     
-    let isNarrowScreen = window.innerWidth <= window.innerHeight;;
-    onMount(() => {
-        window.addEventListener("resize", () => {
+    let isNarrowScreen: boolean;
+    let fromLang: Deck | undefined;
+    let decksFiltered: Deck[] = [];
+    onMount(async () => {
+        if (browser) {
             isNarrowScreen = window.innerWidth <= window.innerHeight;
-        });
+            fromLang = await JSON.parse(localStorage.getItem("websiteLanguage") || "{}");
+            decksFiltered = await decks.filter((deck) => deck.name != fromLang?.name);
+            window.addEventListener("resize", () => {
+                isNarrowScreen = window.innerWidth <= window.innerHeight;
+            });
+        }
+    });
+    onDestroy(async() => {
+        if (browser) {
+            window.removeEventListener("resize", () => {
+                isNarrowScreen = window.innerWidth <= window.innerHeight;
+            });
+        }
     });
 
     let anyLangHovered = false;
@@ -34,12 +49,12 @@
         <h1 style="color: var(--fg-color-2); font-size:1.8rem; font-weight:normal;">Choose a language</h1>
     </div>
     <div class="languages">
-        {#each decks as deck, index}
-        <div class="deck" id={String(index)} class:this-hovered={langHoveredId==index || selectedLangId==index} class:any-hovered={anyLangSelected || anyLangHovered}
-                                            on:mouseenter={()=>{anyLangHovered=true; langHoveredId=index}} 
+        {#each decksFiltered as deck, index}
+        <div class="deck" id={String(deck.id)} class:this-hovered={langHoveredId==deck.id || selectedLangId==deck.id} class:any-hovered={anyLangSelected || anyLangHovered}
+                                            on:mouseenter={()=>{anyLangHovered=true; langHoveredId=deck.id}} 
                                             on:mouseleave={()=>{anyLangHovered=false; langHoveredId=-1}}
-                                            on:click={()=>selectLang(index)}   class:selected={selectedLangId==index}
-                                            on:keydown={()=>selectLang(index)}
+                                            on:click={()=>selectLang(deck.id)}   class:selected={selectedLangId==deck.id}
+                                            on:keydown={()=>selectLang(deck.id)}
                                             role="checkbox" aria-checked={false} tabindex={index}
                                             style="{isNarrowScreen ? "width:100%;" : ""}">
             {#if deck.image != null}
@@ -51,15 +66,15 @@
         </div>
         {/each}
     </div>
-    {#if anyLangSelected}
-        <button class="select-button" in:fly={{x:-2000}} out:fly={{x:2000}}>
-            Learn {decks[selectedLangId].name}
-        </button>
-    {:else}
-        <div class="wrap-bottom" in:fly={{x:-2000}} out:fly={{x:2000}}>
-            <h1 style="color: var(--fg-color-2); font-size:1.8rem; font-weight:normal;">You haven't started any course yet.</h1>
-        </div>
-    {/if}
+    <div class="wrap-bottom">
+        {#if anyLangSelected}
+            <button class="select-button" in:fade on:click={()=>goto(`/decks/${decks[selectedLangId].name}`)}>
+                Learn {decks[selectedLangId].name}
+            </button>
+        {:else}
+            <h1 in:fade style="color: var(--fg-color-2); font-size:1.8rem; font-weight:normal; margin:0;">You haven't started any course yet.</h1>
+        {/if}
+    </div>
 </div>
 
 
@@ -72,20 +87,23 @@
         height:4rem;
         border:none;
         border-radius: 1rem;
-        margin-left: 2rem;
-        box-shadow: 0 0 10px 3px var(--selected-color);
+        box-shadow: none;
+        transition: all 0.2s ease-in-out, box-shadow 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
     }
         .select-button:hover {
-
+            cursor:pointer;
+            opacity: 0.9;
+            color: var(--el-bg-color);
+            box-shadow: 0 0 12px 2px var(--selected-color);
         }
     .wrap-bottom {
         display:flex;
         flex-direction:column;
         align-items: left;
         width:100%;
+        height: 6rem;
         box-sizing: border-box;
         padding-left: 2rem;
-        padding-top:2rem;
         margin-bottom: 2rem;
     }
     .languages {
