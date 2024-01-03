@@ -85,7 +85,7 @@
 <div style="font-size: 3rem; display:inline-block; width:fit-content; position:absolute; visibility:hidden;" id="answerTemp" 
     bind:clientWidth={answerTempWidth}>{testData[currentIndex].wordMeaning}
 </div>
-<div style="display: flex; flex-direction:row; height:100%; align-items:center; 
+<div style="display:flex; flex-direction:row; height:100%; align-items:center; 
    margin-left:{infoOpen ? "0" : "auto"}; margin-right:{infoOpen ? "0" : "auto"}; 
    overflow:hidden; width:100%; justify-content: center; flex-flow:row; padding:1rem;">
     {#if ready}
