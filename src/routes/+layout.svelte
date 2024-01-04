@@ -50,8 +50,8 @@
 <style>
     .change-theme {
         position: absolute;
-        top: 5%;
-        right: 2.5%;
+        top: 1.5rem;
+        right: 1rem;
         border: none;
         background-color:var(--bg-highlight);
         width:3rem;

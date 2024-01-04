@@ -30,6 +30,8 @@
     let langHoveredId = -1;
     let anyLangSelected = false;
     let selectedLangId = -1;
+    let currentLang: Deck | undefined;
+    $: currentLang = decks.find((deck) => deck.id == selectedLangId);
 
     function selectLang(id: number) {
         if (selectedLangId != id) {
@@ -42,20 +44,19 @@
     }
 </script>
 
-
 <div class="outer-wrap" style="{isNarrowScreen ? "width:100%; flex-wrap:wrap; height:100%; padding-top:15%;" : ""}">
     <div class="wrap-top">
         <h1 style="margin-bottom: 1rem;">What language do you want to learn?</h1>
         <h1 style="color: var(--fg-color-2); font-size:1.8rem; font-weight:normal;">Choose a language</h1>
     </div>
     <div class="languages">
-        {#each decksFiltered as deck, index}
+        {#each decksFiltered as deck}
         <div class="deck" id={String(deck.id)} class:this-hovered={langHoveredId==deck.id || selectedLangId==deck.id} class:any-hovered={anyLangSelected || anyLangHovered}
                                             on:mouseenter={()=>{anyLangHovered=true; langHoveredId=deck.id}} 
                                             on:mouseleave={()=>{anyLangHovered=false; langHoveredId=-1}}
                                             on:click={()=>selectLang(deck.id)}   class:selected={selectedLangId==deck.id}
                                             on:keydown={()=>selectLang(deck.id)}
-                                            role="checkbox" aria-checked={false} tabindex={index}
+                                            role="checkbox" aria-checked={false} tabindex={deck.id}
                                             style="{isNarrowScreen ? "width:100%;" : ""}">
             {#if deck.image != null}
             <div class="img-wrap">
@@ -68,8 +69,8 @@
     </div>
     <div class="wrap-bottom">
         {#if anyLangSelected}
-            <button class="select-button" in:fade on:click={()=>goto(`/decks/${decks[selectedLangId].name}`)}>
-                Learn {decks[selectedLangId].name}
+            <button class="select-button" in:fade on:click={()=>goto(`/decks/${currentLang?.name}`)}>
+                Learn {currentLang?.name}
             </button>
         {:else}
             <h1 in:fade style="color: var(--fg-color-2); font-size:1.8rem; font-weight:normal; margin:0;">You haven't started any course yet.</h1>
