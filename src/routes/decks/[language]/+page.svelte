@@ -14,7 +14,6 @@
     let changeLangPrompted: boolean = false;
     let selectedFromLang: Deck;
 
-
     onMount(async () => {
         if (browser) {
             url = await window.location.href.split('/').pop();
