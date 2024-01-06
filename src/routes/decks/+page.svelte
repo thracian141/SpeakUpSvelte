@@ -16,13 +16,13 @@
 
     onMount(async () => {
         if (browser) {
-            const fromLangData = JSON.parse(localStorage.getItem("websiteLanguage") || "{}");
-            fromLang = await decks.find((deck) => deck.getName() == fromLangData);
-            decksFiltered = await decks.filter((deck) => deck.getName() != fromLang?.getName());
+            const fromLangData = JSON.parse(localStorage.getItem("websiteLanguage") as string);
+            fromLang = await decks.find((deck) => deck.id == fromLangData);
+            decksFiltered = await decks.filter((deck) => deck?.id != fromLang?.id);
         }
     });
     $: {
-        decksFiltered = decks.filter((deck) => deck.getName() != fromLang?.getName());
+        decksFiltered = decks.filter((deck) => deck?.id != fromLang?.id);
     }
 
     function selectLang(id: string) {

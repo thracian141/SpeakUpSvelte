@@ -9,20 +9,25 @@
     import { goto } from "$app/navigation";
     import { isNarrowScreen } from "$lib/store";
 
-    let websiteLanguage = 'en';
     let theme = 'dark';
     function changeTheme() {
         document.body.classList.toggle('light-theme');
         theme = theme === 'dark' ? 'light' : 'dark';
     }
-    async function changeLang() {
+    function changeLang() {
         $locale === 'en' ? locale.set('bg') : locale.set('en');
+        localStorage.setItem('websiteLanguage', JSON.stringify($locale));
         goto('/');
     }
 
     onMount(() => {
         if (browser) {
-            localStorage.setItem('websiteLanguage', JSON.stringify(websiteLanguage));
+            if (localStorage.getItem('websiteLanguage') == null || localStorage.getItem('websiteLanguage') == undefined) {
+                locale.set('en');
+                localStorage.setItem('websiteLanguage', JSON.stringify($locale));
+            } else {
+                locale.set(localStorage.getItem('websiteLanguage') as string);
+            }
         }
     });
 </script>

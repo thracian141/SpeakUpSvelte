@@ -6,6 +6,7 @@
     import { fade, fly, slide } from "svelte/transition";
     import { _, locale } from '$lib/i18n';
     import { isNarrowScreen } from "$lib/store";
+  import { page } from "$app/stores";
 
     let url: string | undefined;
     let targetLang: Deck | undefined;
@@ -13,13 +14,17 @@
     let availableFromLangs: Deck[] = [];
     let changeLangPrompted: boolean = false;
     let selectedFromLang: Deck;
+    let websiteLanguage: string | undefined;
 
     onMount(async () => {
         if (browser) {
-            url = await window.location.href.split('/').pop();
+            url = $page.params.language;
+            console.log("URL: " + url);
+            websiteLanguage = await JSON.parse(localStorage.getItem('websiteLanguage') as string);
         }
         targetLang = await decks.find((deck) => deck.id == url);
-        fromLang = await decks.find((deck) => deck.id == JSON.parse(localStorage.getItem("websiteLanguage") as string));
+        console.log(targetLang);
+        fromLang = await decks.find((deck) => deck.id == websiteLanguage);
         availableFromLangs = await decks.filter(deck => targetLang?.fromLang.some(langId => langId == deck.id) && deck.getName() != fromLang?.getName());
     });
 </script>
