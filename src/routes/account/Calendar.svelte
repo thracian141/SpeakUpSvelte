@@ -1,5 +1,6 @@
 <script lang="ts">
     import { slide, fly } from "svelte/transition";
+    import { isNarrowScreen } from "$lib/store";
 
     let currentDate = new Date();
     let dateRangeSelection = "week";
@@ -27,12 +28,12 @@
 </script>
 
 
-<div class="wrap">
+<div class="wrap" style="{$isNarrowScreen ? "margin-top:0;" : ""}">
     <h3 style="margin:0; margin-bottom:1rem">Daily Goals</h3>
     {#if dateRangeSelection == "week"}
         <div class="week-wrapper" in:slide out:slide>
             {#each weekDates as day (day)}
-                <div class="day-box">
+                <div class="day-box" style="{$isNarrowScreen ? "padding:0.21rem;" : ""}">
                     <div class="week-day-box" class:filled={hasStudied.get(day.toISOString().split('T')[0])}>
                         <i class="bi bi-check-lg"></i>
                     </div>
@@ -51,27 +52,27 @@
         </div>
     {:else if dateRangeSelection == "month"}
         <!-- Previous month -->
-    <div class="month-wrap" style="flex-wrap:wrap;" in:slide out:slide>
-        <div class="month-text"><h3>
+    <div class="month-wrap" style="flex-wrap:wrap; {$isNarrowScreen ? "align-content:flex-start" : ""}" in:slide out:slide>
+        <div class="month-text"><h3 style="{$isNarrowScreen ? "margin-top:-0.8rem;" : ""}">
             {new Date(currentDate.getFullYear(), currentDate.getMonth() - 1).toLocaleString('en-GB', { month: 'long' })}
         </h3></div>
         {#each monthDates.filter(day => day.getMonth() !== currentDate.getMonth()) as day (day)}
-        <div class="day-box" style="opacity: 0.4;">
+        <div class="day-box" style="opacity: 0.4; {$isNarrowScreen ? "padding:0.21rem; margin-bottom:1.4rem" : ""}">
             <div class="week-day-box month" class:filled={hasStudied.get(day.toISOString().split('T')[0])}>
                 <i class="bi bi-check-lg"></i>
             </div>
-            <span>{day.getDate()}</span>
+            <span style="{$isNarrowScreen ? "margin-top:0rem;" : ""}">{day.getDate()}</span>
         </div>
         {/each}
-        <div class="month-text"><h3>
+        <div class="month-text"><h3 style="{$isNarrowScreen ? "margin-top:-0.8rem;" : ""}">
             {new Date(currentDate.getMonth()).toLocaleString('en-GB', { month: 'long' })}
         </h3></div>
         {#each monthDates.filter(day => day.getMonth() === currentDate.getMonth()) as day (day)}
-        <div class="day-box" style="">
+        <div class="day-box" style="{$isNarrowScreen ? "padding:0.21rem; margin-bottom:1rem" : ""}">
             <div class="week-day-box month" class:filled={hasStudied.get(day.toISOString().split('T')[0])}>
                 <i class="bi bi-check-lg"></i>
             </div>
-            <span>{day.getDate()}</span>
+            <span style="{$isNarrowScreen ? "margin-top:0rem;" : ""}">{day.getDate()}</span>
         </div>
         {/each}
     </div>

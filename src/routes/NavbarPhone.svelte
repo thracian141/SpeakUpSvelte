@@ -1,15 +1,14 @@
 <script lang="ts">
     import { page } from '$app/stores';
-	import { slide } from 'svelte/transition';
     import * as UserHandler from "../lib/scripts/UserHandler";
     import { browser } from '$app/environment';
     import { onMount } from 'svelte';
+    import { _, locale } from '$lib/i18n';
     let isOpen = false;
 
     let isLogoutConfirmed = false;
-    let isLoggedIn = UserHandler.isLoggedIn();
+    let isLoggedIn: boolean | undefined;
     function logout() {
-        console.log("Test function called");
         if (browser){
             document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
             location.href = '/';
@@ -31,7 +30,8 @@
         }
     }
     onMount(async () => {
-        document.querySelectorAll('.nav-option').forEach((element) => {
+        isLoggedIn = await UserHandler.isLoggedIn();
+        await document.querySelectorAll('.nav-option').forEach((element) => {
             element.addEventListener('click', () => {
                 setTimeout(() => {
                     isOpen = false;
@@ -58,24 +58,25 @@
     </div>
     <div class="nav-center">
         <a href="/" class="nav-option" class:active={$page.url.pathname == "/"}>
-            <img src="/icons/homeicon.svg" alt="Home Icon" /><span>Home</span>
+            <img src="/icons/homeicon.svg" alt="Home Icon" /><span>{$_('layout.home')}</span>
         </a>
-        <a href="/learn" class="nav-option" class:active={$page.url.pathname == "/learn" || $page.url.pathname == "/learn"}>
-            <img src="/icons/cardsicon.svg" alt="Learn Icon" /><span>Learn</span>
+        <a href="/learn" class="nav-option" class:active={$page.url.pathname == "/learn" || $page.url.pathname == "/learn/"}>
+            <img src="/icons/cardsicon.svg" alt="Learn Icon" /><span>{$_('layout.learn')}</span>
         </a>
-        <a href="/decks" class="nav-option" class:active={$page.url.pathname == "/decks" || $page.url.pathname == "/decks"}>
-            <img src="/icons/decksIcon.svg" alt="Decks Icon" /><span>Decks</span>
+        <a href="/decks" class="nav-option" class:active={$page.url.pathname == "/decks" || $page.url.pathname == "/decks/"}>
+            <img src="/icons/decksIcon.svg" alt="Decks Icon" /><span>{$_('layout.decks')}</span>
         </a>
         <a href="/account" class="nav-option" class:active={$page.url.pathname == "/account/" || $page.url.pathname == "/account"}>
-            <img src="/icons/accounticon.svg" alt="Account Icon" /><span>Account</span>
+            <img src="/icons/accounticon.svg" alt="Account Icon" /><span>{$_('layout.account')}</span>
         </a>
     </div>
     <div class="nav-bottom">
         {#await isLoggedIn then bool}
             {#if !bool}
-                <a id="authForm" class="nav-option" href="/authenticate/login" class:active={$page.url.pathname == "/authenticate/login"}>
+                <a id="authForm" class="nav-option" href="/authenticate/login" 
+                class:active={$page.url.pathname == "/authenticate/login" || $page.url.pathname == "/authenticate" || $page.url.pathname == "/authenticate/" || $page.url.pathname == "/authenticate/login/" }>
                     <img src="/icons/loginicon.svg" alt="Authenticate Icon" />
-                    <span>Sign In</span>
+                    <span>{$_('layout.sign in')}</span>
                 </a>
             {:else}
                 <a id="authForm" class="nav-option" href="/" class:active={isLogoutConfirmed} on:click|preventDefault={handleLogoutClick}>
@@ -186,7 +187,7 @@
         }
     .open {
         position: absolute;
-        top:1.5rem;
+        top:1rem;
         left:1rem;
     }
 </style>
