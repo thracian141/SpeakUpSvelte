@@ -24,8 +24,8 @@
     });
 </script>
 
-<div class="outer-wrap" style="{$isNarrowScreen ? "width:100%;" : ""}">
-    <div class="target-lang-wrap">
+<div class="outer-wrap" style="{$isNarrowScreen ? "width:100%; height:100%; padding-top:5rem" : ""}">
+    <div class="target-lang-wrap" style="{$isNarrowScreen ? "border-radius:0 !important;" : ""}">
         {#if targetLang}
         <span style="font-size: 1.3rem; margin-bottom:1.5rem; font-weight:bold; transform:scaleY(0.95)">TARGET LANGUAGE</span>
         <div class="target-lang">
@@ -39,7 +39,7 @@
         </div>
         {/if}
     </div>
-    <div class="from-lang-wrap">
+    <div class="from-lang-wrap" style="{$isNarrowScreen ? "border-radius:0 !important; height:100%;" : ""}">
         <h1 style="margin:0 0 1rem 0;">The course will be taught in:</h1>
         <div class="target-lang">
             <div class="lang-img-wrap">

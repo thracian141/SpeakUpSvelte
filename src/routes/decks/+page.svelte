@@ -36,7 +36,7 @@
     }
 </script>
 
-<div class="outer-wrap" style="{$isNarrowScreen ? "width:100%; flex-wrap:wrap; height:100%; padding-top:15%;" : ""}">
+<div class="outer-wrap" style="{$isNarrowScreen ? "width:100%; flex-wrap:wrap; height:100%; margin-top:5rem;" : ""}">
     <div class="wrap-top">
         <h1 style="margin-bottom: 1rem;">{$_('decks.what_language_do_you_want_to_learn')}</h1>
         <h1 style="color: var(--fg-color-2); font-size:1.8rem; font-weight:normal;">{$_('decks.choose_a_language')}</h1>
