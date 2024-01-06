@@ -4,85 +4,80 @@
     import { Deck, decks } from "../testDecks";
     import { goto } from "$app/navigation";
     import { fade, fly, slide } from "svelte/transition";
+    import { _, locale } from '$lib/i18n';
+    import { isNarrowScreen } from "$lib/store";
 
     let url: string | undefined;
     let targetLang: Deck | undefined;
     let fromLang: Deck | undefined;
     let availableFromLangs: Deck[] = [];
     let changeLangPrompted: boolean = false;
-    let selectedFromLang: Deck = [];
+    let selectedFromLang: Deck;
 
-    let isNarrowScreen: boolean;
 
     onMount(async () => {
         if (browser) {
-            isNarrowScreen = window.innerWidth <= window.innerHeight;
-            fromLang = await JSON.parse(localStorage.getItem('websiteLanguage') || '{}');
             url = await window.location.href.split('/').pop();
-            targetLang = await decks.find((deck) => deck.name == url);
-
-            availableFromLangs = await decks.filter(deck => targetLang?.fromLang.some(langId => langId == deck.id) && deck.name != fromLang?.name);
-            window.addEventListener("resize", () => {
-                isNarrowScreen = window.innerWidth <= window.innerHeight;
-            });
         }
-    });
-    onDestroy(async () => {
-        if (browser) {
-            window.removeEventListener("resize", () => {
-                isNarrowScreen = window.innerWidth <= window.innerHeight;
-            });
-        }
+        targetLang = await decks.find((deck) => deck.id == url);
+        fromLang = await decks.find((deck) => deck.id == JSON.parse(localStorage.getItem("websiteLanguage") as string));
+        availableFromLangs = await decks.filter(deck => targetLang?.fromLang.some(langId => langId == deck.id) && deck.getName() != fromLang?.getName());
     });
 </script>
 
-
-<div class="outer-wrap" style="{isNarrowScreen ? "width:100%;" : ""}">
+<div class="outer-wrap" style="{$isNarrowScreen ? "width:100%;" : ""}">
     <div class="target-lang-wrap">
+        {#if targetLang}
         <span style="font-size: 1.3rem; margin-bottom:1.5rem; font-weight:bold; transform:scaleY(0.95)">TARGET LANGUAGE</span>
         <div class="target-lang">
             <div class="lang-img-wrap">
-                <img src={targetLang?.image} alt="{targetLang?.name}"/>
+                <img src={targetLang?.image} alt="{targetLang?.getName()}"/>
             </div>
-            <span style="margin-left: 1rem; font-size:1.75rem; margin-bottom:0.5rem;">{targetLang?.name}</span>
+            <span style="margin-left: 1rem; font-size:1.75rem; margin-bottom:0.5rem;">{targetLang?.getName()}</span>
             <button class="change-target-language" on:click={()=>goto("./")}>
                 <i class="bi bi-pen-fill"></i>
             </button>
         </div>
+        {/if}
     </div>
     <div class="from-lang-wrap">
         <h1 style="margin:0 0 1rem 0;">The course will be taught in:</h1>
         <div class="target-lang">
             <div class="lang-img-wrap">
-                <img src={fromLang?.image} alt="{fromLang?.name}"/>
+                <img src={fromLang?.image} alt="{fromLang?.getName()}"/>
             </div>
-            <span style="margin-left: 1rem; font-size:2rem; margin-bottom:0.5rem;">{fromLang?.name}</span>
+            <span style="margin-left: 1rem; font-size:2rem; margin-bottom:0.5rem;">{fromLang?.getName()}</span>
         </div>
-        <h3 style="margin:1rem 0; font-weight:normal; font-size:1.3rem;">The {targetLang?.name} course is also available in:</h3>
+        {#if availableFromLangs.length > 0}
+        <h3 style="margin:1rem 0; font-weight:normal; font-size:1.3rem;">The {targetLang?.getName()} course is also available in:</h3>
+        {/if}
         {#each availableFromLangs as deck}
         <div class="from-lang-box" on:click={()=>{changeLangPrompted = true; selectedFromLang=deck}} role="button" tabindex=0 
-                                   on:keydown={()=>{changeLangPrompted = true;}}>
+                                on:keydown={()=>{changeLangPrompted = true;}}>
             <div class="from-lang-option">
-                <img src={deck.image} alt="{deck.name}"/>
+                <img src={deck.image} alt="{deck.getName()}"/>
             </div>
-            <span style="margin-left: 1rem; font-size:1.5rem; margin-bottom:0.5rem;">{deck.name}</span>
+            <span style="margin-left: 1rem; font-size:1.5rem; margin-bottom:0.5rem;">{deck.getName()}</span>
         </div>
         {/each}
     </div>
 </div>
 {#if changeLangPrompted}
-<div class="wrap-changelang" style="{isNarrowScreen ? "width:90%;" : ""}"
-  in:slide out:fade={{duration:150}}>
+<div class="wrap-changelang" style="{$isNarrowScreen ? "width:90%;" : ""}"
+in:slide out:fade={{duration:150}}>
     <button class="close" on:click={()=>changeLangPrompted=false}>
         <i class="bi bi-x"></i>
     </button>
     <h2>This requires changing the website's language.</h2>
-    <p>Do you want to change the language to {selectedFromLang?.name}?</p>
+    <p>Do you want to change the language to {selectedFromLang?.getName()}?</p>
     <div style="display: flex; flex-direction:row; gap:2rem; margin-top:auto;">
-        <button class="option">Yes</button> <button class="option">No</button>
+        <button class="option" on:click={()=>{changeLangPrompted=false; alert("This feature is not implemented yet :(.")}}>Yes</button> 
+        <button class="option" on:click={()=>changeLangPrompted=false}>No</button>
     </div>
 </div>
 {/if}
+
+
 <style>
     .option {
         width: 7rem;
@@ -91,6 +86,7 @@
         border:none;
         font-size: 1.25rem;
         line-height: 3rem;
+        cursor: pointer;
     }
         .option:first-child {
             background-color:var(--fg-color);

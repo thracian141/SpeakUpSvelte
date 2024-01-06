@@ -1,15 +1,14 @@
 <script lang="ts">
-  import { fade, slide } from "svelte/transition";
+    import { fade, slide } from "svelte/transition";
     import Statistics from "./Statistics.svelte";
+    import { isNarrowScreen } from "$lib/store";
 
     let src = "/zdravkoqnkov.jpg"
     let username = "Shefa"
     let displayname = "John Doe"
     let email = "email@gmail.com"
-    let password = "password1234"
     let accountCreatedDate = "12.09.2013"
     
-    let hoverPfp = false;
     let editEnabled = false;
     let currentEdit = "";
     function handleEditClick(e : Event, button : string) {
@@ -28,41 +27,41 @@
     let editInput = '';
 
     let error = "";
-$: {
-    if (currentEdit != "email" && currentEdit != "password") {
-        error = "";
-    } else if (currentEdit === "email") {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(editInput)) {
-            error = "An email must contain an '@' symbol, and a domain.";
-        } else {
+    $: {
+        if (currentEdit != "email" && currentEdit != "password") {
             error = "";
-        }
-    } else if (currentEdit === "password") {
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-        if (!passwordRegex.test(editInput)) {
-            error = "A password must be at least 8 characters, 1 uppercase letter, 1 lowercase letter, and 1 number.";
-        } else {
-            error = "";
+        } else if (currentEdit === "email") {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(editInput)) {
+                error = "An email must contain an '@' symbol, and a domain.";
+            } else {
+                error = "";
+            }
+        } else if (currentEdit === "password") {
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            if (!passwordRegex.test(editInput)) {
+                error = "A password must be at least 8 characters, 1 uppercase letter, 1 lowercase letter, and 1 number.";
+            } else {
+                error = "";
+            }
         }
     }
-}
 </script>
 
-<div class="wrap">
-    <div class="panel">
+<div class="wrap" style="{$isNarrowScreen ? "width:100vw; max-width:100vw; padding:0; padding-top:4.75rem;": ""}">
+    <div class="panel" style="{$isNarrowScreen ? "border-radius: 0 !important;" : ""}">
         <div class="fields">
             <div class="top-row">
                 <a href="/" class="pfp-wrap" on:click={(e) => {e.preventDefault();alert(`You've been banned for trying to change the default picture.`)}}>
                     <img {src} alt="pfp" class="pfp" />
                     <div class="pfp-overlay">Change photo?</div>
                 </a>
-                <div class="username-and-date">
-                    <h1 style="margin:0; margin-bottom:2.5rem;">{username}</h1>
+                <div class="username-and-date" style="{$isNarrowScreen ? "left:110%;" : ""}">
+                    <h1 style="margin:0; margin-bottom:2.5rem; {$isNarrowScreen ? "margin-left:1.25rem": ""}">{username}</h1>
                     <div style="display: flex;flex-direction:row;align-items:center; text-align:center">
-                        <img src="/icons/calendar-event.svg" alt="account created"/>
+                        <img src="/icons/calendar-event.svg" alt="account created" style="{$isNarrowScreen ? "margin-right:0.5rem;":""}"/>
                         <div style="display: flex;flex-direction:column; width:10rem; align-items:flex-start">
-                            <span style="font-weight: bold; font-size:0.85rem; padding-left:0.2rem">ACCOUNT CREATED</span>
+                            <span style="font-weight: bold; font-size:0.85rem; {$isNarrowScreen ? "" : "padding-left:0.2rem"}">ACCOUNT CREATED</span>
                             <span style="font-size: 1.5rem;">{accountCreatedDate}</span>
                         </div>
                     </div>
@@ -102,12 +101,12 @@ $: {
 </div>
 {#if editEnabled}
     <div class="edit-overlay" in:fade={{duration:200}} out:fade={{duration:100}}>
-        <div class="edit-wrap">
+        <div class="edit-wrap" style="{$isNarrowScreen ? "width:100%; border-radius:0; align-items:flex-start; height:23rem;" : ""}">
             <a href="/" style="font-size:2rem; position:absolute; right:5%; top:5%;" 
             on:click={(e) => {e.preventDefault(); editEnabled=false;}}><img src="/icons/x-lg.svg" alt="close"></a>
             <h1 style="font-size:1.8rem; margin-bottom:0.5rem;">Change your {currentEdit} </h1>
             <p style="color: var(--fg-color-2); font-size:1.1rem; margin-bottom:{currentEdit=="password" ? "1rem" : "2rem"};">Enter a new {currentEdit} and your current password.</p>
-            <div class="edit-fields" >
+            <div class="edit-fields">
                 <div class="edit-row" in:slide>
                     <span style="margin-bottom:0.5rem">{currentEdit.toUpperCase()} 
                         <span style="color:red; font-weight:normal; margin-left:0.5rem;">{error}</span>
@@ -126,7 +125,7 @@ $: {
                 </div>
             </div>
         </div>
-        <div class="edit-bottom">
+        <div class="edit-bottom" style="{$isNarrowScreen ? "width:100%; border-radius:0;" : ""}">
             <button class="cancel-button" on:click={(e) => {e.preventDefault(); editEnabled=false;}}>
                 Cancel
             </button>

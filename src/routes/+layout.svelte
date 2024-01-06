@@ -4,44 +4,49 @@
     import './styles.css';
     import { onMount } from "svelte";
     import NavbarPhone from "./NavbarPhone.svelte";
-    import { decks } from "./decks/testDecks";
-  import { browser } from "$app/environment";
+    import { _, locale } from '$lib/i18n';
+    import { browser } from "$app/environment";
+    import { goto } from "$app/navigation";
+    import { isNarrowScreen } from "$lib/store";
 
-    let websiteLanguage = decks[1];
+    let websiteLanguage = 'en';
     let theme = 'dark';
     function changeTheme() {
         document.body.classList.toggle('light-theme');
         theme = theme === 'dark' ? 'light' : 'dark';
     }
+    async function changeLang() {
+        $locale === 'en' ? locale.set('bg') : locale.set('en');
+        goto('/');
+    }
 
-    let isNarrowScreen = false;
     onMount(() => {
         if (browser) {
             localStorage.setItem('websiteLanguage', JSON.stringify(websiteLanguage));
         }
-        isNarrowScreen = window.innerWidth <= window.innerHeight;
-        window.addEventListener('resize', () => {
-            isNarrowScreen = window.innerWidth <= window.innerHeight;
-        });
     });
 </script>
 
 <div class="app">
-    <button class="change-theme" style="" on:click={changeTheme}>
+    <button class="change-theme" on:click={changeTheme} style="{$isNarrowScreen ? "top:1rem; right:0.75rem" : ""}">
         {#if theme === 'dark'}
             <i class="bi bi-moon" in:slide out:slide></i>
         {:else}
             <i class="bi bi-brightness-high" in:slide out:slide></i>
         {/if}
-        <span>Highly experimental!</span>
+        <span>{$_("layout.highly_experimental")}</span>
     </button>
-    {#if !isNarrowScreen}
+    <button class="change-theme" style="right:6rem; {$isNarrowScreen ? "top:1rem; right:5rem;" : ""}" on:click={changeLang}>
+        <i class="bi bi-translate" in:slide out:slide></i>
+        <span>{$_("layout.highly_experimental")}</span>
+    </button>
+    {#if !$isNarrowScreen}
         <Navbar />
-    {:else if isNarrowScreen}
+    {:else if $isNarrowScreen}
         <NavbarPhone />
     {/if}
-    <main style="padding-left: {isNarrowScreen == true ? "0" : "5.5rem"}">
-        <div class="wrap" style="padding-left: {isNarrowScreen == true ? "0" : "1rem"};">
+    <main style="padding-left: {$isNarrowScreen == true ? "0" : "5.5rem"}">
+        <div class="wrap" style="{$isNarrowScreen ? "padding-left:0rem; width:100%;" : "padding-left:1rem;"}">
             <slot />
         </div>
     </main>
@@ -50,8 +55,8 @@
 <style>
     .change-theme {
         position: absolute;
-        top: 1.5rem;
-        right: 1rem;
+        top: 2rem;
+        right: 1.5rem;
         border: none;
         background-color:var(--bg-highlight);
         width:3rem;
@@ -72,8 +77,8 @@
         .change-theme > span {
             position: absolute;
             top: 50%;
-            left:-110%;
-            transform: translate(-50%, -50%);
+            right:100%;
+            transform: translate(0%, -50%);
             padding: 0.5rem;
             background-color: var(--bg-highlight-2);
             color: var(--fg-color);
@@ -85,9 +90,11 @@
             cursor: pointer;
             background-color:var(--bg-highlight-2);
             color: var(--fg-color);
+            z-index: 5;
         }
             .change-theme:hover > span {
                 opacity: 1;
+                z-index: 4;
             }
     .app {
 		display: flex;

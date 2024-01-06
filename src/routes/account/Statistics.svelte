@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
     import Calendar from './Calendar.svelte';
+    import { isNarrowScreen } from '$lib/store';
     let languages = ["English", "Bulgarian", "Turkish", "German"];
     let currentLanguage = languages[0];
     let wordsTotal = 5138;
@@ -36,9 +37,9 @@
     }
 </script>
 
-<div class="panel">
-    <div class="top">
-        <div class="words-learnt-wrap">
+<div class="panel" style="{$isNarrowScreen ? "width:100%; border-radius:0; padding: 1.5rem 1rem" : ""}">
+    <div class="top" style="{$isNarrowScreen ? "margin-bottom:1rem;" : ""}">
+        <div class="words-learnt-wrap" style="{$isNarrowScreen ? "width:8.5rem;" : ""}">
             <span style="font-size:0.95rem; color:var(--fg-color); margin-right:auto; margin-left:0.8rem;">{wordsTotal}</span>
             <span style="position: absolute; right:0%; bottom:0%; font-size:0.95rem; font-weight:bold;">{Math.round((wordsLearnt/wordsTotal)*100)}%</span>
             <span style="position: absolute; right:0%; top:5%; font-size:0.95rem;">{wordsLearnt}</span>
@@ -52,7 +53,7 @@
             <span style="position: absolute; bottom:-25%; font-size:0.9rem; color:var(--fg-color); 
               font-weight:bold; transform:scaleY(0.92)">TOTAL NUMBER</span>
         </div>
-        <div style="display: flex; flex-direction:column; width:13rem; box-sizing:border-box; margin: 0 1rem;">
+        <div style="display: flex; flex-direction:column; box-sizing:border-box; margin: 0 1rem; {$isNarrowScreen ? "width:9rem;" : " width:13rem;"}">
             <div style="text-align:center; display:flex; flex-direction:column; border: 1px solid var(--bg-highlight);
                         border-radius: 0.6rem 0.6rem 0 0; padding:0.4rem 0; position:relative;">
                 <span style="font-weight: bold; transform:scaleY(0.95); font-size:0.9rem;">LANGUAGE</span>
@@ -75,7 +76,7 @@
                 <span style="color:var(--green);font-size:2rem;">{wordsLearnt}</span> words.
             </div>
         </div>
-        <div class="words-learnt-wrap">
+        <div class="words-learnt-wrap" style="{$isNarrowScreen ? "width:8.5rem;" : ""}">
             <span style="font-size:0.95rem; color:var(--fg-color); margin-left:auto; margin-right:0.8rem;">{goalWords}</span>
             <span style="position: absolute; left:0%; bottom:0%; font-size:0.95rem; font-weight:bold;">{Math.round((wordsLearnt/goalWords)*100)}%</span>
             <span style="position: absolute; left:0%; top:5%; font-size:0.95rem;">{wordsLearnt}</span>

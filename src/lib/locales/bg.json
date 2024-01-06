@@ -1,0 +1,23 @@
+{
+    "layout": {
+        "highly_experimental": "Силно експериментално!",
+        "home": "Начало",
+        "learn": "Учене",
+        "decks": "Тестета",
+        "account": "Профил",
+        "sign in": "Вход"
+    },
+    "languages": {
+        "english": "Английски",
+        "bulgarian": "Български",
+        "german": "Немски",
+        "turkish": "Турски",
+        "italian": "Италиански"
+    },
+    "decks": {
+        "what_language_do_you_want_to_learn": "Кой език искате да учите?",
+        "choose_a_language": "Изберете език.",
+        "you_havent_started_any_course_yet": "Все още не сте започнали нито един курс.",
+        "learn": "Учете"
+    }
+}

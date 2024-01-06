@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
     import {onMount} from "svelte";
     import * as UserHandler from "../lib/scripts/UserHandler";
+    import { _, locale } from '$lib/i18n';
     import './styles.css';
     
     let isExpanded = false;
@@ -63,16 +64,16 @@
     </div>
     <ul id="mainOptions" style="list-style-type:none; padding: 0.5rem;">
         <a href="/" class="nav-option" class:active={$page.url.pathname == "/"}>
-            <img src="/icons/homeicon.svg" alt="Home Icon" /><p>Home</p>
+            <img src="/icons/homeicon.svg" alt="Home Icon" /><p>{$_('layout.home')}</p>
         </a>
         <a href="/learn" class="nav-option" class:active={$page.url.pathname == "/learn"}>
-            <img src="/icons/cardsicon.svg" alt="Learn Icon" /><p>Learn</p>
+            <img src="/icons/cardsicon.svg" alt="Learn Icon" /><p>{$_('layout.learn')}</p>
         </a>
         <a href="/decks" class="nav-option" class:active={$page.url.pathname == "/decks"}>
-            <img src="/icons/decksIcon.svg" alt="Decks Icon" /><p>Decks</p>
+            <img src="/icons/decksIcon.svg" alt="Decks Icon" /><p>{$_('layout.decks')}</p>
         </a>
         <a href="/account" class="nav-option" class:active={$page.url.pathname == "/account/" || $page.url.pathname == "/account"}>
-            <img src="/icons/accounticon.svg" alt="Account Icon" /><p>Account</p>
+            <img src="/icons/accounticon.svg" alt="Account Icon" /><p>{$_('layout.account')}</p>
         </a>
     </ul>
     {#await isLoggedIn then bool}
@@ -80,7 +81,7 @@
             <ul style="list-style-type:none; padding: 12px; margin-top:auto">
                 <a id="authForm" class="nav-option" href="/authenticate/login" class:active={$page.url.pathname == "/authenticate/login"}>
                     <img src="/icons/loginicon.svg" alt="Authenticate Icon" />
-                    <p style="text-overflow:clip; white-space:nowrap">Sign In</p>
+                    <p style="text-overflow:clip; white-space:nowrap">{$_('layout.sign in')}</p>
                 </a>
             </ul>
         {:else}

@@ -4,76 +4,68 @@
     import { browser } from "$app/environment";
     import { fade } from "svelte/transition";
     import { goto } from "$app/navigation";
-    
-    let isNarrowScreen: boolean;
-    let fromLang: Deck | undefined;
+    import { _, locale } from '$lib/i18n';
+    import { isNarrowScreen } from "$lib/store";
+
     let decksFiltered: Deck[] = [];
+    let fromLang: Deck | undefined;
+    let anyLangHovered = false;
+    let langHoveredId = 'none'
+    let anyLangSelected = false;
+    let selectedLangId = 'none';
+
     onMount(async () => {
         if (browser) {
-            isNarrowScreen = window.innerWidth <= window.innerHeight;
-            fromLang = await JSON.parse(localStorage.getItem("websiteLanguage") || "{}");
-            decksFiltered = await decks.filter((deck) => deck.name != fromLang?.name);
-            window.addEventListener("resize", () => {
-                isNarrowScreen = window.innerWidth <= window.innerHeight;
-            });
+            const fromLangData = JSON.parse(localStorage.getItem("websiteLanguage") || "{}");
+            fromLang = await decks.find((deck) => deck.getName() == fromLangData);
+            decksFiltered = await decks.filter((deck) => deck.getName() != fromLang?.getName());
         }
     });
-    onDestroy(async() => {
-        if (browser) {
-            window.removeEventListener("resize", () => {
-                isNarrowScreen = window.innerWidth <= window.innerHeight;
-            });
-        }
-    });
+    $: {
+        decksFiltered = decks.filter((deck) => deck.getName() != fromLang?.getName());
+    }
 
-    let anyLangHovered = false;
-    let langHoveredId = -1;
-    let anyLangSelected = false;
-    let selectedLangId = -1;
-    let currentLang: Deck | undefined;
-    $: currentLang = decks.find((deck) => deck.id == selectedLangId);
-
-    function selectLang(id: number) {
+    function selectLang(id: string) {
         if (selectedLangId != id) {
             selectedLangId = id;
             anyLangSelected = true;
         } else {
-            selectedLangId = -1;
+            selectedLangId = 'none';
             anyLangSelected = false;
         }
     }
 </script>
 
-<div class="outer-wrap" style="{isNarrowScreen ? "width:100%; flex-wrap:wrap; height:100%; padding-top:15%;" : ""}">
+<div class="outer-wrap" style="{$isNarrowScreen ? "width:100%; flex-wrap:wrap; height:100%; padding-top:15%;" : ""}">
     <div class="wrap-top">
-        <h1 style="margin-bottom: 1rem;">What language do you want to learn?</h1>
-        <h1 style="color: var(--fg-color-2); font-size:1.8rem; font-weight:normal;">Choose a language</h1>
+        <h1 style="margin-bottom: 1rem;">{$_('decks.what_language_do_you_want_to_learn')}</h1>
+        <h1 style="color: var(--fg-color-2); font-size:1.8rem; font-weight:normal;">{$_('decks.choose_a_language')}</h1>
     </div>
     <div class="languages">
         {#each decksFiltered as deck}
-        <div class="deck" id={String(deck.id)} class:this-hovered={langHoveredId==deck.id || selectedLangId==deck.id} class:any-hovered={anyLangSelected || anyLangHovered}
+        <div class="deck" id={deck.id} class:this-hovered={langHoveredId==deck.id || selectedLangId==deck.id} class:any-hovered={anyLangSelected || anyLangHovered}
                                             on:mouseenter={()=>{anyLangHovered=true; langHoveredId=deck.id}} 
-                                            on:mouseleave={()=>{anyLangHovered=false; langHoveredId=-1}}
+                                            on:mouseleave={()=>{anyLangHovered=false; langHoveredId='none'}}
                                             on:click={()=>selectLang(deck.id)}   class:selected={selectedLangId==deck.id}
                                             on:keydown={()=>selectLang(deck.id)}
-                                            role="checkbox" aria-checked={false} tabindex={deck.id}
-                                            style="{isNarrowScreen ? "width:100%;" : ""}">
+                                            role="checkbox" aria-checked={false} tabindex={Number(deck.id)}
+                                            style="{$isNarrowScreen ? "width:100%;" : $locale == 'bg' ? "width:15rem" : ""}">
             {#if deck.image != null}
             <div class="img-wrap">
-                <img src={deck.image} alt="{deck.name} deck" />
+                <img src={deck.image} alt="{deck.getName()} deck" />
             </div>
             {/if}
-            <span>{deck.name}</span>
+            <span>{$_(deck.getName())}</span>
         </div>
         {/each}
     </div>
     <div class="wrap-bottom">
         {#if anyLangSelected}
-            <button class="select-button" in:fade on:click={()=>goto(`/decks/${currentLang?.name}`)}>
-                Learn {currentLang?.name}
+            <button class="select-button" in:fade on:click={()=>goto(`/decks/${selectedLangId}`)}>
+                {$_('decks.learn')} {decks.find(deck => deck.id == selectedLangId)?.getName()}
             </button>
         {:else}
-            <h1 in:fade style="color: var(--fg-color-2); font-size:1.8rem; font-weight:normal; margin:0;">You haven't started any course yet.</h1>
+            <h1 in:fade style="color: var(--fg-color-2); font-size:1.8rem; font-weight:normal; margin:0;">{$_('decks.you_havent_started_any_course_yet')}</h1>
         {/if}
     </div>
 </div>
