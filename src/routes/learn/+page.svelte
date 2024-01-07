@@ -205,7 +205,7 @@
         position: fixed;
         bottom: 0;
         width:100%; 
-        height:12%; 
+        height:7rem; 
         background-color:var(--el-bg-color); 
         justify-self:flex-end; 
         margin-top:auto; 
