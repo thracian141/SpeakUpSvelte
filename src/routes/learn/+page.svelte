@@ -87,16 +87,16 @@
     }
 </script>
 
-<div style="{$isNarrowScreen ? "font-size: 2rem;" : "font-size: 3rem;"} display:inline-block; width:fit-content; position:absolute; visibility:hidden;" id="answerTemp" 
+<div style="{$isNarrowScreen ? "font-size: 1.5rem;" : "font-size: 3rem;"} display:inline-block; width:fit-content; position:absolute; visibility:hidden;" id="answerTemp" 
     bind:clientWidth={answerTempWidth}>{testData[currentIndex].wordMeaning}
 </div>
 <div style="display:flex; height:100%; margin-left:{infoOpen ? "0" : "auto"}; 
     margin-right:{infoOpen ? "0" : "auto"}; overflow:hidden; width:100%; 
-    flex-flow:row; {$isNarrowScreen ? "margin-top:5rem; flex-direction:column; justify-content: flex-start; " : "padding:1rem; justify-content: center; align-items:center; flex-direction:row;"}">
+    flex-flow:row; {$isNarrowScreen ? "flex-direction:column; justify-content: flex-start; " : "padding:1rem; justify-content: center; align-items:center; flex-direction:row;"}">
     {#if ready}
         <div in:fly={{x: direction > 0 ? 1200 : -1200, duration: 500}} 
            out:fly={{x: direction > 0 ? -1200 : 1200, duration: 500}} 
-           class="outerwrap" style="flex-grow:{infoOpen ? "4" : "0"}; {$isNarrowScreen ? "width:100%; min-width:100%; flex-direction:column;" : "height: 35rem;"}">
+           class="outerwrap" style="flex-grow:{infoOpen ? "4" : "0"}; {$isNarrowScreen ? "width:100%; min-width:100%; flex-direction:column; flex-grow:0;" : "height: 35rem;"}">
             {#if !$isNarrowScreen}   
             <a class="card-scroller" class:disabled={currentIndex <= 0} href="/" on:click={(event) => {event.preventDefault(); changeTestData(-1); dropdownOpen = false;}}>
                 <img src="/icons/chevron-compact-left.svg" alt="previous card" />
@@ -104,7 +104,7 @@
             {/if}  
             <div class="wrapper" style="{$isNarrowScreen ? "border-radius:0; padding:0.5rem; height:auto;" : ""}">
                 <div class="wrapper-section top">
-                    <div class="level-wrapper">
+                    <div class="level-wrapper" style="{$isNarrowScreen ? "margin: 1.5rem auto 0 auto" : ""}">
                         <div class="bar" style="background-color: 
                             {levelArray[0] === 1 ? fullBarColor : levelArray[0] === 0.5 ? 'var(--cyan-half)' :
                             levelArray[0] === 0 ? 'rgb(250, 170, 90)' : 'var(--bg-color)'};"></div>
@@ -122,10 +122,10 @@
                             <p style="color: #119854">You know this! Let's keep going.</p>
                         {/if} 
                     </div>
-                    <div style="{$isNarrowScreen ? "" : "margin-right: 1rem;"} display:block; position:relative;">
+                    <div style="{$isNarrowScreen ? "position:absolute; right:0.4rem; top:0.4rem;" : "margin-right: 1rem; position:relative;"} display:block;">
                         <a class="options-wrapper" href="/" 
                         on:click={(event) => {event.preventDefault(); toggleDropdown()}}>
-                            <img src="/icons/three-dots-vertical.svg" id="options" alt="options"/>
+                            <img src="/icons/three-dots-vertical.svg" id="options" alt="options" style="{$isNarrowScreen ? "height:2rem;" : ""}"/>
                         </a>
                         <!-- svelte-ignore a11y-no-static-element-interactions -->
                         <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -146,27 +146,27 @@
                         </div>
                     </div>
                 </div>
-                <div class="wrapper-section center" style="{$isNarrowScreen ? "height: 14rem;" : ""}">
-                    <div class="sentence" style="{$isNarrowScreen ? "font-size:2rem !important; margin-top:0; margin-bottom:0.5rem;" : ""}">
+                <div class="wrapper-section center" style="{$isNarrowScreen ? "height: 9rem; padding-top:1.75rem" : ""}">
+                    <div class="sentence" style="{$isNarrowScreen ? "font-size:1.5rem !important; margin-top:0; margin-bottom:0.5rem;" : ""}">
                         <span style="{$isNarrowScreen ? "line-height:2rem;" : "line-height:4rem;"}">{sentenceMeaningParts[0]}</span>
-                        <input id="answer" bind:this={answerInput} style="{$isNarrowScreen ? "font-size:2rem !important; height:2.75rem; padding:0 0.5rem" : ""}; 
+                        <input id="answer" bind:this={answerInput} style="{$isNarrowScreen ? "font-size:1.5rem !important; height:2rem; border-radius:0.15rem; padding:0 0.5rem" : ""}; 
                                                 width:{answerTempWidth+10}px" autocomplete="off"/>
                         <span style="{$isNarrowScreen ? "line-height:2rem;" : "line-height:4rem;"}">{sentenceMeaningParts[1]}</span>
                     </div>
                     <div class="part-of-speech" style="{$isNarrowScreen ? "margin:0 auto 0.25rem auto; height:1.5rem; width:100%; background-color:var(--el-bg-color);" : ""}">
-                        <span style="{$isNarrowScreen ? "color:var(--bg-highlight-2)" : ""}"><i class="bi bi-diagram-2-fill" style="color:var(--bg-highlight)"></i>{testData[currentIndex].partOfSpeech}</span>
+                        <span style="{$isNarrowScreen ? "color:var(--bg-highlight-2); font-size:1rem" : ""}"><i class="bi bi-diagram-2-fill" style="color:var(--bg-highlight)"></i>{testData[currentIndex].partOfSpeech}</span>
                         {#if !$isNarrowScreen}<img src="/icons/three-dots.svg" alt="part of speech" />{/if}
                     </div>
                 </div>
-                <div class="wrapper-section bottom" style="{$isNarrowScreen ? "height:7.5rem;" : ""}">
-                    <p style="{$isNarrowScreen ? "margin-bottom:1rem;" : ""}">{testData[currentIndex].wordTranslation}</p>
-                    <p style="{$isNarrowScreen ? "margin-left:0rem; width:14rem; text-align:left;" : ""}">{testData[currentIndex].sentenceTranslation}</p>
+                <div class="wrapper-section bottom" style="{$isNarrowScreen ? "height:5rem; position:relative;" : ""}">
+                    <p style="{$isNarrowScreen ? "margin-bottom:0rem; font-size:1.5rem; margin-top:0rem;" : ""}">{testData[currentIndex].wordTranslation}</p>
+                    <p style="{$isNarrowScreen ? "margin-left:0rem; width:14rem; text-align:left; font-size:1rem;" : ""}">{testData[currentIndex].sentenceTranslation}</p>
                     {#if testData[currentIndex].wordInfo}
                         <button class="etymology-button" on:click={() => infoOpen = !infoOpen}
-                            style="{$isNarrowScreen ? "bottom:0%; right:7.5%;" : ""}">
-                            <img src="/icons/search-tilted.svg" alt="etymology of word"/>
-                            <p>λόγος</p>
-                            <span style="{$isNarrowScreen ? "transform: none;" : ""}">Information about this word</span>
+                            style="{$isNarrowScreen ? "top:25%; right:7.5%; height:3rem;" : ""}">
+                            <img src="/icons/search-tilted.svg" alt="etymology of word" style="{$isNarrowScreen ? "height:2rem; " : ""}"/>
+                            <p style="{$isNarrowScreen ? "margin:0; font-size:1.2rem; top:40%;" : ""}">λόγος</p>
+                            <span style="{$isNarrowScreen ? "transform: none; right:0; top:100%; height:1.2rem" : ""}">Information about this word</span>
                         </button>
                     {/if}
                 </div>

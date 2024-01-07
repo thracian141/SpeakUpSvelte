@@ -8,6 +8,7 @@
     import { browser } from "$app/environment";
     import { goto } from "$app/navigation";
     import { isNarrowScreen } from "$lib/store";
+  import { page } from "$app/stores";
 
     let theme = 'dark';
     function changeTheme() {
@@ -33,6 +34,7 @@
 </script>
 
 <div class="app">
+    {#if $page.url.pathname != "/learn"}
     <button class="change-theme" on:click={changeTheme} style="{$isNarrowScreen ? "top:1rem; right:0.75rem" : ""}">
         {#if theme === 'dark'}
             <i class="bi bi-moon" in:slide out:slide></i>
@@ -45,6 +47,7 @@
         <i class="bi bi-translate" in:slide out:slide></i>
         <span>{$_("layout.highly_experimental")}</span>
     </button>
+    {/if}
     {#if !$isNarrowScreen}
         <Navbar />
     {:else if $isNarrowScreen}

@@ -4,7 +4,7 @@
     $: wordInfo = wordInfo;
 </script>
 
-<div class="innerwrap" style="{$isNarrowScreen ? "padding: 0 1.5rem;" : "height: 100%; padding: 1.5rem;"}">
+<div class="innerwrap" style="{$isNarrowScreen ? "padding: 0 1.5rem;" : "height:auto; padding: 1.5rem;"}">
     <h1>Word Info</h1>
     <p>{wordInfo}</p>
 </div>
