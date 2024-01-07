@@ -202,6 +202,8 @@
 
 <style>
     .phone-div {
+        position: fixed;
+        bottom: 0;
         width:100%; 
         height:12%; 
         background-color:var(--el-bg-color); 
