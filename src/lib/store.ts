@@ -5,11 +5,13 @@ function createIsNarrowScreen() {
     let set: (value: boolean) => void;
     const store = readable(browser ? window.innerWidth <= window.innerHeight : false, function start(_set) {
         set = _set;
-        const update = () => set(window.innerWidth <= window.innerHeight);
-        window.addEventListener('resize', update);
-        return function stop() {
-            window.removeEventListener('resize', update);
-        };
+        if (browser) {
+            const update = () => set(window.innerWidth <= window.innerHeight);
+            window.addEventListener('resize', update);
+            return function stop() {
+                window.removeEventListener('resize', update);
+            };
+        }
     });
     return store;
 }

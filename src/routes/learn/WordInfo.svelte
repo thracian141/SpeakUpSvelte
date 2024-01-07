@@ -1,9 +1,10 @@
 <script lang="ts">
+    import { isNarrowScreen } from "$lib/store";
     export let wordInfo: string;
     $: wordInfo = wordInfo;
 </script>
 
-<div class="innerwrap">
+<div class="innerwrap" style="{$isNarrowScreen ? "padding: 0 1.5rem;" : "height: 100%; padding: 1.5rem;"}">
     <h1>Word Info</h1>
     <p>{wordInfo}</p>
 </div>
@@ -14,8 +15,6 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 100%;
         width: 100%;
-        padding: 1.5rem;
     }
 </style>

@@ -1,6 +1,7 @@
 <script lang="ts">
     import WordInfo from "./WordInfo.svelte";
-    import { onMount, tick } from "svelte";
+    import { afterUpdate, onMount, tick } from "svelte";
+    import { isNarrowScreen } from "$lib/store";
     import { fly, slide } from "svelte/transition";
     let ready = false; // Initialize with not ready.
     let direction = -1; // Direction in which the card will fly.
@@ -67,11 +68,15 @@
         }
     }
 
+    let answerInput: HTMLInputElement;
+    
     onMount(async () => {
         let answerTemp = document.getElementById('answerTemp');
         answerTempWidth = answerTemp ? answerTemp.clientWidth : 0;
 
         ready = true;
+        await tick();
+        answerInput.focus();
     });
 
     let infoOpen = false;
@@ -82,110 +87,152 @@
     }
 </script>
 
-<div style="font-size: 3rem; display:inline-block; width:fit-content; position:absolute; visibility:hidden;" id="answerTemp" 
+<div style="{$isNarrowScreen ? "font-size: 2rem;" : "font-size: 3rem;"} display:inline-block; width:fit-content; position:absolute; visibility:hidden;" id="answerTemp" 
     bind:clientWidth={answerTempWidth}>{testData[currentIndex].wordMeaning}
 </div>
-<div style="display:flex; flex-direction:row; height:100%; align-items:center; 
-   margin-left:{infoOpen ? "0" : "auto"}; margin-right:{infoOpen ? "0" : "auto"}; 
-   overflow:hidden; width:100%; justify-content: center; flex-flow:row; padding:1rem;">
+<div style="display:flex; height:100%; margin-left:{infoOpen ? "0" : "auto"}; 
+    margin-right:{infoOpen ? "0" : "auto"}; overflow:hidden; width:100%; 
+    flex-flow:row; {$isNarrowScreen ? "margin-top:5rem; flex-direction:column; justify-content: flex-start; " : "padding:1rem; justify-content: center; align-items:center; flex-direction:row;"}">
     {#if ready}
         <div in:fly={{x: direction > 0 ? 1200 : -1200, duration: 500}} 
            out:fly={{x: direction > 0 ? -1200 : 1200, duration: 500}} 
-           class="outerwrap" style="flex-grow:{infoOpen ? "4" : "0"}">
-                <a class="card-scroller" class:disabled={currentIndex <= 0} href="/" on:click={(event) => {event.preventDefault(); changeTestData(-1); dropdownOpen = false;}}>
-                    <img src="/icons/chevron-compact-left.svg" alt="previous card" />
-                </a>
-                <div class="wrapper">
-                    <div class="wrapper-section top">
-                        <div class="level-wrapper">
-                            <div class="bar" style="background-color: 
-                                {levelArray[0] === 1 ? fullBarColor : levelArray[0] === 0.5 ? 'var(--cyan-half)' :
-                                levelArray[0] === 0 ? 'rgb(250, 170, 90)' : 'var(--bg-color)'};"></div>
-                            <div class="bar" style="background-color: 
-                                {levelArray[1] === 1 ? fullBarColor : levelArray[1] === 0.5 ? 'var(--cyan-half)' : 'var(--bg-color)'};"></div>
-                            <div class="bar" style="background-color: 
-                                {levelArray[2] === 1 ? fullBarColor : levelArray[2] === 0.5 ? 'var(--cyan-half)' : 'var(--bg-color)'};"></div>
-                            <div class="bar" style="background-color: 
-                                {levelArray[3] === 1 ? fullBarColor : levelArray[3] === 0.5 ? 'var(--cyan-half)' : 'var(--bg-color)'};"></div>
-                            <div class="bar" style="background-color: 
-                                {levelArray[4] === 1 ? fullBarColor : levelArray[4] === 0.5 ? 'var(--cyan-half)' : 'var(--bg-color)'};"></div>
-                            {#if testData[currentIndex].wordLevel == 0}
-                                <p style="color: #faaa5a">This word is new!</p>
-                            {:else if testData[currentIndex].wordLevel == 5}
-                                <p style="color: #119854">You know this! Let's keep going.</p>
-                            {/if} 
-                        </div>
-                        <div style="margin-right: 1rem; display:block; position:relative;">
-                            <a class="options-wrapper" href="/" 
-                            on:click={(event) => {event.preventDefault(); toggleDropdown()}}>
-                                <img src="/icons/three-dots-vertical.svg" id="options" alt="options"/>
-                            </a>
-                            <!-- svelte-ignore a11y-no-static-element-interactions -->
-                            <!-- svelte-ignore a11y-click-events-have-key-events -->
-                            <div style="display: none;" class="dropdownClosed" class:dropdown={dropdownOpen} id="dropdown"
-                            on:click|stopPropagation>
-                                <span>
-                                    <img src="/icons/flag.svg" alt="flag as important" />
-                                    Flag as important
-                                </span>
-                                <span>
-                                    <img src="/icons/lightbulb.svg" alt="get hint" />
-                                    Get hint
-                                </span>
-                                <span>
-                                    <img src="/icons/send-exclamation.svg" alt="report error" />
-                                    Report error
-                                </span>
-                            </div>
-                        </div>
+           class="outerwrap" style="flex-grow:{infoOpen ? "4" : "0"}; {$isNarrowScreen ? "width:100%; min-width:100%; flex-direction:column;" : "height: 35rem;"}">
+            {#if !$isNarrowScreen}   
+            <a class="card-scroller" class:disabled={currentIndex <= 0} href="/" on:click={(event) => {event.preventDefault(); changeTestData(-1); dropdownOpen = false;}}>
+                <img src="/icons/chevron-compact-left.svg" alt="previous card" />
+            </a>
+            {/if}  
+            <div class="wrapper" style="{$isNarrowScreen ? "border-radius:0; padding:0.5rem; height:auto;" : ""}">
+                <div class="wrapper-section top">
+                    <div class="level-wrapper">
+                        <div class="bar" style="background-color: 
+                            {levelArray[0] === 1 ? fullBarColor : levelArray[0] === 0.5 ? 'var(--cyan-half)' :
+                            levelArray[0] === 0 ? 'rgb(250, 170, 90)' : 'var(--bg-color)'};"></div>
+                        <div class="bar" style="background-color: 
+                            {levelArray[1] === 1 ? fullBarColor : levelArray[1] === 0.5 ? 'var(--cyan-half)' : 'var(--bg-color)'};"></div>
+                        <div class="bar" style="background-color: 
+                            {levelArray[2] === 1 ? fullBarColor : levelArray[2] === 0.5 ? 'var(--cyan-half)' : 'var(--bg-color)'};"></div>
+                        <div class="bar" style="background-color: 
+                            {levelArray[3] === 1 ? fullBarColor : levelArray[3] === 0.5 ? 'var(--cyan-half)' : 'var(--bg-color)'};"></div>
+                        <div class="bar" style="background-color: 
+                            {levelArray[4] === 1 ? fullBarColor : levelArray[4] === 0.5 ? 'var(--cyan-half)' : 'var(--bg-color)'};"></div>
+                        {#if testData[currentIndex].wordLevel == 0}
+                            <p style="color: #faaa5a">This word is new!</p>
+                        {:else if testData[currentIndex].wordLevel == 5}
+                            <p style="color: #119854">You know this! Let's keep going.</p>
+                        {/if} 
                     </div>
-                    <div class="wrapper-section center">
-                        <div class="sentence">
-                            <span>{sentenceMeaningParts[0]}</span>
-                            <input id="answer" style="width:{answerTempWidth+10}px" autocomplete="off"/>
-                            <span>{sentenceMeaningParts[1]}</span>
+                    <div style="{$isNarrowScreen ? "" : "margin-right: 1rem;"} display:block; position:relative;">
+                        <a class="options-wrapper" href="/" 
+                        on:click={(event) => {event.preventDefault(); toggleDropdown()}}>
+                            <img src="/icons/three-dots-vertical.svg" id="options" alt="options"/>
+                        </a>
+                        <!-- svelte-ignore a11y-no-static-element-interactions -->
+                        <!-- svelte-ignore a11y-click-events-have-key-events -->
+                        <div class="dropdownClosed" class:dropdown={dropdownOpen} id="dropdown"
+                        on:click|stopPropagation style="display: none; {$isNarrowScreen ? "right:0 !important; transform:translateX(0%)" : ""}">
+                            <span>
+                                <img src="/icons/flag.svg" alt="flag as important" />
+                                Flag as important
+                            </span>
+                            <span>
+                                <img src="/icons/lightbulb.svg" alt="get hint" />
+                                Get hint
+                            </span>
+                            <span>
+                                <img src="/icons/send-exclamation.svg" alt="report error" />
+                                Report error
+                            </span>
                         </div>
-                        <div class="part-of-speech">
-                            <span>{testData[currentIndex].partOfSpeech}</span>
-                            <img src="/icons/three-dots.svg" alt="part of speech" />
-                        </div>
-                    </div>
-                    <div class="wrapper-section bottom">
-                        <p>{testData[currentIndex].wordTranslation}</p>
-                        <p>{testData[currentIndex].sentenceTranslation}</p>
-                        {#if testData[currentIndex].wordInfo}
-                            <button class="etymology-button" on:click={() => infoOpen = !infoOpen}>
-                                <img src="/icons/search-tilted.svg" alt="etymology of word"/>
-                                <p>λόγος</p>
-                                <span>Information about this word</span>
-                            </button>
-                        {/if}
                     </div>
                 </div>
-                <a class="card-scroller" class:disabled={currentIndex == testData.length-1} href="/" on:click={(event) => {event.preventDefault(); changeTestData(1); dropdownOpen = false;}}>
-                    <img src="/icons/chevron-compact-right.svg" alt="next card" />
-                </a>
+                <div class="wrapper-section center" style="{$isNarrowScreen ? "height: 14rem;" : ""}">
+                    <div class="sentence" style="{$isNarrowScreen ? "font-size:2rem !important; margin-top:0; margin-bottom:0.5rem;" : ""}">
+                        <span style="{$isNarrowScreen ? "line-height:2rem;" : "line-height:4rem;"}">{sentenceMeaningParts[0]}</span>
+                        <input id="answer" bind:this={answerInput} style="{$isNarrowScreen ? "font-size:2rem !important; height:2.75rem; padding:0 0.5rem" : ""}; 
+                                                width:{answerTempWidth+10}px" autocomplete="off"/>
+                        <span style="{$isNarrowScreen ? "line-height:2rem;" : "line-height:4rem;"}">{sentenceMeaningParts[1]}</span>
+                    </div>
+                    <div class="part-of-speech" style="{$isNarrowScreen ? "margin:0 auto 0.25rem auto; height:1.5rem; width:100%; background-color:var(--el-bg-color);" : ""}">
+                        <span style="{$isNarrowScreen ? "color:var(--bg-highlight-2)" : ""}"><i class="bi bi-diagram-2-fill" style="color:var(--bg-highlight)"></i>{testData[currentIndex].partOfSpeech}</span>
+                        {#if !$isNarrowScreen}<img src="/icons/three-dots.svg" alt="part of speech" />{/if}
+                    </div>
+                </div>
+                <div class="wrapper-section bottom" style="{$isNarrowScreen ? "height:7.5rem;" : ""}">
+                    <p style="{$isNarrowScreen ? "margin-bottom:1rem;" : ""}">{testData[currentIndex].wordTranslation}</p>
+                    <p style="{$isNarrowScreen ? "margin-left:0rem; width:14rem; text-align:left;" : ""}">{testData[currentIndex].sentenceTranslation}</p>
+                    {#if testData[currentIndex].wordInfo}
+                        <button class="etymology-button" on:click={() => infoOpen = !infoOpen}
+                            style="{$isNarrowScreen ? "bottom:0%; right:7.5%;" : ""}">
+                            <img src="/icons/search-tilted.svg" alt="etymology of word"/>
+                            <p>λόγος</p>
+                            <span style="{$isNarrowScreen ? "transform: none;" : ""}">Information about this word</span>
+                        </button>
+                    {/if}
+                </div>
+            </div>
+            {#if !$isNarrowScreen}
+            <a class="card-scroller" class:disabled={currentIndex == testData.length-1} href="/" on:click={(event) => {event.preventDefault(); changeTestData(1); dropdownOpen = false;}}>
+                <img src="/icons/chevron-compact-right.svg" alt="next card" />
+            </a>
+            {/if}
         </div>
     {/if}
     {#if infoOpen && ready && testData[currentIndex].wordInfo}
-        <div class="info-wrapper" in:slide>
+        <div class="info-wrapper" style="{$isNarrowScreen ? "margin:0; border-radius:0; padding:1rem 1rem 0 1rem; background-color: var(--bg-middle); align-items: flex-start;" : "background-color: var(--el-bg-color); align-items: center;"}" in:slide>
             <WordInfo wordInfo={testData[currentIndex].wordInfo} />
+        </div>
+    {/if}
+    {#if $isNarrowScreen}
+        <div class="phone-div" style="">
+            <button style="width:40%; height:100%; border-radius:2rem; border:none; display:flex; flex-direction:row;
+             align-items:center; justify-content:center;">
+                <i class="bi bi-chat-square-fill" style="color: var(--bg-highlight); font-size:1.2rem; margin-top:0.1rem;"></i>
+                <span style="font-size:1.4rem; margin-left:0.5rem;">Learn</span>
+            </button>
+            <button style="font-size: 1.5rem; background:none; border:none; color:var(--fg-color); margin-right:auto; margin-bottom:1%;">
+                Üé
+            </button>
+            <button style="font-size: 1.5rem; background:none; border:none; color:var(--fg-color); margin-right:1.5rem;">
+                <i class="bi bi-mic" style="font-size: 1.75rem;"></i>
+            </button>
         </div>
     {/if}
 </div>
 
 <style>
+    .phone-div {
+        width:100%; 
+        height:12%; 
+        background-color:var(--el-bg-color); 
+        justify-self:flex-end; 
+        margin-top:auto; 
+        display:flex; 
+        flex-direction:row-reverse; 
+        align-items:center; 
+        justify-content:flex-start; 
+        padding:1.75rem 1rem; 
+        box-sizing:border-box;
+    }
+        .phone-div > button:hover {
+            cursor: pointer;
+            background-color: var(--fg-color-2);
+        }
+            .phone-div > button:hover > span {
+                color: var(--el-bg-color);
+            }
+            .phone-div > button:hover > i {
+                color: var(--el-bg-color);
+            }
     .info-wrapper {
         display: flex;
         flex-direction: row;
-        align-items: center;
         justify-content: center;
         flex-basis: 20rem;
         max-width: 25rem;
         margin-right: 2rem;
         flex-grow:1;
         height: 35rem;
-        background-color: var(--el-bg-color);
         border-radius: 1rem;
         padding: 1rem;
     }
@@ -194,7 +241,6 @@
         flex-direction:row; 
         min-width: 65rem;
         max-width: 70rem;
-        height: 35rem;
         align-items: center;
     }
     .wrapper {
@@ -369,6 +415,7 @@
     .sentence {
         display:block;
         min-height: 4rem;
+        font-size: 3rem;
         align-items: center;
         color: var(--cyan) !important;
         padding: 0 1.5rem 0 1.5rem;
@@ -378,7 +425,6 @@
     }
         .sentence > span {
             margin: 0;
-            font-size: 3rem;
             line-height: 4rem;
             text-align: left;
             white-space: pre-wrap;
