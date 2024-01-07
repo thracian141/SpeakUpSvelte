@@ -33,8 +33,9 @@
     {#if dateRangeSelection == "week"}
         <div class="week-wrapper" in:slide out:slide>
             {#each weekDates as day (day)}
-                <div class="day-box" style="{$isNarrowScreen ? "padding:0.21rem;" : ""}">
-                    <div class="week-day-box" class:filled={hasStudied.get(day.toISOString().split('T')[0])}>
+                <div class="day-box" style="{$isNarrowScreen ? "padding:0.21rem; width:14%;" : ""}">
+                    <div class="week-day-box" class:filled={hasStudied.get(day.toISOString().split('T')[0])}
+                                     style="{$isNarrowScreen ? " width:100%;" : ""}">
                         <i class="bi bi-check-lg"></i>
                     </div>
                     <span>{day.toLocaleString('en-US', { weekday: 'short' }).toUpperCase()}</span>
@@ -57,7 +58,7 @@
             {new Date(currentDate.getFullYear(), currentDate.getMonth() - 1).toLocaleString('en-GB', { month: 'long' })}
         </h3></div>
         {#each monthDates.filter(day => day.getMonth() !== currentDate.getMonth()) as day (day)}
-        <div class="day-box" style="opacity: 0.4; {$isNarrowScreen ? "padding:0.21rem; margin-bottom:1.4rem" : ""}">
+        <div class="day-box" style="opacity: 0.4; {$isNarrowScreen ? "padding:0.21rem; margin-bottom:1.4rem; margin-right:0.25rem; width:2.3rem;" : ""}">
             <div class="week-day-box month" class:filled={hasStudied.get(day.toISOString().split('T')[0])}>
                 <i class="bi bi-check-lg"></i>
             </div>
@@ -68,7 +69,7 @@
             {new Date(currentDate.getMonth()).toLocaleString('en-GB', { month: 'long' })}
         </h3></div>
         {#each monthDates.filter(day => day.getMonth() === currentDate.getMonth()) as day (day)}
-        <div class="day-box" style="{$isNarrowScreen ? "padding:0.21rem; margin-bottom:1rem" : ""}">
+        <div class="day-box" style="{$isNarrowScreen ? "padding:0.21rem; margin-bottom:1rem; margin-right:0.25rem; width:2.3rem;" : ""}">
             <div class="week-day-box month" class:filled={hasStudied.get(day.toISOString().split('T')[0])}>
                 <i class="bi bi-check-lg"></i>
             </div>

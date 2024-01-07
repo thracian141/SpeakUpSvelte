@@ -37,7 +37,7 @@
     }
 </script>
 
-<div class="panel" style="{$isNarrowScreen ? "width:100%; border-radius:0; padding: 1.5rem 1rem" : ""}">
+<div class="panel" style="{$isNarrowScreen ? "width:100%; border-radius:0; padding: 1.5rem 1rem 0 1rem" : ""}">
     <div class="top" style="{$isNarrowScreen ? "margin-bottom:1rem;" : ""}">
         <div class="words-learnt-wrap" style="{$isNarrowScreen ? "width:8.5rem;" : ""}">
             <span style="font-size:0.95rem; color:var(--fg-color); margin-right:auto; margin-left:0.8rem;">{wordsTotal}</span>

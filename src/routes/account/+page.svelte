@@ -49,20 +49,20 @@
 </script>
 
 <div class="wrap" style="{$isNarrowScreen ? "width:100vw; max-width:100vw; padding:0; padding-top:4.75rem;": ""}">
-    <div class="panel" style="{$isNarrowScreen ? "border-radius: 0 !important;" : ""}">
-        <div class="fields">
+    <div class="panel" style="{$isNarrowScreen ? "border-radius: 0 !important; height:35rem;" : ""}">
+        <div class="fields" style="{$isNarrowScreen ? "padding-bottom:0;" : ""}">
             <div class="top-row">
                 <a href="/" class="pfp-wrap" on:click={(e) => {e.preventDefault();alert(`You've been banned for trying to change the default picture.`)}}>
                     <img {src} alt="pfp" class="pfp" />
                     <div class="pfp-overlay">Change photo?</div>
                 </a>
                 <div class="username-and-date" style="{$isNarrowScreen ? "left:110%;" : ""}">
-                    <h1 style="margin:0; margin-bottom:2.5rem; {$isNarrowScreen ? "margin-left:1.25rem": ""}">{username}</h1>
+                    <h1 style="margin:0; margin-bottom:2.5rem; {$isNarrowScreen ? "margin-left:1.25rem; height:2rem;": ""}">{username}</h1>
                     <div style="display: flex;flex-direction:row;align-items:center; text-align:center">
-                        <img src="/icons/calendar-event.svg" alt="account created" style="{$isNarrowScreen ? "margin-right:0.5rem;":""}"/>
-                        <div style="display: flex;flex-direction:column; width:10rem; align-items:flex-start">
-                            <span style="font-weight: bold; font-size:0.85rem; {$isNarrowScreen ? "" : "padding-left:0.2rem"}">ACCOUNT CREATED</span>
-                            <span style="font-size: 1.5rem;">{accountCreatedDate}</span>
+                        <img src="/icons/calendar-event.svg" alt="account created" style="{$isNarrowScreen ? "margin-right:0.3rem; height:1.6rem;":""}"/>
+                        <div style="display: flex; {$isNarrowScreen ? "flex-direction:column-reverse; position:relative;" : "flex-direction:column;"} width:10rem; align-items:flex-start">
+                            <span style="font-weight: bold; font-size:0.85rem; {$isNarrowScreen ? "font-size: 0.9rem; position:absolute; top:125%; right:29.5%; width:100%;" : "padding-left:0.2rem"}">ACCOUNT CREATED</span>
+                            <span style="{$isNarrowScreen ? "font-size: 1.2rem;" : "font-size: 1.5rem;"}">{accountCreatedDate}</span>
                         </div>
                     </div>
                 </div>
@@ -101,10 +101,10 @@
 </div>
 {#if editEnabled}
     <div class="edit-overlay" in:fade={{duration:200}} out:fade={{duration:100}}>
-        <div class="edit-wrap" style="{$isNarrowScreen ? "width:100%; border-radius:0; align-items:flex-start; height:23rem;" : ""}">
+        <div class="edit-wrap" style="{$isNarrowScreen ? "width:100%; border-radius:0; align-items:flex-start; height:23rem; padding-bottom:1rem" : ""}">
             <a href="/" style="font-size:2rem; position:absolute; right:5%; top:5%;" 
             on:click={(e) => {e.preventDefault(); editEnabled=false;}}><img src="/icons/x-lg.svg" alt="close"></a>
-            <h1 style="font-size:1.8rem; margin-bottom:0.5rem;">Change your {currentEdit} </h1>
+            <h1 style="margin-bottom:0.5rem; {$isNarrowScreen ? "font-size:1.4rem;" : "font-size:1.8rem;"}">Change your {currentEdit} </h1>
             <p style="color: var(--fg-color-2); font-size:1.1rem; margin-bottom:{currentEdit=="password" ? "1rem" : "2rem"};">Enter a new {currentEdit} and your current password.</p>
             <div class="edit-fields">
                 <div class="edit-row" in:slide>
