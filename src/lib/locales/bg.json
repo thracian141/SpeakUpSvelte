@@ -19,5 +19,14 @@
         "choose_a_language": "Изберете език.",
         "you_havent_started_any_course_yet": "Все още не сте започнали нито един курс.",
         "learn": "Учете"
+    },
+    "learn": {
+        "flag_as_important": "Отбележи важно",
+        "get_hint": "Получи подсказка",
+        "report_error": "Докладвай грешка",
+        "information_about_this_word": "Информация за тази дума",
+        "learn": "Научи",
+        "this_word_is_new": "Тази дума е нова!",
+        "you_know_this_lets_keep_going": "Вече знаеш тази дума, нека продължаваме!"
     }
 }

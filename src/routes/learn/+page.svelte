@@ -1,13 +1,13 @@
 <script lang="ts">
     import WordInfo from "./WordInfo.svelte";
-    import { afterUpdate, onMount, tick } from "svelte";
+    import { onMount, tick } from "svelte";
+    import { _ } from "$lib/i18n";
     import { isNarrowScreen } from "$lib/store";
     import { fly, slide } from "svelte/transition";
     let ready = false; // Initialize with not ready.
     let direction = -1; // Direction in which the card will fly.
 
     import { testData } from "./test";
-    import Layout from "../+layout.svelte";
     import { browser } from "$app/environment";
 
     let currentIndex = 0;
@@ -74,6 +74,27 @@
     if (browser) {
         windowHeight = window.innerHeight;
     }
+    let startX:number;
+    let currentX:number;
+    let outerwrap:HTMLDivElement;
+
+    function handleTouchStart(event: TouchEvent) {
+        startX = event.touches[0].clientX;
+        currentX = startX;
+    }
+
+    function handleTouchMove(event: TouchEvent) {
+        const x = event.touches[0].clientX;
+        const diffX = x - currentX;
+        currentX = x;
+
+        outerwrap.style.transform = `translateX(${diffX}px)`;
+    }
+
+    function handleTouchEnd() {
+        outerwrap.style.transform = '';
+    }
+
     onMount(async () => {
         if ($isNarrowScreen) {
             window.addEventListener('resize', () => {
@@ -104,7 +125,8 @@
     margin-right:{infoOpen ? "0" : "auto"}; overflow:hidden; width:100%; 
     flex-flow:row; {$isNarrowScreen ? "flex-direction:column; justify-content: flex-start; height:100%;" : "height:100%; padding:1rem; justify-content: center; align-items:center; flex-direction:row;"}">
     {#if ready}
-        <div in:fly={{x: direction > 0 ? 1200 : -1200, duration: 500}} 
+        <div on:touchstart={handleTouchStart} on:touchmove={handleTouchMove} on:touchend={handleTouchEnd}
+           in:fly={{x: direction > 0 ? 1200 : -1200, duration: 500}} 
            out:fly={{x: direction > 0 ? -1200 : 1200, duration: 500}} 
            class="outerwrap" style="flex-grow:{infoOpen ? "4" : "0"}; {$isNarrowScreen ? "width:100%; min-width:100%; flex-direction:column; flex-grow:0;" : "height: 35rem;"}">
             {#if !$isNarrowScreen}   
@@ -127,9 +149,9 @@
                         <div class="bar" style="background-color: 
                             {levelArray[4] === 1 ? fullBarColor : levelArray[4] === 0.5 ? 'var(--cyan-half)' : 'var(--bg-color)'};"></div>
                         {#if testData[currentIndex].wordLevel == 0}
-                            <p style="color: #faaa5a">This word is new!</p>
+                            <p style="color: #faaa5a">{$_('learn.you_know_this_lets_keep_going')}</p>
                         {:else if testData[currentIndex].wordLevel == 5}
-                            <p style="color: #119854">You know this! Let's keep going.</p>
+                            <p style="color: #119854">{$_("learn.you_know_this_lets_keep_going")}</p>
                         {/if} 
                     </div>
                     <div style="{$isNarrowScreen ? "position:absolute; right:0.4rem; top:0.4rem;" : "margin-right: 1rem; position:relative;"} display:block;">
@@ -143,15 +165,15 @@
                         on:click|stopPropagation style="display: none; {$isNarrowScreen ? "right:0 !important; transform:translateX(0%)" : ""}">
                             <span>
                                 <img src="/icons/flag.svg" alt="flag as important" />
-                                Flag as important
+                                {$_('learn.flag_as_important')}
                             </span>
                             <span>
                                 <img src="/icons/lightbulb.svg" alt="get hint" />
-                                Get hint
+                                {$_('learn.get_hint')}
                             </span>
                             <span>
                                 <img src="/icons/send-exclamation.svg" alt="report error" />
-                                Report error
+                                {$_('learn.report_error')}
                             </span>
                         </div>
                     </div>
@@ -198,7 +220,7 @@
             <button style="width:40%; height:100%; border-radius:2rem; border:none; display:flex; flex-direction:row;
              align-items:center; justify-content:center;">
                 <i class="bi bi-chat-square-fill" style="color: var(--bg-highlight); font-size:1.2rem; margin-top:0.1rem;"></i>
-                <span style="font-size:1.4rem; margin-left:0.5rem;">Learn</span>
+                <span style="font-size:1.4rem; margin-left:0.5rem;">{$_('learn.learn')}</span>
             </button>
             <button style="font-size: 1.5rem; background:none; border:none; color:var(--fg-color); margin-right:auto; margin-bottom:1%;">
                 Üé
@@ -225,7 +247,7 @@
         justify-content:flex-start; 
         padding:1.75rem 1rem; 
         box-sizing:border-box;
-        border-top: 2px solid var(--bg-highlight);
+        border-top: 1px solid var(--bg-highlight);
         z-index: 999;
     }
     .info-wrapper {

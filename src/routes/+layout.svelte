@@ -8,7 +8,7 @@
     import { browser } from "$app/environment";
     import { goto } from "$app/navigation";
     import { isNarrowScreen } from "$lib/store";
-  import { page } from "$app/stores";
+    import { page } from "$app/stores";
 
     let theme = 'dark';
     function changeTheme() {
@@ -23,18 +23,18 @@
 
     onMount(() => {
         if (browser) {
-            if (localStorage.getItem('websiteLanguage') == null || localStorage.getItem('websiteLanguage') == undefined) {
+            if (localStorage.getItem('websiteLanguage') != null && localStorage.getItem('websiteLanguage') != undefined) {
+                locale.set(JSON.parse(localStorage.getItem('websiteLanguage') as string));
+            } else {
                 locale.set('en');
                 localStorage.setItem('websiteLanguage', JSON.stringify($locale));
-            } else {
-                locale.set(localStorage.getItem('websiteLanguage') as string);
             }
         }
     });
 </script>
 
 <div class="app">
-    {#if $page.url.pathname != "/learn"}
+    {#if $page.url.pathname != "/learn" && $page.url.pathname != "/learn/"}
     <button class="change-theme" on:click={changeTheme} style="{$isNarrowScreen ? "top:1rem; right:0.75rem" : ""}">
         {#if theme === 'dark'}
             <i class="bi bi-moon" in:slide out:slide></i>
