@@ -84,9 +84,10 @@
     }
 
     function handleTouchMove(event: TouchEvent) {
+        event.preventDefault();
+
         const x = event.touches[0].clientX;
-        const diffX = x - currentX;
-        currentX = x;
+        const diffX = x - startX;
 
         outerwrap.style.transform = `translateX(${diffX}px)`;
     }
@@ -189,7 +190,7 @@
                                                 width:{answerTempWidth+10}px" autocomplete="off"/>
                         <span style="{$isNarrowScreen ? "line-height:2rem;" : "line-height:4rem;"}">{sentenceMeaningParts[1]}</span>
                     </div>
-                    <div class="part-of-speech" style="{$isNarrowScreen ? "margin:0 auto 0.25rem auto; height:1.5rem; width:100%; background-color:var(--el-bg-color);" : ""}">
+                    <div class="part-of-speech" style="{$isNarrowScreen ? "margin:0 auto 0.25rem auto; height:1.5rem; width:90%; background-color:var(--el-bg-color);" : ""}">
                         <span style="{$isNarrowScreen ? "color:var(--bg-highlight-2); font-size:1rem" : ""}"><i class="bi bi-diagram-2-fill" style="color:var(--bg-highlight)"></i>{testData[currentIndex].partOfSpeech}</span>
                         {#if !$isNarrowScreen}<img src="/icons/three-dots.svg" alt="part of speech" />{/if}
                     </div>
