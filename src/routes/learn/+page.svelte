@@ -225,17 +225,9 @@
         justify-content:flex-start; 
         padding:1.75rem 1rem; 
         box-sizing:border-box;
+        border-top: 2px solid var(--bg-highlight);
+        z-index: 999;
     }
-        .phone-div > button:hover {
-            cursor: pointer;
-            background-color: var(--fg-color-2);
-        }
-            .phone-div > button:hover > span {
-                color: var(--el-bg-color);
-            }
-            .phone-div > button:hover > i {
-                color: var(--el-bg-color);
-            }
     .info-wrapper {
         display: flex;
         flex-direction: row;
