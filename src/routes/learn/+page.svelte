@@ -8,6 +8,7 @@
 
     import { testData } from "./test";
     import Layout from "../+layout.svelte";
+    import { browser } from "$app/environment";
 
     let currentIndex = 0;
 
@@ -69,8 +70,17 @@
     }
 
     let answerInput: HTMLInputElement;
-    
+    let windowHeight: number;
+    if (browser) {
+        windowHeight = window.innerHeight;
+    }
     onMount(async () => {
+        if ($isNarrowScreen) {
+            window.addEventListener('resize', () => {
+                let newWindowHeight = window.innerHeight;
+                windowHeight = newWindowHeight;
+            });
+        }
         let answerTemp = document.getElementById('answerTemp');
         answerTempWidth = answerTemp ? answerTemp.clientWidth : 0;
 
@@ -92,7 +102,7 @@
 </div>
 <div style="display:flex; margin-left:{infoOpen ? "0" : "auto"}; 
     margin-right:{infoOpen ? "0" : "auto"}; overflow:hidden; width:100%; 
-    flex-flow:row; {$isNarrowScreen ? "flex-direction:column; justify-content: flex-start; height:100vh;" : "height:100%; padding:1rem; justify-content: center; align-items:center; flex-direction:row;"}">
+    flex-flow:row; {$isNarrowScreen ? "flex-direction:column; justify-content: flex-start; height:" + windowHeight + "px;" : "height:100%; padding:1rem; justify-content: center; align-items:center; flex-direction:row;"}">
     {#if ready}
         <div in:fly={{x: direction > 0 ? 1200 : -1200, duration: 500}} 
            out:fly={{x: direction > 0 ? -1200 : 1200, duration: 500}} 
