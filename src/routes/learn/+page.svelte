@@ -90,11 +90,20 @@
         const diffX = x - startX;
 
         outerwrap.style.transform = `translateX(${diffX}px)`;
+        currentX = x;
     }
 
     function handleTouchEnd() {
         outerwrap.style.transition = 'transform 0.2s ease-out';
         outerwrap.style.transform = '';
+        console.log(currentX - startX);
+        if (currentX - startX > window.innerWidth / 3) {
+            console.log('left');
+            changeTestData(-1);
+        } else if (startX - currentX > window.innerWidth / 3) {
+            console.log('right');
+            changeTestData(1);
+        }
         setTimeout(() => {
             outerwrap.style.transition = '';
         }, 500);
@@ -153,9 +162,9 @@
                             {levelArray[3] === 1 ? fullBarColor : levelArray[3] === 0.5 ? 'var(--cyan-half)' : 'var(--bg-color)'};"></div>
                         <div class="bar" style="background-color: 
                             {levelArray[4] === 1 ? fullBarColor : levelArray[4] === 0.5 ? 'var(--cyan-half)' : 'var(--bg-color)'};"></div>
-                        {#if testData[currentIndex].wordLevel == 0}
-                            <p style="color: #faaa5a">{$_('learn.you_know_this_lets_keep_going')}</p>
-                        {:else if testData[currentIndex].wordLevel == 5}
+                        {#if testData[currentIndex].wordLevel == 0 && !$isNarrowScreen}
+                            <p style="color: #faaa5a">{$_('learn.this_word_is_new')}</p>
+                        {:else if testData[currentIndex].wordLevel == 5 && !$isNarrowScreen}
                             <p style="color: #119854">{$_("learn.you_know_this_lets_keep_going")}</p>
                         {/if} 
                     </div>
@@ -195,7 +204,7 @@
                         {#if !$isNarrowScreen}<img src="/icons/three-dots.svg" alt="part of speech" />{/if}
                     </div>
                 </div>
-                <div class="wrapper-section bottom" style="{$isNarrowScreen ? "height:5rem; position:relative;" : ""}">
+                <div class="wrapper-section bottom" style="{$isNarrowScreen ? "height:5rem; position:relative; padding-top:0.5rem; padding-bottom:0.5rem" : ""}">
                     <p style="{$isNarrowScreen ? "margin-bottom:0rem; font-size:1.5rem; margin-top:0rem;" : ""}">{testData[currentIndex].wordTranslation}</p>
                     <p style="{$isNarrowScreen ? "margin-left:0rem; width:14rem; text-align:left; font-size:1rem;" : ""}">{testData[currentIndex].sentenceTranslation}</p>
                     {#if testData[currentIndex].wordInfo}
