@@ -1,4 +1,6 @@
 {
+    "yes": "Yes",
+    "no": "No",
     "layout": {
         "highly_experimental": "Highly experimental!",
         "home": "Home",
@@ -18,7 +20,15 @@
         "what_language_do_you_want_to_learn": "What language do you want to learn?",
         "choose_a_language": "Choose a language.",
         "you_havent_started_any_course_yet": "You haven't started any course yet.",
-        "learn": "Learn"
+        "learn": "Learn",
+        "language": {
+            "target_language": "TARGET LANGUAGE",
+            "the_course_will_be_taught_in": "The course will be taught in",
+            "the": "The",
+            "course_is_also_available_in": "course is also available in",
+            "this_requires_changing_the_websites_language": "This requires changing the website's language.",
+            "do_you_want_to_change_the_language_to": "Do you want to change the language to"
+        }
     },
     "learn": {
         "flag_as_important": "Flag as important",

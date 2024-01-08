@@ -96,12 +96,9 @@
     function handleTouchEnd() {
         outerwrap.style.transition = 'transform 0.2s ease-out';
         outerwrap.style.transform = '';
-        console.log(currentX - startX);
         if (currentX - startX > window.innerWidth / 3) {
-            console.log('left');
             changeTestData(-1);
         } else if (startX - currentX > window.innerWidth / 3) {
-            console.log('right');
             changeTestData(1);
         }
         setTimeout(() => {
@@ -201,7 +198,6 @@
                     </div>
                     <div class="part-of-speech" style="{$isNarrowScreen ? "margin:0 auto 0.25rem auto; height:1.5rem; width:90%; background-color:var(--el-bg-color);" : ""}">
                         <span style="{$isNarrowScreen ? "color:var(--bg-highlight-2); font-size:1rem" : ""}"><i class="bi bi-diagram-2-fill" style="color:var(--bg-highlight)"></i>{testData[currentIndex].partOfSpeech}</span>
-                        {#if !$isNarrowScreen}<img src="/icons/three-dots.svg" alt="part of speech" />{/if}
                     </div>
                 </div>
                 <div class="wrapper-section bottom" style="{$isNarrowScreen ? "height:5rem; position:relative; padding-top:0.5rem; padding-bottom:0.5rem" : ""}">

@@ -1,12 +1,12 @@
 <script lang="ts">
     import { browser } from "$app/environment";
-    import { onDestroy, onMount } from "svelte";
+    import { onMount } from "svelte";
     import { Deck, decks } from "../testDecks";
     import { goto } from "$app/navigation";
     import { fade, fly, slide } from "svelte/transition";
     import { _, locale } from '$lib/i18n';
     import { isNarrowScreen } from "$lib/store";
-  import { page } from "$app/stores";
+    import { page } from "$app/stores";
 
     let url: string | undefined;
     let targetLang: Deck | undefined;
@@ -19,25 +19,36 @@
     onMount(async () => {
         if (browser) {
             url = $page.params.language;
-            console.log("URL: " + url);
             websiteLanguage = await JSON.parse(localStorage.getItem('websiteLanguage') as string);
         }
         targetLang = await decks.find((deck) => deck.id == url);
-        console.log(targetLang);
         fromLang = await decks.find((deck) => deck.id == websiteLanguage);
         availableFromLangs = await decks.filter(deck => targetLang?.fromLang.some(langId => langId == deck.id) && deck.getName() != fromLang?.getName());
     });
+
+    function changeLocale() {
+        if (browser) {
+            if ($locale == 'en') {
+                localStorage.setItem('websiteLanguage', JSON.stringify("bg"));
+                locale.set('bg');
+            } else if ($locale == 'bg') {
+                localStorage.setItem('websiteLanguage', JSON.stringify("en"));
+                locale.set('en');
+            }
+        }
+        goto("/");
+    }
 </script>
 
-<div class="outer-wrap" style="{$isNarrowScreen ? "width:100%; height:100%; padding-top:5rem" : ""}">
+<div class="outer-wrap" style="{$isNarrowScreen ? "width:100vw; height:100%; padding-top:5rem" : ""}">
     <div class="target-lang-wrap" style="{$isNarrowScreen ? "border-radius:0 !important;" : ""}">
         {#if targetLang}
-        <span style="font-size: 1.3rem; margin-bottom:1.5rem; font-weight:bold; transform:scaleY(0.95)">TARGET LANGUAGE</span>
+        <span style="font-size: 1.3rem; margin-bottom:1.5rem; font-weight:bold; transform:scaleY(0.95)">{$_('decks.language.target_language')}</span>
         <div class="target-lang">
             <div class="lang-img-wrap">
                 <img src={targetLang?.image} alt="{targetLang?.getName()}"/>
             </div>
-            <span style="margin-left: 1rem; font-size:1.75rem; margin-bottom:0.5rem;">{targetLang?.getName()}</span>
+            <span style="margin-left: 1rem; font-size: calc(1rem + 2vmin); margin-bottom:0.5rem;">{targetLang?.getName()}</span>
             <button class="change-target-language" on:click={()=>goto("./")}>
                 <i class="bi bi-pen-fill"></i>
             </button>
@@ -45,15 +56,15 @@
         {/if}
     </div>
     <div class="from-lang-wrap" style="{$isNarrowScreen ? "border-radius:0 !important; height:100%;" : ""}">
-        <h1 style="margin:0 0 1rem 0;">The course will be taught in:</h1>
+        <h1 style="margin:0 0 1rem 0;">{$_('decks.language.the_course_will_be_taught_in')}</h1>
         <div class="target-lang">
             <div class="lang-img-wrap">
                 <img src={fromLang?.image} alt="{fromLang?.getName()}"/>
             </div>
-            <span style="margin-left: 1rem; font-size:2rem; margin-bottom:0.5rem;">{fromLang?.getName()}</span>
+            <span style="margin-left: 1rem; font-size: calc(1rem + 2vmin); margin-bottom:0.5rem;">{fromLang?.getName()}</span>
         </div>
         {#if availableFromLangs.length > 0}
-        <h3 style="margin:1rem 0; font-weight:normal; font-size:1.3rem;">The {targetLang?.getName()} course is also available in:</h3>
+        <h3 style="margin:1rem 0; font-weight:normal; font-size:1.3rem;">{$_('decks.language.the')} {targetLang?.getName()} {$_('decks.language.course_is_also_available_in')}:</h3>
         {/if}
         {#each availableFromLangs as deck}
         <div class="from-lang-box" on:click={()=>{changeLangPrompted = true; selectedFromLang=deck}} role="button" tabindex=0 
@@ -61,25 +72,25 @@
             <div class="from-lang-option">
                 <img src={deck.image} alt="{deck.getName()}"/>
             </div>
-            <span style="margin-left: 1rem; font-size:1.5rem; margin-bottom:0.5rem;">{deck.getName()}</span>
+            <span style="margin-left: 1rem; font-size: calc(0.8rem + 2vmin); margin-bottom:0.5rem;">{deck.getName()}</span>
         </div>
         {/each}
     </div>
-</div>
-{#if changeLangPrompted}
-<div class="wrap-changelang" style="{$isNarrowScreen ? "width:90%;" : ""}"
-in:slide out:fade={{duration:150}}>
-    <button class="close" on:click={()=>changeLangPrompted=false}>
-        <i class="bi bi-x"></i>
-    </button>
-    <h2>This requires changing the website's language.</h2>
-    <p>Do you want to change the language to {selectedFromLang?.getName()}?</p>
-    <div style="display: flex; flex-direction:row; gap:2rem; margin-top:auto;">
-        <button class="option" on:click={()=>{changeLangPrompted=false; alert("This feature is not implemented yet :(.")}}>Yes</button> 
-        <button class="option" on:click={()=>changeLangPrompted=false}>No</button>
+    {#if changeLangPrompted}
+    <div class="wrap-changelang" style="{$isNarrowScreen ? "width:90%;" : ""}"
+    in:slide out:fade={{duration:150}}>
+        <button class="close" on:click={()=>changeLangPrompted=false}>
+            <i class="bi bi-x"></i>
+        </button>
+        <h2>{$_('decks.language.this_requires_changing_the_websites_language')}</h2>
+        <p>{$_('decks.language.do_you_want_to_change_the_language_to')} {selectedFromLang?.getName()}?</p>
+        <div style="display: flex; flex-direction:row; gap:2rem; margin-top:auto;">
+            <button class="option" on:click={()=>{changeLangPrompted=false; changeLocale()}}>{$_('yes')}</button> 
+            <button class="option" on:click={()=>changeLangPrompted=false}>{$_('no')}</button>
+        </div>
     </div>
+    {/if}
 </div>
-{/if}
 
 
 <style>
@@ -131,6 +142,7 @@ in:slide out:fade={{duration:150}}>
         flex-direction:column;
         align-items:center;
         justify-content:flex-start;
+        text-align: left;
         background-color:var(--bg-color);
         border-radius:1rem;
         width:30rem;
@@ -230,6 +242,7 @@ in:slide out:fade={{duration:150}}>
     .outer-wrap {
         display:flex;
         flex-direction:column;
+        position:relative;
         width:40rem;
         height:41rem;
         gap:1rem;

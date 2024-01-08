@@ -1,4 +1,6 @@
 {
+    "yes": "Да",
+    "no": "Не",
     "layout": {
         "highly_experimental": "Силно експериментално!",
         "home": "Начало",
@@ -18,7 +20,15 @@
         "what_language_do_you_want_to_learn": "Кой език искате да учите?",
         "choose_a_language": "Изберете език.",
         "you_havent_started_any_course_yet": "Все още не сте започнали нито един курс.",
-        "learn": "Учете"
+        "learn": "Учете",
+        "language": {
+            "target_language": "ИЗБРАН ЕЗИК",
+            "the_course_will_be_taught_in": "Курсът ще се преподава на",
+            "the": "Курсът по",
+            "course_is_also_available_in": "също е наличен на",
+            "this_requires_changing_the_websites_language": "Това изисква промяна на езика на уебсайта.",
+            "do_you_want_to_change_the_language_to": "Искате ли да промените езика на"
+        }
     },
     "learn": {
         "flag_as_important": "Отбележи важно",
