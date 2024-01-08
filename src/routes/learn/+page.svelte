@@ -8,6 +8,7 @@
 
     import { testData } from "./test";
     import Layout from "../+layout.svelte";
+    import { browser } from "$app/environment";
 
     let currentIndex = 0;
 
@@ -69,8 +70,17 @@
     }
 
     let answerInput: HTMLInputElement;
-    
+    let windowHeight: number;
+    if (browser) {
+        windowHeight = window.innerHeight;
+    }
     onMount(async () => {
+        if ($isNarrowScreen) {
+            window.addEventListener('resize', () => {
+                let newWindowHeight = window.innerHeight;
+                windowHeight = newWindowHeight;
+            });
+        }
         let answerTemp = document.getElementById('answerTemp');
         answerTempWidth = answerTemp ? answerTemp.clientWidth : 0;
 
@@ -90,9 +100,9 @@
 <div style="{$isNarrowScreen ? "font-size: 1.5rem;" : "font-size: 3rem;"} display:inline-block; width:fit-content; position:absolute; visibility:hidden;" id="answerTemp" 
     bind:clientWidth={answerTempWidth}>{testData[currentIndex].wordMeaning}
 </div>
-<div style="display:flex; height:100%; margin-left:{infoOpen ? "0" : "auto"}; 
+<div style="display:flex; margin-left:{infoOpen ? "0" : "auto"}; 
     margin-right:{infoOpen ? "0" : "auto"}; overflow:hidden; width:100%; 
-    flex-flow:row; {$isNarrowScreen ? "flex-direction:column; justify-content: flex-start; " : "padding:1rem; justify-content: center; align-items:center; flex-direction:row;"}">
+    flex-flow:row; {$isNarrowScreen ? "flex-direction:column; justify-content: flex-start; height:" + windowHeight + "px;" : "height:100%; padding:1rem; justify-content: center; align-items:center; flex-direction:row;"}">
     {#if ready}
         <div in:fly={{x: direction > 0 ? 1200 : -1200, duration: 500}} 
            out:fly={{x: direction > 0 ? -1200 : 1200, duration: 500}} 
@@ -184,7 +194,7 @@
         </div>
     {/if}
     {#if $isNarrowScreen}
-        <div class="phone-div" style="">
+        <div id="phone-div" style="">
             <button style="width:40%; height:100%; border-radius:2rem; border:none; display:flex; flex-direction:row;
              align-items:center; justify-content:center;">
                 <i class="bi bi-chat-square-fill" style="color: var(--bg-highlight); font-size:1.2rem; margin-top:0.1rem;"></i>
@@ -201,7 +211,7 @@
 </div>
 
 <style>
-    .phone-div {
+    #phone-div {
         position: fixed;
         bottom: 0;
         width:100%; 
