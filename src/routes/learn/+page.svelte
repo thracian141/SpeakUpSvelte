@@ -92,7 +92,11 @@
     }
 
     function handleTouchEnd() {
+        outerwrap.style.transition = 'transform 0.2s ease-out';
         outerwrap.style.transform = '';
+        setTimeout(() => {
+            outerwrap.style.transition = '';
+        }, 500);
     }
 
     onMount(async () => {
@@ -125,7 +129,7 @@
     margin-right:{infoOpen ? "0" : "auto"}; overflow:hidden; width:100%; 
     flex-flow:row; {$isNarrowScreen ? "flex-direction:column; justify-content: flex-start; height:100%;" : "height:100%; padding:1rem; justify-content: center; align-items:center; flex-direction:row;"}">
     {#if ready}
-        <div on:touchstart={handleTouchStart} on:touchmove={handleTouchMove} on:touchend={handleTouchEnd}
+        <div on:touchstart={handleTouchStart} on:touchmove={handleTouchMove} on:touchend={handleTouchEnd} bind:this={outerwrap}
            in:fly={{x: direction > 0 ? 1200 : -1200, duration: 500}} 
            out:fly={{x: direction > 0 ? -1200 : 1200, duration: 500}} 
            class="outerwrap" style="flex-grow:{infoOpen ? "4" : "0"}; {$isNarrowScreen ? "width:100%; min-width:100%; flex-direction:column; flex-grow:0;" : "height: 35rem;"}">
