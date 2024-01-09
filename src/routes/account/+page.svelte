@@ -1,6 +1,7 @@
 <script lang="ts">
     import { fade, slide } from "svelte/transition";
     import Statistics from "./Statistics.svelte";
+    import {_} from "$lib/i18n";
     import { isNarrowScreen } from "$lib/store";
 
     let src = "/zdravkoqnkov.jpg"
@@ -54,14 +55,14 @@
             <div class="top-row">
                 <a href="/" class="pfp-wrap" on:click={(e) => {e.preventDefault();alert(`You've been banned for trying to change the default picture.`)}}>
                     <img {src} alt="pfp" class="pfp" />
-                    <div class="pfp-overlay">Change photo?</div>
+                    <div class="pfp-overlay">{$_('account.change_photo')}</div>
                 </a>
                 <div class="username-and-date" style="{$isNarrowScreen ? "left:110%;" : ""}">
                     <h1 style="margin:0; margin-bottom:2.5rem; {$isNarrowScreen ? "margin-left:1.25rem; height:2rem;": ""}">{username}</h1>
                     <div style="display: flex;flex-direction:row;align-items:center; text-align:center">
                         <img src="/icons/calendar-event.svg" alt="account created" style="{$isNarrowScreen ? "margin-right:0.3rem; height:1.6rem;":""}"/>
                         <div style="display: flex; {$isNarrowScreen ? "flex-direction:column-reverse; position:relative;" : "flex-direction:column;"} width:10rem; align-items:flex-start">
-                            <span style="font-weight: bold; font-size:0.85rem; {$isNarrowScreen ? "font-size: 0.9rem; position:absolute; top:125%; right:29.5%; width:100%;" : "padding-left:0.2rem"}">ACCOUNT CREATED</span>
+                            <span style="font-weight: bold; font-size:0.85rem; {$isNarrowScreen ? "font-size: 0.9rem; position:absolute; top:125%; right:29.5%; width:100%;" : "padding-left:0.2rem"}">{$_('account.account_created')}</span>
                             <span style="{$isNarrowScreen ? "font-size: 1.2rem;" : "font-size: 1.5rem;"}">{accountCreatedDate}</span>
                         </div>
                     </div>
@@ -69,31 +70,31 @@
             </div>
             <div class="row">
                 <div class="user-field">
-                    <span>USERNAME</span>
+                    <span>{$_('account.username')}</span>
                     <p>{username}</p>
                 </div>
-                <button class="edit-button" on:click={(e) => handleEditClick(e, 'username')}>Edit</button>
+                <button class="edit-button" on:click={(e) => handleEditClick(e, 'username')}>{$_('account.edit')}</button>
             </div>
             <div class="row">
                 <div class="user-field">
-                    <span>DISPLAY NAME</span>
+                    <span>{$_('account.display_name')}</span>
                     <p>{displayname}</p>
                 </div>
-                <button class="edit-button" on:click={(e) => handleEditClick(e, 'display name')}>Edit</button>
+                <button class="edit-button" on:click={(e) => handleEditClick(e, 'display name')}>{$_('account.edit')}</button>
             </div>
             <div class="row">
                 <div class="user-field">
-                    <span>EMAIL</span>
+                    <span>{$_('account.email')}</span>
                     <p>{email}</p>
                 </div>
-                <button class="edit-button" on:click={(e) => handleEditClick(e, 'email')}>Edit</button>
+                <button class="edit-button" on:click={(e) => handleEditClick(e, 'email')}>{$_('account.edit')}</button>
             </div>
             <div class="row">
                 <div class="user-field">
-                    <span>PASSWORD</span>
-                    <p style="font-size: 1.2rem; color:var(--fg-color-2)">Use a secure password.</p>
+                    <span>{$_('account.password')}</span>
+                    <p style="font-size: 1.2rem; color:var(--fg-color-2)">{$_('account.use_a_secure_password')}</p>
                 </div>
-                <button class="edit-button" on:click={(e) => handleEditClick(e, 'password')}>Edit</button>
+                <button class="edit-button" on:click={(e) => handleEditClick(e, 'password')}>{$_('account.edit')}</button>
             </div>
         </div>
     </div>

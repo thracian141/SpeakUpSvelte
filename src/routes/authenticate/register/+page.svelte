@@ -2,6 +2,8 @@
 	import { slide } from 'svelte/transition';
     import {goto} from '$app/navigation';
     import '../styles.css';
+    import { isNarrowScreen } from '$lib/store';
+    import {_} from '$lib/i18n';
 
     let username = '';
     let displayname = '';
@@ -38,46 +40,46 @@
     }
 </script>
 
-<div class="form-wrap" on:submit={handleSubmit} in:slide={{duration:750}}>
-    <h2 style="display: flex; flex-direction:row; align-items:center">
-        Sign up to <img style="height:2rem; margin: 0 0.25rem 0 0.6rem" src="/icons/speakuplogo.svg" alt="logo"/> 
+<div class="form-wrap" on:submit={handleSubmit} in:slide={{duration:750}} 
+style="{$isNarrowScreen ? "width:100%; padding: 1rem 0.2rem; height:100%; margin-top:5rem; border-radius:0;" : ""}">
+    <h2 style="display: flex; flex-direction:row; align-items:center; {$isNarrowScreen ? "font-size:2rem;" : ""}">
+        {$_('authenticate.sign_up_to')} <img style="height:2rem; margin: 0 0.25rem 0 0.6rem" src="/icons/speakuplogo.svg" alt="logo"/> 
         SPEAKUP
     </h2>
     <form method="post" style="position: relative;">
         <div class="form-section">
             <img src="/icons/usernameicon.svg" alt="Username Icon" class="form-icon"/>
-            <p class:label-filled={username !== ''} class="form-label" >Username</p>
+            <p class:label-filled={username !== ''} class="form-label" >{$_('authenticate.username')}</p>
             <input type="text" name="username" class="form-control" bind:value={username}/>
             <span>*</span>
         </div>
         <div class="form-section">
             <img src="/icons/person-badge.svg" alt="Display name Icon" class="form-icon"/>
-            <p class:label-filled={displayname !== ''} class="form-label" >Display Name</p>
+            <p class:label-filled={displayname !== ''} class="form-label" >{$_('authenticate.display_name')}</p>
             <input type="text" name="fullname" class="form-control" bind:value={displayname}/>
         </div>
         <div class="form-section">
             <img src="/icons/emailicon.svg" alt="Username Icon" class="form-icon"/>
-            <p class:label-filled={email !== ''} class="form-label" >Email</p>
+            <p class:label-filled={email !== ''} class="form-label" >{$_('authenticate.email')}</p>
             <input type="text" name="email" class="form-control" bind:value={email}/>
             <span>*</span>
         </div>
         <div class="form-section">
             <img src="/icons/passwordicon.svg" alt="Username Icon" class="form-icon"/>
-            <p class:label-filled={password !== ''} class="form-label" >Password</p>
+            <p class:label-filled={password !== ''} class="form-label" >{$_('authenticate.password')}</p>
             <input type="password" name="password" class="form-control" bind:value={password} />
             <span>*</span>
         </div>
         <div class="form-section">
-            <p class:label-filled={confirmpassword !== ''} class="form-label" >Confirm Password</p>
+            <p class:label-filled={confirmpassword !== ''} class="form-label" >{$_('authenticate.confirm_password')}</p>
             <input type="password" name="confirmpassword" class="form-control" bind:value={confirmpassword} style="padding-left: 3.5rem;" />
             <span>*</span>
         </div>
-        <div style="width:80%; height:20%; display: flex; flex-direction:row; align-items:center; justify-content:space-between; 
-            margin-top:auto; margin-bottom:1rem; margin-top:4rem;">
+        <div style="width:80%; height:20%; display: flex; {$isNarrowScreen ? "flex-direction:column-reverse; gap:30%; margin-top:auto; " : "flex-direction:row; justify-content:space-between; margin-top:4rem;"}  align-items:center; margin-bottom:1rem; ">
             <button type="submit" class="submit-button" >
-                Register
+                {$_('authenticate.register')}
             </button>
-            <a href="../authenticate/login" style="font-size: 11pt !important;">Already have an account?</a>
+            <a href="../authenticate/login" style="font-size: 11pt !important;">{$_('authenticate.already_have_an_account')}</a>
         </div>
     </form>
 </div>
