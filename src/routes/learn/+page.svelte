@@ -258,7 +258,7 @@
         padding:1.75rem 1rem; 
         box-sizing:border-box;
         border-top: 1px solid var(--bg-highlight);
-        z-index: 999;
+        z-index: 1;
     }
     .info-wrapper {
         display: flex;
