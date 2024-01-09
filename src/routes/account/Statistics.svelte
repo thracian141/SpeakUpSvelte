@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
     import Calendar from './Calendar.svelte';
+    import { _ } from '$lib/i18n';
     import { isNarrowScreen } from '$lib/store';
     let languages = ["English", "Bulgarian", "Turkish", "German"];
     let currentLanguage = languages[0];
@@ -43,20 +44,20 @@
             <span style="font-size:0.95rem; color:var(--fg-color); margin-right:auto; margin-left:0.8rem;">{wordsTotal}</span>
             <span style="position: absolute; right:0%; bottom:0%; font-size:0.95rem; font-weight:bold;">{Math.round((wordsLearnt/wordsTotal)*100)}%</span>
             <span style="position: absolute; right:0%; top:5%; font-size:0.95rem;">{wordsLearnt}</span>
-            <span style="position: absolute; right:0%; top:17%; font-size:0.95rem; color:var(--fg-color-2)">learnt</span>
+            <span style="position: absolute; right:0%; top:17%; font-size:0.95rem; color:var(--fg-color-2)">{$_('account.learned')}</span>
             <span style="position: absolute; right:0%; top:44%; font-size:0.95rem;">{wordsTotal-wordsLearnt}</span>
-            <span style="position: absolute; right:0%; top:56%; font-size:0.95rem; color:var(--fg-color-2)">left</span>
+            <span style="position: absolute; right:0%; top:56%; font-size:0.95rem; color:var(--fg-color-2)">{$_('account.left')}</span>
             <div class="words-learnt-bar" on:mouseenter={async()=>handleHover("wlearnt")} role="presentation">
                 <div id="wlearnt" class="words-learnt-progress" style="height: {(wordsLearnt/wordsTotal)*100}%;transform: scaleY(1)"></div>
                 <span style="position: absolute; color:var(--bg-color); left:8%; font-size:0.95rem;">{wordsLearnt}</span>
             </div>
             <span style="position: absolute; bottom:-25%; font-size:0.9rem; color:var(--fg-color); 
-              font-weight:bold; transform:scaleY(0.92)">TOTAL NUMBER</span>
+              font-weight:bold; transform:scaleY(0.92)">{$_('account.total_number')}</span>
         </div>
         <div style="display: flex; flex-direction:column; box-sizing:border-box; margin: 0 1rem; {$isNarrowScreen ? "width:9rem;" : " width:13rem;"}">
             <div style="text-align:center; display:flex; flex-direction:column; border: 1px solid var(--bg-highlight);
                         border-radius: 0.6rem 0.6rem 0 0; padding:0.4rem 0; position:relative;">
-                <span style="font-weight: bold; transform:scaleY(0.95); font-size:0.9rem;">LANGUAGE</span>
+                <span style="font-weight: bold; transform:scaleY(0.95); font-size:0.9rem;">{$_('account.language')}</span>
                 <button style="font-size: 1.5rem; cursor:pointer;" id="lang" 
                 on:click|stopPropagation={handleClick}>
                     {currentLanguage}
@@ -88,7 +89,7 @@
                 <span style="position: absolute; color:var(--bg-color); right:8%; font-size:0.95rem;">{wordsLearnt}</span>
             </div>
             <span style="position: absolute; bottom:-25%; font-size:0.9rem; color:var(--fg-color); 
-              font-weight:bold; transform:scaleY(0.92)">YOUR GOAL</span>
+              font-weight:bold; transform:scaleY(0.92)">{$_('account.your_goal')}</span>
         </div>
     </div>
     <Calendar />

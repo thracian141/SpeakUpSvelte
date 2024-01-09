@@ -1,6 +1,7 @@
 <script lang="ts">
-    import { slide, fly } from "svelte/transition";
+    import { slide } from "svelte/transition";
     import { isNarrowScreen } from "$lib/store";
+    import {_} from "$lib/i18n";
 
     let currentDate = new Date();
     let dateRangeSelection = "week";
@@ -29,7 +30,7 @@
 
 
 <div class="wrap" style="{$isNarrowScreen ? "margin-top:0;" : ""}">
-    <h3 style="margin:0; margin-bottom:1rem">Daily Goals</h3>
+    <h3 style="margin:0; margin-bottom:1rem">{$_('account.daily_goals')}</h3>
     {#if dateRangeSelection == "week"}
         <div class="week-wrapper" in:slide out:slide>
             {#each weekDates as day (day)}
@@ -44,11 +45,11 @@
         </div>
         <div in:slide out:slide>
             {#if hasStudied.get(currentDate.toISOString().split('T')[0]) == true}
-                <h1 style="margin-bottom: 0;">You <span style="color: var(--green);">have studied</span> today.</h1>
-                <h1>Great job!</h1>        
+                <h1 style="margin-bottom: 0;">{$_('account.you')} <span style="color: var(--green);">{$_('account.have_studied')}</span> {$_('account.today')}</h1>
+                <h1>{$_('account.great_job')}</h1>        
             {:else if hasStudied.get(currentDate.toISOString().split('T')[0]) == false}
-                <h1 style="margin-bottom: 0;">You <span style="color: var(--red);">have not studied</span> today!</h1>
-                <h1>Try to reach your daily goal.</h1>
+                <h1 style="margin-bottom: 0;">{$_('account.you')} <span style="color: var(--red);">{$_('account.have_not_studied')}</span> {$_('account.today')}</h1>
+                <h1>{$_('account.try_to_reach_your_goal')}</h1>
             {/if}
         </div>
     {:else if dateRangeSelection == "month"}
