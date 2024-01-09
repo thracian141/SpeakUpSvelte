@@ -8,7 +8,6 @@
     let direction = -1; // Direction in which the card will fly.
 
     import { testData } from "./test";
-    import { browser } from "$app/environment";
 
     let currentIndex = 0;
 
@@ -41,8 +40,8 @@
     function changeTestData(increment: number) {
         ready = false;
         direction = increment;
-        currentIndex = (currentIndex + increment + testData.length) % testData.length;
-
+        currentIndex = (currentIndex + increment);
+        console.log(currentIndex);
         setTimeout(() => {
             ready = true;
         }, 300);
@@ -70,20 +69,19 @@
     }
 
     let answerInput: HTMLInputElement;
-    let windowHeight: number;
-    if (browser) {
-        windowHeight = window.innerHeight;
-    }
+
     let startX:number;
     let currentX:number;
     let outerwrap:HTMLDivElement;
 
     function handleTouchStart(event: TouchEvent) {
+        if (!$isNarrowScreen) return;
         startX = event.touches[0].clientX;
         currentX = startX;
     }
 
     function handleTouchMove(event: TouchEvent) {
+        if (!$isNarrowScreen) return;
         event.preventDefault();
 
         const x = event.touches[0].clientX;
@@ -94,6 +92,7 @@
     }
 
     function handleTouchEnd() {
+        if (!$isNarrowScreen) return;
         outerwrap.style.transition = 'transform 0.2s ease-out';
         outerwrap.style.transform = '';
         if (currentX - startX > window.innerWidth / 3) {
@@ -107,12 +106,6 @@
     }
 
     onMount(async () => {
-        if ($isNarrowScreen) {
-            window.addEventListener('resize', () => {
-                let newWindowHeight = window.innerHeight;
-                windowHeight = newWindowHeight;
-            });
-        }
         let answerTemp = document.getElementById('answerTemp');
         answerTempWidth = answerTemp ? answerTemp.clientWidth : 0;
 
@@ -127,6 +120,10 @@
             infoOpen = false;
         }
     }
+    $: leftDisabled = currentIndex <= 0;
+    $: rightDisabled = currentIndex >= testData.length-1;
+    $: console.log("left disabled: " + leftDisabled);
+    $: console.log("right disabled: " + rightDisabled);
 </script>
 
 <div style="{$isNarrowScreen ? "font-size: 1.5rem;" : "font-size: 3rem;"} display:inline-block; width:fit-content; position:absolute; visibility:hidden;" id="answerTemp" 
@@ -139,12 +136,10 @@
         <div on:touchstart={handleTouchStart} on:touchmove={handleTouchMove} on:touchend={handleTouchEnd} bind:this={outerwrap}
            in:fly={{x: direction > 0 ? 1200 : -1200, duration: 500}} 
            out:fly={{x: direction > 0 ? -1200 : 1200, duration: 500}} 
-           class="outerwrap" style="flex-grow:{infoOpen ? "4" : "0"}; {$isNarrowScreen ? "width:100%; min-width:100%; flex-direction:column; flex-grow:0;" : "height: 35rem;"}">
-            {#if !$isNarrowScreen}   
-            <a class="card-scroller" class:disabled={currentIndex <= 0} href="/" on:click={(event) => {event.preventDefault(); changeTestData(-1); dropdownOpen = false;}}>
+           class="outerwrap" style="flex-grow:{infoOpen ? "4" : "0"}; {$isNarrowScreen ? "width:100%; min-width:100%; flex-direction:column; flex-grow:0;" : "height: 35rem;"}">  
+            <a class="card-scroller" class:disabled={leftDisabled} class:narrowscreen={$isNarrowScreen} href="/" on:click={(event) => {event.preventDefault(); changeTestData(-1); dropdownOpen = false;}}>
                 <img src="/icons/chevron-compact-left.svg" alt="previous card" />
             </a>
-            {/if}  
             <div class="wrapper" style="{$isNarrowScreen ? "border-radius:0; padding:0.5rem; height:auto;" : ""}">
                 <div class="wrapper-section top">
                     <div class="level-wrapper" style="{$isNarrowScreen ? "margin: 1.5rem auto 0 auto" : ""}">
@@ -213,11 +208,9 @@
                     {/if}
                 </div>
             </div>
-            {#if !$isNarrowScreen}
-            <a class="card-scroller" class:disabled={currentIndex == testData.length-1} href="/" on:click={(event) => {event.preventDefault(); changeTestData(1); dropdownOpen = false;}}>
+            <a class="card-scroller" class:disabled={rightDisabled} class:narrowscreen={$isNarrowScreen} href="/" on:click={(event) => {event.preventDefault(); changeTestData(1); dropdownOpen = false;}}>
                 <img src="/icons/chevron-compact-right.svg" alt="next card" />
             </a>
-            {/if}
         </div>
     {/if}
     {#if infoOpen && ready && testData[currentIndex].wordInfo}
@@ -243,6 +236,27 @@
 </div>
 
 <style>
+    .narrowscreen {
+        display: none;
+    }
+    .disabled {
+        pointer-events: none !important;
+        opacity: 0.4 !important;
+    }
+    .card-scroller {
+        opacity: 1;
+        background:none;
+        border:none;
+    }
+    .card-scroller > img {
+        filter: brightness(0) saturate(100%) invert(58%) sepia(4%) saturate(2098%) hue-rotate(190deg) brightness(96%) contrast(88%);
+        height: 5rem;
+        transition: filter 0.12s ease-in-out;
+    }
+    .card-scroller:hover > img {
+        filter: brightness(0) saturate(100%) invert(93%) sepia(1%) saturate(3072%) hue-rotate(191deg) brightness(84%) contrast(88%)
+            drop-shadow(0 0 4px rgba(255, 255, 255, 0.2));
+    }
     #phone-div {
         position: fixed;
         bottom: 0;
@@ -360,19 +374,6 @@
             right:50%;
             rotate: 0deg;
         }
-    .disabled {
-        pointer-events: none;
-        opacity: 0.4;
-    }
-    .card-scroller > img {
-        filter: brightness(0) saturate(100%) invert(58%) sepia(4%) saturate(2098%) hue-rotate(190deg) brightness(96%) contrast(88%);
-        height: 5rem;
-        transition: filter 0.12s ease-in-out;
-    }
-    .card-scroller:hover > img {
-        filter: brightness(0) saturate(100%) invert(93%) sepia(1%) saturate(3072%) hue-rotate(191deg) brightness(84%) contrast(88%)
-            drop-shadow(0 0 4px rgba(255, 255, 255, 0.2));
-    }
     .dropdownClosed {
         display: flex !important;
         flex-direction: column !important;
@@ -428,13 +429,6 @@
         box-shadow: 0 0 4px 2px #babecc00;
         transition: background-color 0.12s ease-in-out, color 0.12s ease-in-out, box-shadow 0.2s ease-in-out;
     }
-        .part-of-speech > img {
-            object-fit: cover;
-            height:0.5rem;
-            width:1.5rem;
-            filter: brightness(0) saturate(100%) invert(93%) sepia(1%) saturate(3072%) hue-rotate(191deg) brightness(84%) contrast(88%);
-            transition: filter 0.12s ease-in-out;
-        }
         .part-of-speech > span {
             margin:0; margin-top: 0.2rem; margin-bottom: 0.2rem;
             line-height: 100%;
@@ -445,9 +439,6 @@
         color: #9da0ab !important;
         box-shadow: inset 0 0 4px 1px #babecc08;
     }
-        .part-of-speech:hover > img {
-            filter: brightness(0) saturate(100%) invert(72%) sepia(13%) saturate(201%) hue-rotate(190deg) brightness(87%) contrast(91%);
-        }
     .sentence {
         display:block;
         min-height: 4rem;
