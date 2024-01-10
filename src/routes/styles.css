@@ -6,10 +6,12 @@
     --font-important: "Noto Serif","Times New Roman",serif;
     font-family: var(--font-body);
     --fg-color: #babecc;
+    --fg-color-half: #babecc90;
     --fg-color-2: #868eac;
     --bg-color: #17191c;
     --bg-middle: rgb(20,20,22);
     --el-bg-color: rgb(16, 16, 16);
+    --el-bg-color-half: rgba(16, 16, 16, 0.55);
     --bg-highlight: #2f3336;
     --bg-highlight-2: #484c50;
     --selected-text: #9952c6;
