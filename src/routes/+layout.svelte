@@ -22,8 +22,10 @@
         goto('/');
     }
 
+    let loggedIn : boolean;
     onMount(async () => {
-        if (await isLoggedIn() == false) {
+        loggedIn = await isLoggedIn();
+        if (!loggedIn) {
             goto('/welcome');
         }
         if (browser) {
@@ -52,13 +54,15 @@
         <span>{$_("layout.highly_experimental")}</span>
     </button>
     {/if}
-    {#if !$isNarrowScreen}
+    {#if !loggedIn}
+        <!--nothing-->
+    {:else if !$isNarrowScreen}
         <Navbar />
     {:else if $isNarrowScreen}
         <NavbarPhone />
     {/if}
-    <main style="padding-left: {$isNarrowScreen == true ? "0" : "4rem"}">
-        <div class="wrap" style="{$isNarrowScreen ? "padding-left:0rem; width:100%;" : "padding-left:1rem;"}">
+    <main style="padding-left: {$isNarrowScreen == true || !loggedIn ? "0" : "4rem"}">
+        <div class="wrap" style="{$isNarrowScreen || !loggedIn ? "padding-left:0rem; width:100%;" : "padding-left:1rem;"}">
             <slot />
         </div>
     </main>

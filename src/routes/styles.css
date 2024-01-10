@@ -6,6 +6,7 @@
     --font-important: "Noto Serif","Times New Roman",serif;
     font-family: var(--font-body);
     --fg-color: #babecc;
+    --fg-color-half: #babecc90;
     --fg-color-2: #868eac;
     --bg-color: #17191c;
     --bg-middle: rgb(20,20,22);
