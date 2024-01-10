@@ -115,7 +115,7 @@
         height:3.3rem;
     }
     nav {
-        position:absolute;
+        position:fixed;
         z-index: 5;
         min-height: 100%;
         width: 5.5rem;

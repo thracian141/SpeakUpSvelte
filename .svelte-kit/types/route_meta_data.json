@@ -5,5 +5,6 @@
 	"/authenticate/register": [],
 	"/decks": [],
 	"/decks/[language]": [],
-	"/learn": []
+	"/learn": [],
+	"/welcome": []
 }

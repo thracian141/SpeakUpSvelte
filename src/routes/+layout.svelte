@@ -9,6 +9,7 @@
     import { goto } from "$app/navigation";
     import { isNarrowScreen } from "$lib/store";
     import { page } from "$app/stores";
+    import {isLoggedIn} from '$lib/scripts/UserHandler';
 
     let theme = 'dark';
     function changeTheme() {
@@ -21,7 +22,10 @@
         goto('/');
     }
 
-    onMount(() => {
+    onMount(async () => {
+        if (await isLoggedIn() == false) {
+            goto('/welcome');
+        }
         if (browser) {
             if (localStorage.getItem('websiteLanguage') != null && localStorage.getItem('websiteLanguage') != undefined) {
                 locale.set(JSON.parse(localStorage.getItem('websiteLanguage') as string));
@@ -34,7 +38,7 @@
 </script>
 
 <div class="app">
-    {#if $page.url.pathname != "/learn" && $page.url.pathname != "/learn/"}
+    {#if $page.url.pathname != "/learn" && $page.url.pathname != "/learn/" && $page.url.pathname != "/welcome/" && $page.url.pathname != "/welcome"}
     <button class="change-theme" on:click={changeTheme} style="{$isNarrowScreen ? "top:1rem; right:0.75rem" : ""}">
         {#if theme === 'dark'}
             <i class="bi bi-moon" in:slide out:slide></i>
@@ -53,7 +57,7 @@
     {:else if $isNarrowScreen}
         <NavbarPhone />
     {/if}
-    <main style="padding-left: {$isNarrowScreen == true ? "0" : "5.5rem"}">
+    <main style="padding-left: {$isNarrowScreen == true ? "0" : "4rem"}">
         <div class="wrap" style="{$isNarrowScreen ? "padding-left:0rem; width:100%;" : "padding-left:1rem;"}">
             <slot />
         </div>
