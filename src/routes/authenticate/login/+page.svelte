@@ -42,12 +42,12 @@ style="{$isNarrowScreen ? "width:100%; padding: 1rem 0.2rem; border-radius:0;" :
     <h2 style="{$isNarrowScreen ? "font-size:2rem;" : ""}">{$_('authenticate.sign_in')}</h2>
     <form method="post" style="position: relative;">
         <div class="form-section">
-            <img src="/icons/emailicon.svg" alt="Username Icon" class="form-icon"/>
+            <i class="bi bi-at"></i>
             <p class:label-filled={email !== ''} class="form-label" >{$_('authenticate.email')}</p>
             <input type="text" class="form-control" bind:value={email}/>
         </div>
         <div class="form-section">
-            <img src="/icons/passwordicon.svg" alt="Username Icon" class="form-icon"/>
+            <i class="bi bi-key" style="font-size: 2.4rem;"></i>
             <p class:label-filled={password !== ''} class="form-label" >{$_('authenticate.password')}</p>
             <input type="password" class="form-control" bind:value={password} />
         </div>

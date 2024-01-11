@@ -45,6 +45,12 @@ form {
     margin-bottom: auto;
     filter: brightness(0) saturate(100%) invert(92%) sepia(2%) saturate(1552%) hue-rotate(193deg) brightness(86%) contrast(85%);
 }
+.form-section > i {
+    font-size: 2.6rem;
+    margin-left: 0.2rem;
+    color: var(--fg-color);
+
+}
 
 .form-control {
     height: 100%;

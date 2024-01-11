@@ -59,35 +59,40 @@
      class={isExpanded ? 'nav-expanded' : ''}
     >
     <div class="logo" style="display: flex; flex-direction:row;">
-        <img src="/icons/speakuplogo.svg" alt="SpeakUp Logo"/>
+        <img src="/logo.svg" alt="SpeakUp Logo"/>
         <p>SPEAKUP</p>
     </div>
     <ul id="mainOptions" style="list-style-type:none; padding: 0.5rem;">
         <a href="/" class="nav-option" class:active={$page.url.pathname == "/"}>
-            <img src="/icons/homeicon.svg" alt="Home Icon" /><p>{$_('layout.home')}</p>
+            <i class="bi bi-house-door"></i><p>{$_('layout.home')}</p>
         </a>
-        <a href="/learn" class="nav-option" class:active={$page.url.pathname == "/learn"}>
-            <img src="/icons/cardsicon.svg" alt="Learn Icon" /><p>{$_('layout.learn')}</p>
+        <a href="/learn" class="nav-option" class:active={$page.url.pathname == "/learn"  || $page.url.pathname == "/learn/"}>
+            <i class="bi bi-play-btn"></i><p>{$_('layout.learn')}</p>
         </a>
-        <a href="/decks" class="nav-option" class:active={$page.url.pathname == "/decks"}>
-            <img src="/icons/decksIcon.svg" alt="Decks Icon" /><p>{$_('layout.decks')}</p>
+        <a href="/decks" class="nav-option" class:active={$page.url.pathname == "/decks" || $page.url.pathname == "/decks/"}>
+            <i class="bi bi-card-list"></i><p>{$_('layout.decks')}</p>
         </a>
+        {#if true}
+        <a href="/dev" class="nav-option" class:active={$page.url.pathname == "/dev" || $page.url.pathname == "/dev/"}>
+            <i class="bi bi-pencil-square"></i><p>{$_('layout.create')}</p>
+        </a>
+        {/if}
         <a href="/account" class="nav-option" class:active={$page.url.pathname == "/account/" || $page.url.pathname == "/account"}>
-            <img src="/icons/accounticon.svg" alt="Account Icon" /><p>{$_('layout.account')}</p>
+            <i class="bi bi-person" style="font-size:2.7rem; margin-left:-0.2rem;"></i><p>{$_('layout.account')}</p>
         </a>
     </ul>
     {#await isLoggedIn then bool}
         {#if !bool}
             <ul style="list-style-type:none; padding: 12px; margin-top:auto">
                 <a id="authForm" class="nav-option" href="/authenticate/login" class:active={$page.url.pathname == "/authenticate/login"}>
-                    <img src="/icons/loginicon.svg" alt="Authenticate Icon" />
+                    <i class="bi bi-box-arrow-in-left"></i>
                     <p style="text-overflow:clip; white-space:nowrap">{$_('layout.sign in')}</p>
                 </a>
             </ul>
         {:else}
             <ul style="list-style-type:none; padding: 12px; margin-top:auto">
                 <a id="authForm" class="nav-option" href="/" class:active={isLogoutConfirmed} on:click|preventDefault={handleLogoutClick}>
-                    <img src="/icons/logouticon.svg" alt="Authenticate Icon" />
+                    <i class="bi bi-box-arrow-right"></i>
                     <p style="text-overflow:clip; white-space:nowrap">{isLogoutConfirmed ? 'Confirm' : 'Sign Out'}</p>
                 </a>
             </ul>
@@ -142,15 +147,15 @@
         height: 3.8rem;
         transition: background-color 0.2s ease-in-out, width 0.2s ease-in-out;
         align-items: center;
+        color:var(--fg-color-2);
+        transition: all 0.1s ease-in-out;
     }
     .active {
         background-color: var(--selected-color) !important;
+        color: var(--fg-color) !important;
     }
-    .active p, .active img {
-        filter: brightness(0) saturate(100%) invert(100%) sepia(13%) saturate(6304%) hue-rotate(178deg) brightness(82%) contrast(93%);
-    }
-    .nav-option > img {
-        height:60%;
+    .nav-option > i {
+        font-size: 2.3rem;
     }
     .nav-option p {
         font-size: 0.9rem;
@@ -166,5 +171,6 @@
     }
     .nav-option:hover {
         background-color: var(--bg-color);
+        color: var(--fg-color);
     }
 </style>
