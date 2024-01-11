@@ -5,6 +5,7 @@
     --font-body: "Noto Sans", "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;;
     --font-important: "Noto Serif","Times New Roman",serif;
     font-family: var(--font-body);
+    --fg-ultra: #ffffff;
     --fg-color: #babecc;
     --fg-color-half: #babecc90;
     --fg-color-2: #868eac;
@@ -25,6 +26,7 @@
     --red-half: #ab4e4e70;
 }
 body.light-theme {
+    --fg-ultra: #000000;
     --fg-color: #161616;
     --fg-color-2: #2b2934;
     --bg-color: #efefef;

@@ -66,25 +66,25 @@
         <a href="/" class="nav-option" class:active={$page.url.pathname == "/"}>
             <i class="bi bi-house-door"></i><p>{$_('layout.home')}</p>
         </a>
-        <a href="/learn" class="nav-option" class:active={$page.url.pathname == "/learn"  || $page.url.pathname == "/learn/"}>
+        <a href="/learn" class="nav-option" class:active={$page.url.pathname.includes("/learn")}>
             <i class="bi bi-play-btn"></i><p>{$_('layout.learn')}</p>
         </a>
-        <a href="/decks" class="nav-option" class:active={$page.url.pathname == "/decks" || $page.url.pathname == "/decks/"}>
+        <a href="/decks" class="nav-option" class:active={$page.url.pathname.includes("/decks")}>
             <i class="bi bi-card-list"></i><p>{$_('layout.decks')}</p>
         </a>
         {#if true}
-        <a href="/dev" class="nav-option" class:active={$page.url.pathname == "/dev" || $page.url.pathname == "/dev/"}>
+        <a href="/manage" class="nav-option" class:active={$page.url.pathname.includes('/manage')}>
             <i class="bi bi-pencil-square"></i><p>{$_('layout.create')}</p>
         </a>
         {/if}
-        <a href="/account" class="nav-option" class:active={$page.url.pathname == "/account/" || $page.url.pathname == "/account"}>
+        <a href="/account" class="nav-option" class:active={$page.url.pathname.includes('/account')}>
             <i class="bi bi-person" style="font-size:2.7rem; margin-left:-0.2rem;"></i><p>{$_('layout.account')}</p>
         </a>
     </ul>
     {#await isLoggedIn then bool}
         {#if !bool}
             <ul style="list-style-type:none; padding: 12px; margin-top:auto">
-                <a id="authForm" class="nav-option" href="/authenticate/login" class:active={$page.url.pathname == "/authenticate/login"}>
+                <a id="authForm" class="nav-option" href="/authenticate/login" class:active={$page.url.pathname.includes("/authenticate")}>
                     <i class="bi bi-box-arrow-in-left"></i>
                     <p style="text-overflow:clip; white-space:nowrap">{$_('layout.sign in')}</p>
                 </a>

@@ -38,12 +38,49 @@
                 <option>{section}</option>
                 {/each}
             </select>
+            <div class="section-options">
+                <button><i class="bi bi-database"></i>Bulk add<br> sentences</button>
+                <button>Add section</button>
+                <button>Bulk add<br> words</button>
+                <button>Edit section</button>
+            </div>
         </div>
     </div>
 </div>
 
 
 <style>
+    button > i {
+        font-size: 2rem;
+        color: var(--fg-color);
+    }
+    .section-options > button {
+        pointer-events: all;
+        cursor: pointer;
+        width:49%;
+        height:49%;
+        background-color: var(--el-bg-color);
+        color: var(--fg-color);
+        border:none;
+        border-radius: 0.5rem;
+        font-size: 1.5rem;
+        box-sizing: border-box;
+    }
+        .section-options > button:first-child {
+            margin-right: 2%;
+            margin-bottom: 2%;
+        }
+        .section-options > button:nth-child(3) {
+            margin-right: 2%;
+        }
+    .section-options {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        flex-wrap: wrap;
+    }
     .sections > select {
         width: 100%;
         height: 4rem;
@@ -54,6 +91,7 @@
         box-sizing: border-box;
         font-size: 1.5rem;
         margin-top: 1rem;
+        margin-bottom: 1rem;
     }
         .sections > h2 {
             margin: 0 !important;

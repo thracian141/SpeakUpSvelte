@@ -5,7 +5,9 @@
 	"/authenticate/register": [],
 	"/decks": [],
 	"/decks/[language]": [],
-	"/dev": [],
 	"/learn": [],
+	"/manage": [],
+	"/manage/dev": [],
+	"/manage/personal": [],
 	"/welcome": []
 }
