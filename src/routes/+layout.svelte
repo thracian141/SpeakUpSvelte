@@ -9,7 +9,6 @@
     import { goto } from "$app/navigation";
     import { isNarrowScreen } from "$lib/store";
     import { page } from "$app/stores";
-    import {isLoggedIn} from '$lib/scripts/UserHandler';
 
     let theme = 'dark';
     function changeTheme() {
@@ -22,12 +21,26 @@
         goto('/');
     }
 
-    let loggedIn : boolean;
-    onMount(async () => {
-        loggedIn = await isLoggedIn();
-        if (!loggedIn) {
-            goto('/welcome');
+    $: loggedIn = ($page.url.pathname != "/learn" && $page.url.pathname != "/learn/" && $page.url.pathname != "/welcome/" && $page.url.pathname != "/welcome");
+    let overriden = false;
+    //make a reactive statement that puts overriden in localstorage when it changes
+    $: {
+        if (overriden) {
+            if (browser) {
+                localStorage.setItem('overriden', JSON.stringify(overriden));
+            }
         }
+    }
+    onMount(async () => {
+        if (browser) {
+            if (localStorage.getItem('overriden') != null && localStorage.getItem('overriden') != undefined) {
+                overriden = JSON.parse(localStorage.getItem('overriden') as string);
+                goto('/');
+            } else {
+                goto('/welcome');
+            }
+        }
+
         if (browser) {
             if (localStorage.getItem('websiteLanguage') != null && localStorage.getItem('websiteLanguage') != undefined) {
                 locale.set(JSON.parse(localStorage.getItem('websiteLanguage') as string));
@@ -40,7 +53,7 @@
 </script>
 
 <div class="app">
-    {#if $page.url.pathname != "/learn" && $page.url.pathname != "/learn/" && $page.url.pathname != "/welcome/" && $page.url.pathname != "/welcome"}
+    {#if loggedIn || overriden}
     <button class="change-theme" on:click={changeTheme} style="{$isNarrowScreen ? "top:1rem; right:0.75rem" : ""}">
         {#if theme === 'dark'}
             <i class="bi bi-moon" in:slide out:slide></i>
@@ -54,8 +67,8 @@
         <span>{$_("layout.highly_experimental")}</span>
     </button>
     {/if}
-    {#if !loggedIn}
-        <!--nothing-->
+    {#if !loggedIn && !overriden}
+        <a href="/" style="position: absolute; top:0; left:0; font-size:1.5rem; z-index:50" on:click={()=>overriden=true}>debug. go to site</a>
     {:else if !$isNarrowScreen}
         <Navbar />
     {:else if $isNarrowScreen}

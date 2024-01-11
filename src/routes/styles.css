@@ -30,6 +30,7 @@ body.light-theme {
     --bg-color: #efefef;
     --bg-middle: #dddddd;
     --el-bg-color: #d5d5d5;
+    --el-bg-color-half: #ffffff70;
     --bg-highlight: #f5f5f5;
     --bg-highlight-2: #ffffff;
     --selected-color: #8956a9;

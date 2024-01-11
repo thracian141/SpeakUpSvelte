@@ -1,9 +1,15 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+	import { slide } from 'svelte/transition'; import { onMount } from "svelte";
 
     let langs: HTMLDivElement[] = [];
     let anyHovered = false;
     let hoveredLang: string;
+    let selectedLang: string;
+
+    let username = '';
+    let password = '';
+    let confirmpassword = '';
+    let email = '';
 
     onMount(async () => {
         langs = await Array.from(document.getElementsByClassName("language") as HTMLCollectionOf<HTMLDivElement>);
@@ -11,6 +17,7 @@
         langs.forEach((lang) => {
             lang.addEventListener("click", () => {
                 if (anyHovered) {
+                    selectedLang = hoveredLang;
                     langs.forEach((lang) => {
                         if (lang.id != hoveredLang) {
                             lang.style.display = "none";
@@ -77,12 +84,165 @@
             </div>
             <span>Turkish</span>
         </div>
+        {#if selectedLang != '' && selectedLang != undefined}
+        <form class="register" in:slide={{duration:600}} out:slide>
+            <h1>Create a <span>free</span> account<br>and 
+                <span>
+                    speak up
+                    <img src="/logo.svg" style="height:4rem; width:auto; margin: 0 -0.5rem -0.5rem -0.5rem" alt="logo"/>
+                </span>!
+            </h1>
+            <div class="group">
+                <label for="username" class:filled={username!=''}>USERNAME</label>
+                <input bind:value={username} type="text" name="username" id="username" style="padding-right: 11rem;"/>
+            </div>
+            <div class="group">
+                <label for="email" class:filled={email!=''}>EMAIL</label>
+                <input bind:value={email} type="email" name="email" id="email" style="padding-right: 7rem;"/>
+            </div>
+            <div class="group">
+                <label for="password" class:filled={password!=''}>PASSWORD</label>
+                <input bind:value={password} type="password" name="password" id="password" style="padding-right: 11rem;"/>
+            </div>
+            <div class="group">
+                <label for="confirmpassword" class:filled={confirmpassword!=''}>CONFIRM PASSWORD</label>
+                <input bind:value={confirmpassword} type="password" name="confirmpassword" id="confirmpassword" style="padding-right: 18rem;"/>
+            </div>
+            <div class="buttons">
+                <button type="submit">
+                    REGISTER
+                </button>
+                <div class="anchors">
+                    <a href="./authenticate/login">
+                        Already have an account?
+                    </a>
+                    <a href="./authenticate/register">
+                        Or pick a language later
+                    </a>
+                </div>
+            </div>
+        </form>
+        {/if}
     </div>
-
 </div>
 
 
 <style>
+    .anchors {
+        display: flex;
+        flex-direction: column;
+        align-items: left;
+        gap:0.5rem;
+    }
+    .buttons > button:first-child {
+        pointer-events: auto;
+        background-color: var(--fg-color-half);
+        color: var(--bg-highlight);
+        border: none;
+        border-radius: 0.5rem;
+        width: 12rem;
+        height: 4rem;
+        font-size: 1.6rem;
+        font-weight: bold;
+        transition: all 0.2s ease-in-out;
+    }
+        .buttons > button:first-child:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0.5rem 1rem 0.5rem #00000020;
+            cursor: pointer;
+            background-color: var(--fg-color);
+            color:var(--bg-highlight);
+        }
+    .anchors > a {
+        pointer-events: auto;
+        color: var(--fg-color-2);
+        font-size: 1.4rem;
+        text-decoration: none;
+        transition: all 0.2s ease-in-out;
+    }
+        .anchors > a:hover {
+            color: var(--fg-color);
+            cursor: pointer;
+        }
+    .buttons {
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: center;
+        width:70%;
+        box-sizing: border-box;
+        justify-content: space-between;
+    }
+    .filled {
+        color: var(--fg-color) !important;
+    }
+    .group {
+        pointer-events: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        width: 70%;
+        position: relative;
+        border-radius: 0.5rem;
+        box-sizing: border-box;
+        transition: transform 0.2s ease-in-out, opacity 0.4s ease-in-out;
+        overflow: hidden;
+    }
+        .group:hover, .group:focus-within {
+            transform: scale(1.03);
+            box-shadow: 0 0 0.7rem 0.2rem var(--fg-color-half);
+        }
+        .register:hover > .group:not(:hover), .register:focus-within > .group:not(:focus-within) {
+            transform: scale(0.975);
+            opacity: 0.6;
+        }
+        .group > label {
+            position: absolute;
+            right:2%;
+            top:50%;
+            transform: translateY(-50%);
+            font-size: 1.6rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color:var(--bg-highlight-2);
+            transition: color 0.2s ease-in-out;
+        }
+        .group input, .group input:focus, .group input:active {
+            background-color: var(--el-bg-color-half);
+            outline:none;
+            box-shadow: none !important;
+            border:none;
+            color: var(--fg-color);
+            -webkit-box-shadow: none;
+            box-sizing: border-box;
+            width: 100%;
+            height: 6rem;
+            border-radius: 0.5rem !important;
+            padding: 0 1rem;
+            font-size: 2rem;
+        }
+    .register {
+        pointer-events: none;
+        width: 80rem;
+        background-color: var(--el-bg-color-half);
+        box-sizing: border-box;
+        border-radius: 0.5rem;
+        padding:4rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap:1rem;
+    }
+        .register > h1 {
+            font-family: var(--font-important);
+            font-size: 4rem;
+            margin: 0 !important;
+            text-align: left;
+            width:70%;
+        }
+            .register > h1 > span {
+                color: var(--selected-text);
+            }
     .unhovered {
         opacity: 0.6;
         transform: scale(0.975);
@@ -194,7 +354,6 @@
         position: relative;
         box-sizing: border-box;
         width: 100%;
-        height: 300vh;
         background: radial-gradient(at bottom, var(--cyan-half) 0%, var(--bg-color) 100%);
     }
 </style>
