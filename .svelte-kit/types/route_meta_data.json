@@ -4,6 +4,7 @@
 	"/authenticate/login": [],
 	"/authenticate/register": [],
 	"/decks": [],
+	"/decks/all": [],
 	"/decks/[language]": [],
 	"/learn": [],
 	"/manage": [],
