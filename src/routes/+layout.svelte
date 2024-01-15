@@ -24,23 +24,19 @@
     $: loggedIn = ($page.url.pathname != "/learn" && $page.url.pathname != "/learn/" && $page.url.pathname != "/welcome/" && $page.url.pathname != "/welcome");
     let overriden = false;
     //make a reactive statement that puts overriden in localstorage when it changes
-    $: {
-        if (overriden) {
-            if (browser) {
-                localStorage.setItem('overriden', JSON.stringify(overriden));
-            }
-        }
-    }
     onMount(async () => {
+        overriden = await Boolean(await JSON.parse(await localStorage.getItem('overriden') as string));
         if (browser) {
-            if (localStorage.getItem('overriden') != null && localStorage.getItem('overriden') != undefined) {
-                overriden = JSON.parse(localStorage.getItem('overriden') as string);
-                goto('/');
+            if (overriden == true) {
+                await console.log('proceeding to website');
+                if (await $page.url.pathname.includes('welcome')) {
+                    await console.log('redirecting to /');
+                    await goto('/');
+                }
             } else {
                 goto('/welcome');
             }
         }
-
         if (browser) {
             if (localStorage.getItem('websiteLanguage') != null && localStorage.getItem('websiteLanguage') != undefined) {
                 locale.set(JSON.parse(localStorage.getItem('websiteLanguage') as string));
@@ -50,6 +46,13 @@
             }
         }
     });
+    $: {
+        if (overriden) {
+            if (browser) {
+                localStorage.setItem('overriden', JSON.stringify(overriden));
+            }
+        }
+    }
 </script>
 
 <div class="app">

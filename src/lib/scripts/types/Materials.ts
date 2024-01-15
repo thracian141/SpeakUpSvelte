@@ -10,6 +10,7 @@ export class PersonalDeck implements Deck {
     public description: string;
     public image: string;
     public userId: number;
+    public level: number;
 
     constructor(id:number, name:string, description:string, image:string, userId:number) {
         this.id = id;
@@ -17,6 +18,7 @@ export class PersonalDeck implements Deck {
         this.description = description;
         this.image = image;
         this.userId = userId;
+        this.level = Math.floor(Math.random() * 100);
     }
     
 }

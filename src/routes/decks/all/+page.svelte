@@ -1,33 +1,40 @@
 <script lang="ts">
-	import type { PersonalDeck } from '$lib/scripts/types/Materials.ts';
+	import { slide } from 'svelte/transition';
+	import { PersonalDeck } from "$lib/scripts/types/Materials.js";
 	import { isNarrowScreen } from '$lib/store';
-    import { onMount } from 'svelte';
     import { decks } from "../testDecks";
     import type { Deck } from "../testDecks";
-    import { browser } from '$app/environment';
 
-    let userCourses: Deck[] = [decks[3], decks[4]];
-    let userDecks: PersonalDeck[] = [
-        { id: 0, name: "Test deck 1", description: "This is a test deck", image: '', userId: 0 },
-        { id: 1, name: "Test deck 2", description: "This is another test deck", image: '', userId: 0 },
-        { id: 2, name: "Test deck 3", description: "Yet another test deck", image: '', userId: 0 },
-        { id: 3, name: "Test deck 4", description: "One more test deck", image: '', userId: 0 },
-        { id: 4, name: "Test deck 5", description: "Final test deck", image: '', userId: 0 }
+    let searchbarInput = '';
+    let allUserCourses: Deck[] = [decks[3], decks[4]];
+    let allUserDecks: PersonalDeck[] = [
+        new PersonalDeck(0, "Test deck 1", "This is a test deck", '', 0),
+        new PersonalDeck(1, "Test deck 2", "This is another test deck", '', 0),
+        new PersonalDeck(2, "Test deck 3", "Yet another test deck", '', 0),
+        new PersonalDeck(3, "Test deck 4", "One more test deck", '', 0),
+        new PersonalDeck(4, "Test deck 5", "Final test deck", '', 0)
     ];
+    let userCourses: Deck[] = [];
+    let userDecks: PersonalDeck[] = [];
+    $: {
+        userCourses = allUserCourses.filter(course => course.getName().toLowerCase().includes(searchbarInput.toLowerCase()));
+        userDecks = allUserDecks.filter(deck => deck.name.toLowerCase().includes(searchbarInput.toLowerCase()));
+    }
     let activeCourse: Deck = userCourses[0];
     let activeDeck: PersonalDeck = userDecks[0];
 </script>
 
 
 <div class="outwrap" style="{$isNarrowScreen ? "width:100%; border-radius:0; height:100%; margin-top:5rem;" : ""}">
-    <input type="text" placeholder="Search" class="searchbar" />
+    <input type="text" placeholder="Search" class="searchbar" bind:value={searchbarInput}/>
     <div class="bottom-wrap" style="{$isNarrowScreen ? 'flex-direction: column;' : 'flex-direction:row; height: 30rem;'}">
         <div class="courses" style="{$isNarrowScreen ? 'width:100%; height:35vh !important;' : 'width:34rem; height: 100%;'}">
             <h2>Your active courses</h2>
             {#each userCourses as course}
-                <div class="course-wrap">
+                <div class="course-wrap" transition:slide|global>
+                    <button><i class="bi bi-gear-fill"></i></button>
                     <img src="{course.image}" alt="{course.getName()}" />
-                    <span>{course.getName()}</span>
+                    <span style="margin-right: 1rem;">{course.getName()}</span>
                     <p>78%</p>
                     <div class="overlay">
                         {#if activeCourse == course}
@@ -46,9 +53,10 @@
         <div class="courses" style="{$isNarrowScreen ? 'width:100%; height:50vh;' : 'width:34rem; height: 100%;'}">
             <h2>Your personal decks</h2>
             {#each userDecks as deck}
-                <div class="course-wrap" style="height:6rem;">
+                <div class="course-wrap" style="height:6rem;" transition:slide|global>
+                    <button><i class="bi bi-gear-fill"></i></button>
                     <span style="font-size: 1.8rem;">{deck.name}</span>
-                    <p style="font-size: 1rem;">{deck.description}</p>
+                    <p style="font-size: 1rem;">{deck.level}%</p>
                     <div class="overlay">
                         {#if activeDeck == deck}
                         This is already your active deck.
@@ -92,6 +100,21 @@
         border-radius: 0.5rem;
         cursor: pointer;
     }
+        .course-wrap > button {
+            margin-left: auto;
+            margin-right: 1rem;
+            background:none;
+            border:none;
+            outline:none;
+            color: var(--fg-color);
+            font-size: 2rem;
+            z-index: 2;
+            order: 3;
+        }
+            .course-wrap > button:hover {
+                color: var(--fg-color-2);
+                cursor: pointer;
+            }
         .course-wrap > img {
             width: 6rem;
             height: 4rem;
@@ -100,6 +123,10 @@
             object-fit: cover;
         }
         .course-wrap > span {
+            position: absolute;
+            left: 50%;
+            top: 48%;
+            transform: translate(-50%, -50%);
             font-size: 2rem;
             margin-left: auto;
             margin-right: auto;
@@ -107,17 +134,29 @@
             transition: all 0.15s ease-in-out;
         }
         .course-wrap > p {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             margin-left: auto;
             margin-right: 1rem;
             color: var(--fg-color);
             transition: all 0.15s ease-in-out;
+            position: absolute;
+            bottom:0%;
+            left:50%;
+            transform: translate(-50%, 50%);
         }
-        .course-wrap:hover > p, .course-wrap:hover > span {
+        .course-wrap:hover > p,
+        .course-wrap:hover > span {
             opacity: 0;
         }
         .course-wrap:hover > .overlay {
             opacity: 1;
+        }
+        .course-wrap > button:hover ~ p,
+        .course-wrap > button:hover ~ span {
+            opacity: 1;
+        }
+        .course-wrap > button:hover ~ .overlay {
+            opacity: 0;
         }
     .courses {
         padding-right: 1rem;
