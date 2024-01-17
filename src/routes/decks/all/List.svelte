@@ -25,12 +25,12 @@
 </script>
 
 
-<input type="text" placeholder="Search" class="searchbar" bind:value={searchbarInput}/>
-<div class="bottom-wrap" style="{$isNarrowScreen ? 'flex-direction: column;' : 'flex-direction:row; height: 26rem;'}">
+<input type="text" placeholder="Search" class="searchbar" bind:value={searchbarInput} transition:slide/>
+<div class="bottom-wrap" style="{$isNarrowScreen ? 'flex-direction: column;' : 'flex-direction:row; height: 26rem;'}" transition:slide>
     <div class="courses" style="{$isNarrowScreen ? 'width:100%; height:35vh !important;' : 'width:34rem; height: 100%;'}">
         <h2>Your active courses</h2>
         {#each userCourses as course}
-            <div class="course-wrap" transition:slide|global>
+            <div class="course-wrap" transition:slide>
                 <button><i class="bi bi-gear-fill"></i></button>
                 <img src="{course.image}" alt="{course.getName()}" />
                 <span style="margin-right: 1rem;">{course.getName()}</span>
@@ -52,7 +52,7 @@
     <div class="courses" style="{$isNarrowScreen ? 'width:100%; height:50vh;' : 'width:34rem; height: 100%;'}">
         <h2>Your personal decks</h2>
         {#each userDecks as deck}
-            <div class="course-wrap" style="height:6rem;" transition:slide|global>
+            <div class="course-wrap" style="height:6rem;" transition:slide>
                 <button><i class="bi bi-gear-fill"></i></button>
                 <span style="font-size: 1.8rem;">{deck.name}</span>
                 <p style="font-size: 1rem;">{deck.level}%</p>
