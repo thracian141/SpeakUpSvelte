@@ -34,6 +34,29 @@ async function getToken() {
     return token;
 }
 
+export async function getUserName() {
+    let token = await getToken();
+    console.log(token);
+    const response = await fetch('https://localhost:5000/account/getusername', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    if (data == null || data == undefined) {
+        return null;
+    }
+    return data.username;
+}
+
 export async function getUser() {
     let token = await getToken();
     const response = await fetch('https://localhost:5000/account/userinfo', {

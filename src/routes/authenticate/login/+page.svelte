@@ -15,8 +15,8 @@
             Email: email,
             Password: password,
         };
-
-        const response = await fetch('https://localhost:5000/auth/login', {
+        console.log(model);
+        const response = await fetch('https://localhost:5000/authenticate/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -44,12 +44,12 @@ style="{$isNarrowScreen ? "width:100%; padding: 1rem 0.2rem; border-radius:0;" :
         <div class="form-section">
             <i class="bi bi-at"></i>
             <p class:label-filled={email !== ''} class="form-label" >{$_('authenticate.email')}</p>
-            <input type="text" class="form-control" bind:value={email}/>
+            <input type="text" name="email" class="form-control" bind:value={email}/>
         </div>
         <div class="form-section">
             <i class="bi bi-key" style="font-size: 2.4rem;"></i>
             <p class:label-filled={password !== ''} class="form-label" >{$_('authenticate.password')}</p>
-            <input type="password" class="form-control" bind:value={password} />
+            <input type="password" name="password" class="form-control" bind:value={password} />
         </div>
         <div style="width:80%; {$isNarrowScreen ? "flex-direction:column;" : "flex-direction:row;height:20%;"}  display: flex; align-items:center; justify-content:space-between; 
             margin-top:auto; margin-bottom:1rem; margin-top:4rem;">

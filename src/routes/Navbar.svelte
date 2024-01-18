@@ -3,12 +3,14 @@
 	import { page } from '$app/stores';
     import {onMount} from "svelte";
     import * as UserHandler from "../lib/scripts/UserHandler";
-    import { _, locale } from '$lib/i18n';
+    import { _ } from '$lib/i18n';
     import './styles.css';
     
     let isExpanded = false;
     let isLogoutConfirmed = false;
     let isLoggedIn = UserHandler.isLoggedIn();
+    let username = '';
+
 
     if (browser && localStorage.getItem('isExpanded') === "true") {
         isExpanded = true;
@@ -50,6 +52,9 @@
     let currentPath;
     onMount(async () => {
         currentPath = window.location.pathname;
+        if (await isLoggedIn) {
+            username = await UserHandler.getUserName();
+        }
     });
 </script>
 
@@ -91,6 +96,9 @@
             </ul>
         {:else}
             <ul style="list-style-type:none; padding: 12px; margin-top:auto">
+                {#if username}
+                <p>{username}</p>
+                {/if}
                 <a id="authForm" class="nav-option" href="/" class:active={isLogoutConfirmed} on:click|preventDefault={handleLogoutClick}>
                     <i class="bi bi-box-arrow-right"></i>
                     <p style="text-overflow:clip; white-space:nowrap">{isLogoutConfirmed ? 'Confirm' : 'Sign Out'}</p>
