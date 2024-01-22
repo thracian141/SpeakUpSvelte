@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
+    import { isNarrowScreen } from '$lib/store';
     let imageUrl = '';
 
     function handleFileUpload(event: Event) {
@@ -24,12 +25,17 @@
             isRotating = false;
         }, 500); // Duration of the rotation animation
     }
+    function resetValues() {
+        imageUrl = '';
+        deckName = '';
+        deckDescription = '';
+    }
 </script>
 
 <h1 transition:slide>Create a personal deck</h1>
-<form enctype="multipart/form-data" transition:slide>
-    <div class="inner-wrap">
-        <div class="img-wrap">
+<form enctype="multipart/form-data" transition:slide style="{$isNarrowScreen ? '' : 'padding:2rem;width:40rem;border:1px solid var(--bg-highlight); border-radius:0.75rem;'}">
+    <div class="inner-wrap" style="{$isNarrowScreen ? 'flex-direction:column;' : ''}">
+        <div class="img-wrap" style="{$isNarrowScreen ? 'align-items:center;' : ''}">
             <label for="image" class="custom-file-input">
                 {#if imageUrl}
                     <span>Change</span>
@@ -53,9 +59,9 @@
             </div>
         </div>
     </div>
-    <div class="buttons">
+    <div class="buttons" style="{$isNarrowScreen ? 'width:100%;' : ''}">
         <button type="submit">Create</button>
-        <button type="reset" on:click={rotateIcon}>
+        <button type="reset" on:click={()=>{rotateIcon(); resetValues()}}>
             <div class="{isRotating ? 'rotate' : ''}">
                 <i class="bi bi-arrow-counterclockwise"></i>
             </div>
@@ -64,16 +70,22 @@
 </form>
 
 <style>
+    .buttons {
+        width:20rem;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+    }
     .rotate {
-        animation: rotate 1s linear;
+        animation: rotate 0.5s cubic-bezier(0.68, -0.55, 0.27, 1);
     }
 
     @keyframes rotate {
         from {
-            transform: rotate(0deg);
+            transform: rotate(360deg);
         }
         to {
-            transform: rotate(360deg);
+            transform: rotate(0deg);
         }
     }
     button[type="reset"] {
@@ -82,10 +94,14 @@
         border-radius: 0.5rem;
         background-color: var(--red);
         border: none;
-        color: var(--fg-color);
+        color: #fff;
         font-size: 1.2rem;
         cursor: pointer;
+        transition: all 0.12s ease-in-out;
     }
+        button[type="reset"]:hover {
+            opacity: 0.9;
+        }
     form {
         display: flex;
         flex-direction: column;
@@ -106,7 +122,12 @@
         color: var(--el-bg-color);
         font-size: 1.2rem;
         cursor: pointer;
+        transition: all 0.12s ease-in-out;
     }
+        button[type="submit"]:hover {
+            background-color: var(--fg-color-2);
+            color: var(--bg-color);
+        }
     textarea, textarea:focus, textarea:active, textarea:hover { 
         resize: none;
         width: 20rem;

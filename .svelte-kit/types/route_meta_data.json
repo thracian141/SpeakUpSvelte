@@ -7,8 +7,6 @@
 	"/decks/all": [],
 	"/decks/[language]": [],
 	"/learn": [],
-	"/manage": [],
-	"/manage/dev": [],
-	"/manage/personal": [],
+	"/manage/[deck]": [],
 	"/welcome": []
 }
