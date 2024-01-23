@@ -3,10 +3,12 @@
 	"/account": [],
 	"/authenticate/login": [],
 	"/authenticate/register": [],
+	"/create": [],
+	"/create/deck": [],
+	"/create/deck/cards": [],
 	"/decks": [],
 	"/decks/all": [],
 	"/decks/[language]": [],
 	"/learn": [],
-	"/manage/[deck]": [],
 	"/welcome": []
 }

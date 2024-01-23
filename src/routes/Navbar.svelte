@@ -78,7 +78,7 @@
             <i class="bi bi-card-list"></i><p>{$_('layout.decks')}</p>
         </a>
         {#if true}
-        <a href="/manage" class="nav-option" class:active={$page.url.pathname.includes('/manage')}>
+        <a href="/create" class="nav-option" class:active={$page.url.pathname.includes('/create')}>
             <i class="bi bi-pencil-square"></i><p>{$_('layout.create')}</p>
         </a>
         {/if}

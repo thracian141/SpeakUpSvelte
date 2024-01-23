@@ -45,7 +45,7 @@
             </div>
         {/each}
     </div>
-    <div class="separator-line" style="{$isNarrowScreen ? 
+    <div class="separator-line"  transition:slide style="{$isNarrowScreen ? 
         'width:100%; height:1px; flex-direction: row; margin: 1.5rem 0;' : 
         'width:1px; height:100%; flex-direction: column; margin: 0 1.5rem;'}">
     </div>

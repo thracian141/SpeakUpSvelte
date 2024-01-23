@@ -66,6 +66,9 @@
         <a href="/decks" class="nav-option" class:active={$page.url.pathname == "/decks" || $page.url.pathname == "/decks/"}>
             <img src="/icons/decksIcon.svg" alt="Decks Icon" /><span>{$_('layout.decks')}</span>
         </a>
+        <a href="/create" class="nav-option" class:active={$page.url.pathname.includes("create")}>
+            <i class="bi bi-pencil-square"></i><span>{$_('layout.create')}</span>
+        </a>
         <a href="/account" class="nav-option" class:active={$page.url.pathname == "/account/" || $page.url.pathname == "/account"}>
             <img src="/icons/accounticon.svg" alt="Account Icon" /><span>{$_('layout.account')}</span>
         </a>
@@ -90,6 +93,10 @@
 
 
 <style>
+    i {
+        margin-left: -0.4rem;
+        font-size: 2.75rem;
+    }
     .active {
         background-color: var(--selected-color) !important;
     }

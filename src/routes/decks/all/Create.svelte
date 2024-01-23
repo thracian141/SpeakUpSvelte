@@ -1,7 +1,13 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
     import { isNarrowScreen } from '$lib/store';
+    import type { DeckInputModel } from '$lib/scripts/models/inputModels';
+    import { deckStore } from './deckStore';
+    import { goto } from '$app/navigation';
+
     let imageUrl = '';
+    let deckName = '';
+    let deckDescription = '';
 
     function handleFileUpload(event: Event) {
         const file = (event.target as HTMLInputElement)?.files?.[0];
@@ -13,9 +19,6 @@
             reader.readAsDataURL(file);
         }
     }
-
-    let deckName = '';
-    let deckDescription = '';
 
     let isRotating = false;
 
@@ -29,6 +32,20 @@
         imageUrl = '';
         deckName = '';
         deckDescription = '';
+    }
+
+    async function handleSubmit(e: Event) {
+        await e.preventDefault();
+
+        const deck: DeckInputModel = {
+            name: deckName,
+            description: deckDescription,
+            image: imageUrl,
+        };
+
+        await deckStore.set(deck);
+
+        goto('/create/deck/cards/');
     }
 </script>
 
@@ -49,18 +66,18 @@
         <div class="fields-wrap">
             <div class="field-group">
                 <label for="name" style="{deckName != '' ? "top:0%;opacity: 0.75;font-size: 1rem;" : ""}">Deck name</label>
-                <input id="name" type="text" name="name" bind:value={deckName}>
+                <input id="name" type="text" name="name" bind:value={deckName} autocomplete="off">
             </div>
             <div class="field-group" style="margin-top: 1rem;">
                 <label for="description" style="{deckDescription!='' ? 'top:-8%;opacity: 0.75;font-size: 1rem;' : ""}">
                     {deckDescription!='' ? "Description" : "Description..."}
                 </label>
-                <textarea id="description" name="description" bind:value={deckDescription}></textarea>
+                <textarea id="description" name="description" bind:value={deckDescription} autocomplete="off"></textarea>
             </div>
         </div>
     </div>
     <div class="buttons" style="{$isNarrowScreen ? 'width:100%;' : ''}">
-        <button type="submit">Create</button>
+        <button type="submit" on:click={async(e)=>{await handleSubmit(e);}}>Create</button>
         <button type="reset" on:click={()=>{rotateIcon(); resetValues()}}>
             <div class="{isRotating ? 'rotate' : ''}">
                 <i class="bi bi-arrow-counterclockwise"></i>
@@ -145,7 +162,11 @@
         -moz-border: none !important;
         border:1px solid var(--bg-highlight) !important;
         font-size: 1.3rem;
+        transition: border 0.12s ease-in-out;
     }
+        textarea:hover {
+            border: 1px solid var(--fg-color-half) !important;
+        }
         label[for="description"] {
             font-size: 1.1rem;
             margin-left:0.5rem;
@@ -181,7 +202,11 @@
         border: 1px solid var(--bg-highlight) !important;
         height:3.5rem;
         font-size: 1.5rem;
+        transition: border 0.12s ease-in-out;
     }
+        input[type="text"]:hover {
+            border: 1px solid var(--fg-color-half) !important;
+        }
         label[for="name"] {
             position: absolute;
             z-index: 1;
