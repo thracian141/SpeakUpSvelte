@@ -24,6 +24,7 @@
     --green-half: #4eab6e70;
     --red: #ab4e4e;
     --red-half: #ab4e4e70;
+    --yellow: #abab4e;
 }
 body.light-theme {
     --fg-ultra: #000000;

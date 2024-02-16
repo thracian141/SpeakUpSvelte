@@ -6,6 +6,25 @@
 
     let isRotating = false;
 
+    import { testcards } from './testcards';
+    import { onMount } from 'svelte';
+    import CardRow from './CardRow.svelte';
+    
+    interface Card { 
+        id: number;
+        front: string;
+        back: string;
+        level: number;
+        difficulty: number;
+    }
+
+    let cards: Card[] = [];
+
+    let cardsListElement: HTMLDivElement;
+
+    let currentFront = '';
+    let currentBack = '';
+
     function rotateIcon() {
         isRotating = true;
         setTimeout(() => {
@@ -13,8 +32,27 @@
         }, 500); // Duration of the rotation animation
     }
     function resetValues() {
-
+        currentBack = '';
+        currentFront = '';
     }
+    async function addCurrentCard() {
+        let lastIndex = cards.length;
+        let card: Card = {
+            id: (lastIndex+1),
+            front: currentFront,
+            back: currentBack,
+            level: 0,
+            difficulty: 0
+        }
+        await testcards.update((value) => {
+            value.push(card);
+            return value;
+        });
+
+        resetValues();
+    }
+
+
 
     let deck: DeckInputModel;
     deckStore.subscribe((value: DeckInputModel | null) => {
@@ -24,23 +62,19 @@
 
     let descriptionOpened = false;
 
-    interface Card { 
-        front: string;
-        back: string;
-        level: number;
-        difficulty: number;
-    }
-
-    let cards: Card[] = [];
-
+    onMount(async () => {
+        let frontInput = document.getElementById('front');
+        if (frontInput)     
+            await frontInput?.focus();
+    });
 
 </script>
 
 
-<div class="outwrap">
-    <div class="top-row">
+<div class="outwrap" style="{$isNarrowScreen ? "width:100%; height:100%; border-radius:0; margin-top:5rem;" : ""}">
+    <div class="top-row" style="{$isNarrowScreen ? "width:100%; height:10%;" : ""}">
         <img src="{deck.image}" alt="{deck.name}" />
-        <p>Add cards to 
+        <p style="{$isNarrowScreen ? "font-size:1.2rem" : ""}">Add cards to 
             <span role="banner"
             on:mouseenter={()=>{descriptionOpened=true;}} on:mouseleave={()=>{descriptionOpened=false;}}>
                 {deck.name}
@@ -53,22 +87,66 @@
         </p>
         <button><i class="bi bi-three-dots-vertical"></i></button>
     </div>
-    <div class="cards-list">
+    <div class="cards-list" id='list' bind:this={cardsListElement}>
         <div class="card-input-row">
-            <input type="text" placeholder="Front" />
-            <input type="text" placeholder="Back" />
-            <button>+</button>
+            <input type="text" placeholder="Front" id="front" bind:value={currentFront}/>
+            <input type="text" placeholder="Back"  bind:value={currentBack}/>
+            <button on:click={async()=>{await addCurrentCard();}} class:btn-disabled={currentFront=='' || currentBack==''}>+</button>
             <button on:click={()=>{rotateIcon(); resetValues()}}>
                 <div class="{isRotating ? 'rotate' : ''}">
                     <i class="bi bi-arrow-counterclockwise"></i>
                 </div>
             </button>
         </div>
+        {#if $testcards.length == 0}
+            <div class="info-row" transition:slide>
+                <span style="width:100%; text-align:center;">No cards added yet</span>
+            </div>
+        {:else}
+            <div class="info-row" transition:slide>
+                <span style="width:35%;">Front</span>
+                <span style="width:35%;">Back</span>
+                <span style="width:10%; margin-right:0;">Level</span>
+                <span style="width:10%; ">Difficulty</span>
+                <span style="width: 8%;"></span>
+            </div>
+        {/if}
+        {#each $testcards as card (card.id)}
+            <CardRow card={card} />
+        {/each}
     </div>
 </div>
 
 
 <style>
+    .info-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 95.5%;
+        padding:0.5rem;
+        margin:1rem;
+        margin-top:0.5rem;
+        margin-right: 3rem;
+        justify-content: space-between;
+        border-radius: 0.5rem;
+        margin-bottom:0;
+        order: 1;
+    }
+        .info-row > span {
+            height: 1.5rem;
+            margin-bottom: -0.25rem;
+            padding: 1rem;
+            font-size: 1.3rem;
+            margin-right: 1rem;
+            line-height: 0.5rem;
+            color: var(--fg-color);
+        }
+    
+    .btn-disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
     .rotate {
         animation: rotate 0.5s cubic-bezier(0.68, -0.55, 0.27, 1);
     }
@@ -88,6 +166,7 @@
         width: 100%;
         padding:1rem;
         justify-content: space-between;
+        order: 2;
     }
         .card-input-row > input {
             width: 40%;
@@ -109,13 +188,28 @@
             color: #fff;
             font-size: 1.5rem;
             margin-right: 1rem;
+            transition: opacity 0.1s ease-in-out;
         }
+            .card-input-row > button:hover {
+                cursor: pointer;
+                opacity: 0.9;
+            }
+            .card-input-row > button:active {
+                box-shadow: 0px 0px 4px var(--fg-color);
+            }
     .cards-list {
         display: flex;
-        flex-direction: column;
+        flex-direction: column-reverse;
+        justify-content: flex-end;
         width: 100%;
         height: 80%;
+        overflow-y: scroll;        
+        overflow-x: hidden;
     }
+        .cards-list::-webkit-scrollbar-track {
+            background: var(--el-bg-color);
+            overflow:visible !important;
+        }
     .dropdownDescription {
         display: flex;
         flex-direction: column;
