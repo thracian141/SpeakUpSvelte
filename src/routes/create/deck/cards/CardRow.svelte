@@ -2,6 +2,7 @@
     import { slide } from "svelte/transition";
     import { testcards } from "./testcards";
     import { onDestroy, onMount } from "svelte";
+    import { browser } from "$app/environment";
 
     export let card: Card;
     interface Card { 
@@ -83,12 +84,14 @@
         arrowRotation = rotation;
     }
     onMount(() => {
-        window.addEventListener('mouseup', handleMouseUp);
+        if (browser)
+            window.addEventListener('mouseup', handleMouseUp);
     });
 
     // Remove the event listener when the component is destroyed
     onDestroy(() => {
-        window.removeEventListener('mouseup', handleMouseUp);
+        if (browser)
+            window.removeEventListener('mouseup', handleMouseUp);
     });
 
 </script>
