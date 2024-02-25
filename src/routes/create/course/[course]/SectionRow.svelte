@@ -78,7 +78,7 @@
         <input type="text" class="section-row-text-input" bind:value={frontForRow} />
         <textarea class="section-row-text-input" bind:value={backForRow} />
     {:else}
-        <a href="{$page.params.course}/{section.id.toString()}" class="section-row-text" id="{section.title.toLocaleLowerCase().replace(/ /g, '-')}-front">{section.title}</a>
+        <a href="/create/course/{$page.params.course}/{section.id.toString()}" class="section-row-text" id="{section.title.toLocaleLowerCase().replace(/ /g, '-')}-front">{section.title}</a>
         <div class="section-row-text-desc" id="{section.description.toLocaleLowerCase().replace(/ /g, '-')}-back">{section.description}</div>
     {/if}
     <div class="section-row-number">
