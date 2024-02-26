@@ -25,6 +25,7 @@
     --red: #ab4e4e;
     --red-half: #ab4e4e70;
     --yellow: #abab4e;
+    --gold: #ffe74d;
 }
 body.light-theme {
     --fg-ultra: #000000;
@@ -38,6 +39,8 @@ body.light-theme {
     --bg-highlight-2: #ffffff;
     --selected-color: #8956a9;
     --cyan: #4293a0;
+    
+    --gold: #f2ca37;
 }
 
 body {

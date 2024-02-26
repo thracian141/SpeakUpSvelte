@@ -126,10 +126,10 @@
     $: console.log("right disabled: " + rightDisabled);
 </script>
 
-<div style="{$isNarrowScreen ? "font-size: 1.5rem;" : "font-size: 3rem;"} display:inline-block; width:fit-content; position:absolute; visibility:hidden;" id="answerTemp" 
+<div transition:slide style="{$isNarrowScreen ? "font-size: 1.5rem;" : "font-size: 3rem;"} display:inline-block; width:fit-content; position:absolute; visibility:hidden;" id="answerTemp" 
     bind:clientWidth={answerTempWidth}>{testData[currentIndex].wordMeaning}
 </div>
-<div style="display:flex; margin-left:{infoOpen ? "0" : "auto"}; 
+<div transition:slide style="display:flex; margin-left:{infoOpen ? "0" : "auto"}; 
     margin-right:{infoOpen ? "0" : "auto"}; overflow:hidden; width:100%; 
     flex-flow:row; {$isNarrowScreen ? "flex-direction:column; justify-content: flex-start; height:100%;" : "height:100%; padding:1rem; justify-content: center; align-items:center; flex-direction:row;"}">
     {#if ready}
