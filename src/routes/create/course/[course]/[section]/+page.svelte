@@ -21,7 +21,7 @@
         difficulty: number;
     }
 
-    let cards: Card[] = [];
+    let cards: Card[] = $testcards;
 
     let cardsListElement: HTMLDivElement;
 

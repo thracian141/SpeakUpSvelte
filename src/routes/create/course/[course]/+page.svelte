@@ -257,8 +257,8 @@
                 cursor: pointer;
             }
         .top-row > img {
-            height: 100%;
-            aspect-ratio: 1/1;
+            height: 66%;
+            aspect-ratio: 3/2;
             margin-right: 1rem;
             border-radius: 0.3rem;
         }

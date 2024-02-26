@@ -18,7 +18,7 @@
         difficulty: number;
     }
 
-    let cards: Card[] = [];
+    let cards: Card[] = $testcards;
 
     let cardsListElement: HTMLDivElement;
 
@@ -37,6 +37,7 @@
     }
     async function addCurrentCard() {
         let lastIndex = cards.length;
+        console.log(lastIndex)
         let card: Card = {
             id: (lastIndex+1),
             front: currentFront,
