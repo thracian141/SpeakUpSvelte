@@ -9,6 +9,11 @@
     let weeklyStreakTest = 3;
     let wordCountTest = Math.floor(Math.random() * 1000);
     let sectionsLearnedTest = 3;
+    let weekOr2Weeks = 'week';
+
+    let days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    let today = new Date().getDay();
+    let lastSevenDays = [...days.slice(today + 1), ...days.slice(0, today + 1)].reverse();
 </script>
 
 
@@ -65,7 +70,23 @@
                     out of <span style="color: var(--selected-text); font-weight:bold;">6173</span></span>
                 </div>
             </div>
-
+            <div class="statistics-row-2">
+                <h2>This week</h2>
+                <div class="week-graph">
+                    {#each lastSevenDays as day}
+                        <div class="week-day">
+                            <span>{Math.round(Math.random() * 50)}</span>
+                            <span>{day}</span>
+                        </div>
+                    {/each}
+                </div>
+                <div class="week-buttons">
+                    <button class="week-btn" class:week-btn-active={weekOr2Weeks=='week'}
+                    on:click={()=>weekOr2Weeks='week'}>Last 7 days</button>
+                    <button class="week-btn" class:week-btn-active={weekOr2Weeks=='2weeks'}
+                    on:click={()=>weekOr2Weeks='2weeks'}>Last 14 days</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -176,6 +197,11 @@
                     padding-bottom: 0;
                     overflow-y: scroll;
                 }
+                    .courses > .sections::-webkit-scrollbar-thumb {
+                        background: #3a3d40;
+                        border-radius: 3px 1rem 1rem 3px !important;
+                        overflow:visible !important;
+                    }
                     .section {
                         width:100%;
                         height: 3rem;
@@ -242,6 +268,83 @@
                             justify-content: center;
                             align-items: flex-start;
                         }
+                .statistics-row-2 {
+                    width:100%;
+                    height:60%;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    border-radius: 1rem;
+                    margin-top: 0.5rem;
+                    border:1px solid var(--bg-highlight-2);
+                    padding:1rem 2rem;
+                }
+                    .statistics-row-2 > h2 {
+                        margin:0;
+                    }
+                    .week-graph {
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-around;
+                        align-items: center;
+                        width:100%;
+                        height:50%;
+                        padding: 0 2rem;
+                    }
+                        .week-day {
+                            height:100%;
+                            width: 1.1rem;
+                            border-radius: 999px;
+                            display: flex;
+                            flex-direction: column;
+                            background-color: var(--bg-highlight);
+                            align-items: center;
+                            position: relative;
+                        }
+                            .week-day > span:first-child {
+                                position: absolute;
+                                top: -1.5rem;
+                                color: var(--fg-color);
+                            }
+                            .week-day > span:last-child {
+                                position: absolute;
+                                bottom: -1.5rem;
+                                color: var(--fg-color-2);
+                            }
+                    .week-buttons {
+                        align-self: center;
+                        width:90%;
+                        aspect-ratio: 6;
+                        display: flex;
+                        flex-direction: row;
+                        border-radius: 1.25rem;
+                        padding:0.5rem;
+                        border:1px solid var(--bg-highlight-2);
+                    }
+                        .week-buttons > .week-btn {
+                            width:50%;
+                            height:100%;
+                            border:none;
+                            background-color: var(--bg-highlight);
+                            color: var(--fg-color);
+                            font-size: 1.2rem;
+                            border-radius: 0.75rem;
+                            transition: all 0.1s ease-in-out;
+                            cursor: pointer;
+                        }
+                            .week-btn:hover {
+                                box-shadow: 0 0 2px 2px var(--bg-highlight-2);
+                            }
+                            .week-btn:first-child {
+                                border-radius: 0.75rem 0 0 0.75rem;
+                            }
+                            .week-btn:last-child {
+                                border-radius: 0 0.75rem 0.75rem 0;
+                            }
+                        .week-buttons > .week-btn-active {
+                            background-color: var(--fg-color);
+                            color: var(--bg-color);
+                        }
                 .statistics-row-1 {
                     width:100%;
                     height:26%;
@@ -249,16 +352,16 @@
                     flex-direction: row;
                     justify-content: space-between;
                 }
-                .statistics-row-1 > .stat {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    border-radius: 1rem;
-                    border:1px solid var(--bg-highlight-2);
-                    width: 49.5%;
-                    height:100%;
-                    padding: 0 1rem 1rem 1rem;
-                }
+                    .statistics-row-1 > .stat {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        border-radius: 1rem;
+                        border:1px solid var(--bg-highlight-2);
+                        width: 49.5%;
+                        height:100%;
+                        padding: 0 1rem 1rem 1rem;
+                    }
                     .daily-goal-txt-2 {
                         font-size: 1.2rem;  
                         display:flex;
