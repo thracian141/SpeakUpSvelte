@@ -48,9 +48,9 @@
 {/if}
 <nav class="nav" class:nav-open={isOpen}>
     <div class="nav-top">
-        <div class="logo">
+        <div class="logo" style="display: flex; flex-direction:row;">
             <img src="/logo.svg" alt="SpeakUp Logo"/>
-            <span>SPEAKUP</span>
+            <p>SPEAK <span>-</span>UP</p>
         </div>
         <button class="nav-button" on:click={()=>isOpen=false}>
             <i class="bi bi-list-nested"></i>
@@ -58,34 +58,35 @@
     </div>
     <div class="nav-center">
         <a href="/" class="nav-option" class:active={$page.url.pathname == "/"}>
-            <img src="/icons/homeicon.svg" alt="Home Icon" /><span>{$_('layout.home')}</span>
+            <i class="bi bi-house-door"></i><p>{$_('layout.home')}</p>
         </a>
-        <a href="/learn" class="nav-option" class:active={$page.url.pathname == "/learn" || $page.url.pathname == "/learn/"}>
-            <img src="/icons/cardsicon.svg" alt="Learn Icon" /><span>{$_('layout.learn')}</span>
+        <a href="/learn" class="nav-option" class:active={$page.url.pathname.includes("/learn")}>
+            <i class="bi bi-play-btn"></i><p>{$_('layout.learn')}</p>
         </a>
-        <a href="/decks" class="nav-option" class:active={$page.url.pathname == "/decks" || $page.url.pathname == "/decks/"}>
-            <img src="/icons/decksIcon.svg" alt="Decks Icon" /><span>{$_('layout.decks')}</span>
+        <a href="/decks" class="nav-option" class:active={$page.url.pathname.includes("/decks")}>
+            <i class="bi bi-card-list"></i><p>{$_('layout.decks')}</p>
         </a>
-        <a href="/create" class="nav-option" class:active={$page.url.pathname.includes("create")}>
-            <i class="bi bi-pencil-square"></i><span>{$_('layout.create')}</span>
+        {#if true}
+        <a href="/create" class="nav-option" class:active={$page.url.pathname.includes('/create')}>
+            <i class="bi bi-pencil-square"></i><p>{$_('layout.create')}</p>
         </a>
-        <a href="/account" class="nav-option" class:active={$page.url.pathname == "/account/" || $page.url.pathname == "/account"}>
-            <img src="/icons/accounticon.svg" alt="Account Icon" /><span>{$_('layout.account')}</span>
+        {/if}
+        <a href="/account" class="nav-option" class:active={$page.url.pathname.includes('/account')}>
+            <i class="bi bi-person" style="font-size:5rem; margin-left:-0.5rem;"></i><p>{$_('layout.account')}</p>
         </a>
     </div>
     <div class="nav-bottom">
         {#await isLoggedIn then bool}
             {#if !bool}
-                <a id="authForm" class="nav-option" href="/authenticate/login" 
-                class:active={$page.url.pathname == "/authenticate/login" || $page.url.pathname == "/authenticate" || $page.url.pathname == "/authenticate/" || $page.url.pathname == "/authenticate/login/" }>
-                    <img src="/icons/loginicon.svg" alt="Authenticate Icon" />
-                    <span>{$_('layout.sign in')}</span>
-                </a>
+            <a id="authForm" class="nav-option" href="/authenticate/login" class:active={$page.url.pathname.includes("/authenticate")}>
+                <i class="bi bi-box-arrow-in-left" style="margin-left: 0.5rem !important; font-size:5rem"></i>
+                <p style="text-overflow:clip; white-space:nowrap">{$_('layout.sign in')}</p>
+            </a>
             {:else}
-                <a id="authForm" class="nav-option" href="/" class:active={isLogoutConfirmed} on:click|preventDefault={handleLogoutClick}>
-                    <img src="/icons/logouticon.svg" alt="Authenticate Icon" />
-                    <span>{isLogoutConfirmed ? 'Confirm' : 'Sign Out'}</span>
-                </a>
+            <a id="authForm" class="nav-option" href="/" class:active={isLogoutConfirmed} on:click|preventDefault={handleLogoutClick}>
+                <i class="bi bi-box-arrow-right" style="margin-left: 0.5rem !important; font-size:5rem"></i>
+                <p style="text-overflow:clip; white-space:nowrap">{isLogoutConfirmed ? 'Confirm' : 'Sign Out'}</p>
+            </a>
             {/if}
         {/await}
     </div>
@@ -99,9 +100,6 @@
     }
     .active {
         background-color: var(--selected-color) !important;
-    }
-    .active span, .active img {
-        filter: brightness(0) saturate(100%) invert(100%) sepia(13%) saturate(6304%) hue-rotate(178deg) brightness(82%) contrast(93%);
     }
     .nav-bottom {
         display: flex;
@@ -121,7 +119,7 @@
         display: flex;
         flex-direction: row;
         box-sizing: border-box;
-        height: 10vh;
+        height: 7rem;
         padding:1rem;
         justify-content: space-between;
         border-radius: 0.8rem;
@@ -129,12 +127,11 @@
         border-bottom: 1px solid var(--bg-color);
         align-items: center;
     }
-        .nav-option > img {
-            height: 100%;
-            aspect-ratio: 1/1;
+        .nav-option > i {
+            font-size: 4rem;
             margin-right: 1rem;
         }
-        .nav-option > span {
+        .nav-option > p {
             font-size: 5.5vw;
             text-align: center;
             margin: 0;
@@ -151,16 +148,30 @@
             justify-content: space-between;
         }
             .logo > img {
-                height: 4rem;
-                width: 4rem;
+                height: 5rem;
+                width: 5rem;
                 margin:0;
             }
-            .logo > span {
+            .logo > p {
                 font-weight: bold;
-                font-size: 2rem;
+                font-size: 2.5rem;
+                position: relative;
+                margin:0;
                 margin-left: 1rem;
-                line-height: 3.5rem;
+                line-height: 5.5rem;
             }
+                .logo p span {
+                    position: absolute;
+                    color: #00000000;
+                    background-color: var(--selected-text);
+                    height:0.4rem;
+                    width: 0.5rem;
+                    top:52%;
+                    z-index: -1;
+                    left:67%;
+                    box-shadow: 0 0 1px 1px var(--el-bg-color);
+                    transform: translate(-50%, -50%) scaleX(1.3);
+                }
     .nav {
         position: absolute;
         display: flex;
@@ -172,6 +183,7 @@
         z-index: 5;
         overflow: hidden;
         box-sizing: border-box;
+        overflow-y: scroll;
     }
         .nav-open {
             width: 100vw;

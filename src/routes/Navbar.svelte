@@ -136,7 +136,6 @@
             left:66.5%;
             box-shadow: 0 0 1px 1px var(--el-bg-color);
             transform: translate(-50%, -50%) scaleX(1.3);
-            
         }
     .logo img {
         margin-right:0.2rem;
