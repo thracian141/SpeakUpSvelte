@@ -49,7 +49,7 @@
 <nav class="nav" class:nav-open={isOpen}>
     <div class="nav-top">
         <div class="logo">
-            <img src="/icons/speakuplogo.svg" alt="SpeakUp Logo"/>
+            <img src="/logo.svg" alt="SpeakUp Logo"/>
             <span>SPEAKUP</span>
         </div>
         <button class="nav-button" on:click={()=>isOpen=false}>

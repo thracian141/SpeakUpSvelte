@@ -4,6 +4,8 @@
     import type { Section } from './create/course/[course]/testsections';
     import {testsections as sectionlist} from './create/course/[course]/testsections';
     import { _, locale } from '$lib/i18n';
+    import { isNarrowScreen } from '$lib/store';
+    import './home.css';
 
     let testsections = $sectionlist;
     let testCourse = decks[2];
@@ -19,86 +21,82 @@
 </script>
 
 
-<div class="outter-wrap" transition:slide>
+<div class="outter-wrap {$isNarrowScreen ? "outter-wrap-m" : ""}" transition:slide >
     <p class="p-welcome-back">{$_('home.welcome_back')} <span style="font-weight: bold;">vasillopata</span></p>
     <div style="height:1px; width:100%; background-color:var(--bg-highlight-2); margin-bottom:2rem; color:#00000000">a</div>
-    <div class="inner-wrap">
-        <div class="courses wrap">
-            <div class="last-course">
-                <div class="last-course-row-1">
-                    {$_('home.jump_back_into_your_last_course')}
-                </div>
-                <a href="/learn" class="last-course-row-2">
-                    <img class="course-img" src={testCourse.image} alt="{testCourse.getName()}" />
-                    <span class="course-txts">
-                        <span>{$_(testCourse.getName())}</span>
-                        <span>Basic Phrases</span>
-                    </span>
-                    <i class="bi bi-play-fill"></i>
-                </a>
+    <div class="courses wrap" class:wrap-m={$isNarrowScreen}>
+        <div class="last-course" class:last-course-m={$isNarrowScreen}>
+            <div class="last-course-row-1">
+                {$_('home.jump_back_into_your_last_course')}
             </div>
-            <div class="sections">
-                {#each testsections as section, i}
-                    <div class="section" class:section-learned={i<=sectionsLearnedTest-1} 
-                    class:section-current={i==sectionsLearnedTest}>
-                        <div class="section-line"><div class="section-line-point"></div></div>
-                        <span>{section.title}</span>
+            <a href="/learn" class="last-course-row-2">
+                <img class="course-img" src={testCourse.image} alt="{testCourse.getName()}" />
+                <span class="course-txts">
+                    <span>{$_(testCourse.getName())}</span>
+                    <span>Basic Phrases</span>
+                </span>
+                <i class="bi bi-play-fill"></i>
+            </a>
+        </div>
+        <div class="statistics-row-1">
+            <div class="daily-goal stat">
+                <span style="font-weight: bold; font-size:3rem; color:var(--cyan)">3</span>
+                <span class="daily-goal-txt-2">{$_('home.day_streak')} <button class="streak-info-btn">i</button></span>
+                <div class="daily-goal-bar">
+                    <div style="width:{weeklyStreakTest/7*100}%; height:100%; background-color:var(--green); border-radius:inherit">
                     </div>
-                    {#if i==sectionsLearnedTest}
-                    <div class="current-section-desc">
-                        <div class="section-line"></div>
-                        <span>{section.description}</span>
-                    </div>
-                    {/if}
-                {/each}
+                    <i class="bi bi-star-fill"></i>
+                    <span>{weeklyStreakTest}/{$_('home.7_days')}</span>
+                </div>
+            </div>
+            <div class="word-count stat">
+                <span style="font-weight: bold; font-size:3rem; color:var(--cyan)">{wordCountTest}</span>
+                <span class="daily-goal-txt-2">{$_('home.words_learnt')}</span>
+                <span style="margin: 1.5rem 0 auto 0; color:var(--fg-color-2); font-size:1.1rem;">
+                {$_('home.out_of')} <span style="color: var(--selected-text); font-weight:bold;">6173</span></span>
             </div>
         </div>
-        <div class="statistics wrap">
-            <div class="statistics-row-1">
-                <div class="daily-goal stat">
-                    <span style="font-weight: bold; font-size:3rem; color:var(--cyan)">3</span>
-                    <span class="daily-goal-txt-2">{$_('home.day_streak')} <button class="streak-info-btn">i</button></span>
-                    <div class="daily-goal-bar">
-                        <div style="width:{weeklyStreakTest/7*100}%; height:100%; background-color:var(--green); border-radius:inherit">
+        <div class="sections">
+            {#each testsections as section, i}
+                <div class="section" class:section-learned={i<=sectionsLearnedTest-1} 
+                class:section-current={i==sectionsLearnedTest}>
+                    <div class="section-line"><div class="section-line-point"></div></div>
+                    <span>{section.title}</span>
+                </div>
+                {#if i==sectionsLearnedTest}
+                <div class="current-section-desc">
+                    <div class="section-line"></div>
+                    <span>{section.description}</span>
+                </div>
+                {/if}
+            {/each}
+        </div>
+        <div class="statistics-row-2">
+            <h2>{$_(weekOr2Weeks === 'week' ? 'home.this_week' : 'home.last_2_weeks')}</h2>
+            <div class="week-graph">
+                {#if weekOr2Weeks == 'week'}
+                    {#each lastSevenDays as day}
+                        <div class="week-day">
+                            <div class="week-day-fill"></div>
+                            <span style="position: absolute;top: -1.5rem;color: var(--fg-color);">{Math.round(Math.random() * 50)}</span>
+                            <span style="position: absolute;bottom: -1.5rem;color: var(--fg-color-2);">{day}</span>
                         </div>
-                        <i class="bi bi-star-fill"></i>
-                        <span>{weeklyStreakTest}/{$_('home.7_days')}</span>
-                    </div>
-                </div>
-                <div class="word-count stat">
-                    <span style="font-weight: bold; font-size:3rem; color:var(--cyan)">{wordCountTest}</span>
-                    <span class="daily-goal-txt-2">{$_('home.words_learnt')}</span>
-                    <span style="margin: 1.5rem 0 auto 0; color:var(--fg-color-2); font-size:1.1rem;">
-                    {$_('home.out_of')} <span style="color: var(--selected-text); font-weight:bold;">6173</span></span>
-                </div>
+                    {/each}
+                {:else if weekOr2Weeks == '2weeks'}
+                    {#each lastTwoWeeks as day}
+                        <div class="week-day" style="width:0.75rem">
+                            <div class="week-day-fill"></div>
+                            <span style="position: absolute;top: -1.5rem;color: var(--fg-color); font-size:0.9rem;">{Math.round(Math.random() * 50)}</span>
+                            <span style="position: absolute;bottom: -1.5rem;color: var(--fg-color-2); font-size:0.9rem;">{day}</span>
+                        </div>
+                    {/each}
+                {/if}
             </div>
-            <div class="statistics-row-2">
-                <h2>{$_(weekOr2Weeks === 'week' ? 'home.this_week' : 'home.last_2_weeks')}</h2>
-                <div class="week-graph">
-                    {#if weekOr2Weeks == 'week'}
-                        {#each lastSevenDays as day}
-                            <div class="week-day">
-                                <div class="week-day-fill"></div>
-                                <span style="position: absolute;top: -1.5rem;color: var(--fg-color);">{Math.round(Math.random() * 50)}</span>
-                                <span style="position: absolute;bottom: -1.5rem;color: var(--fg-color-2);">{day}</span>
-                            </div>
-                        {/each}
-                    {:else if weekOr2Weeks == '2weeks'}
-                        {#each lastTwoWeeks as day}
-                            <div class="week-day" style="width:0.75rem">
-                                <div class="week-day-fill"></div>
-                                <span style="position: absolute;top: -1.5rem;color: var(--fg-color); font-size:0.9rem;">{Math.round(Math.random() * 50)}</span>
-                                <span style="position: absolute;bottom: -1.5rem;color: var(--fg-color-2); font-size:0.9rem;">{day}</span>
-                            </div>
-                        {/each}
-                    {/if}
-                </div>
-                <div class="week-buttons">
-                    <button class="week-btn" class:week-btn-active={weekOr2Weeks=='week'}
-                    on:click={()=>weekOr2Weeks='week'}>{$_('home.7_days')}</button>
-                    <button class="week-btn" class:week-btn-active={weekOr2Weeks=='2weeks'}
-                    on:click={()=>weekOr2Weeks='2weeks'}>{$_('home.14_days')}</button>
-                </div>
+            <div class="week-buttons">
+                <button class="week-btn" class:week-btn-active={weekOr2Weeks=='week'}
+                on:click={()=>weekOr2Weeks='week'}>{$_('home.7_days')}</button>
+                <button class="week-btn" class:week-btn-active={weekOr2Weeks=='2weeks'}
+                on:click={()=>weekOr2Weeks='2weeks'}>{$_('home.14_days')}</button>
             </div>
         </div>
     </div>
@@ -115,21 +113,17 @@
         .p-welcome-back {
             font-size: 1.5rem;
         }
-        .inner-wrap {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            width: 100%;
-            height: 100%;
-        }
-            .inner-wrap > .wrap {
+            .wrap {
                 display:flex;
-                flex-direction: column;
-                width: 49.5%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-content: flex-start;
+                justify-content: space-between;
+                width: 100%;
                 height: 100%;
             }
                 .courses>.last-course {
-                    width:100%;
+                    width:49.5%;
                     height:26%;
                     border-radius: 1rem;
                     border:1px solid var(--bg-highlight-2);
@@ -199,7 +193,7 @@
                             color: var(--fg-color)
                         }
                 .courses > .sections {
-                    width: 100%;
+                    width: 49.5%;
                     height: 60%;
                     margin-top:0.5rem;
                     display: flex;
@@ -282,7 +276,7 @@
                             align-items: flex-start;
                         }
                 .statistics-row-2 {
-                    width:100%;
+                    width:49.5%;
                     height:60%;
                     display: flex;
                     flex-direction: column;
@@ -356,7 +350,7 @@
                             color: var(--bg-color);
                         }
                 .statistics-row-1 {
-                    width:100%;
+                    width:49.5%;
                     height:26%;
                     display: flex;
                     flex-direction: row;

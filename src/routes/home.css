@@ -1,0 +1,17 @@
+.outter-wrap-m {
+    width: 100% !important;
+    height: 100% !important;
+    margin-top: 5rem;
+    padding: 0 1rem;
+    overflow-y: scroll !important;
+}
+
+.wrap-m {
+    height:40rem !important;
+}
+    .wrap-m > div {
+        width:100% !important;
+    }
+.last-course-m {
+    margin-bottom: 0.5rem !important;
+}
