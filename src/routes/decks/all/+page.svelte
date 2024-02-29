@@ -2,6 +2,7 @@
 	import { isNarrowScreen } from '$lib/store';
     import List from './List.svelte';
     import Create from './Create.svelte';
+    import {_} from '$lib/i18n';
 
     let currentTab = 'list';
 </script>
@@ -9,8 +10,8 @@
 
 <div class="outwrap" style="{$isNarrowScreen ? "width:100%; border-radius:0; height:100%; margin-top:7rem;" : "height:35rem;"}">
     <div class="tabs">
-        <button on:click={()=>currentTab='list'} class:disabled={currentTab!='list'}>List</button>
-        <button on:click={()=>currentTab='create'} class:disabled={currentTab!='create'}>Create deck</button>
+        <button on:click={()=>currentTab='list'} class:disabled={currentTab!='list'}>{$_('decks.all.list')}</button>
+        <button on:click={()=>currentTab='create'} class:disabled={currentTab!='create'}>{$_('decks.all.create_deck')}</button>
     </div>
     {#if currentTab === 'list'}
         <List />

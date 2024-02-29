@@ -48,6 +48,18 @@
             "course_is_also_available_in": "course is also available in",
             "this_requires_changing_the_websites_language": "This requires changing the website's language.",
             "do_you_want_to_change_the_language_to": "Do you want to change the language to"
+        },
+        "all": {
+            "list": "List",
+            "create_deck": "Create deck",
+            "search": "Search",
+            "your_active_courses": "Your active courses",
+            "your_personal_decks": "Your personal decks",
+            "switch_active_course": "Switch active course",
+            "switch_active_deck": "Switch active deck",
+            "create_personal_deck": "Create personal deck",
+            "this_is_already_your_active_course": "This is already your active course.",
+            "this_is_already_your_active_deck": "This is already your active deck."
         }
     },
     "learn": {
@@ -110,16 +122,7 @@
             "deck_name": "Deck name",
             "description": "Description",
             "create": "Create",
-            "change": "Change",
-            "all": {
-                "list": "List",
-                "create_deck": "Create deck",
-                "search": "Search",
-                "your_active_courses": "Your active courses",
-                "your_personal_decks": "Your personal decks",
-                "switch_active_course": "Switch active course",
-                "create_personal_deck": "Create personal deck"
-            }
+            "change": "Change"
         },
         "course": {
             "pick_a_course_to_edit": "Pick a course to edit",

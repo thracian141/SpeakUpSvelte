@@ -4,6 +4,7 @@
 	import { isNarrowScreen } from '$lib/store';
     import { decks } from "../testDecks";
     import type { Deck } from "../testDecks";
+    import {_} from '$lib/i18n';
 
     let searchbarInput = '';
     let allUserCourses: Deck[] = [decks[3], decks[4]];
@@ -25,10 +26,10 @@
 </script>
 
 
-<input type="text" placeholder="Search" class="searchbar" bind:value={searchbarInput} transition:slide/>
+<input type="text" placeholder="{$_('decks.all.search')}" class="searchbar" bind:value={searchbarInput} transition:slide/>
 <div class="bottom-wrap" style="{$isNarrowScreen ? 'flex-direction: column;' : 'flex-direction:row; height: 26rem;'}" transition:slide>
     <div class="courses" style="{$isNarrowScreen ? 'width:100%; height:35vh !important;' : 'width:34rem; height: 100%;'}">
-        <h2>Your active courses</h2>
+        <h2>{$_('decks.all.your_active_courses')}</h2>
         {#each userCourses as course}
             <div class="course-wrap" transition:slide>
                 <button><i class="bi bi-gear-fill"></i></button>
@@ -37,9 +38,9 @@
                 <p>78%</p>
                 <div class="overlay">
                     {#if activeCourse == course}
-                    This is already your active course.
+                    {$_('decks.all.this_is_already_your_active_course')}
                     {:else}
-                    Switch active course
+                    {$_('decks.all.switch_active_course')}
                     {/if}
                 </div>
             </div>
@@ -50,7 +51,7 @@
         'width:1px; height:100%; flex-direction: column; margin: 0 1.5rem;'}">
     </div>
     <div class="courses" style="{$isNarrowScreen ? 'width:100%; height:50vh;' : 'width:34rem; height: 100%;'}">
-        <h2>Your personal decks</h2>
+        <h2>{$_('decks.all.your_personal_decks')}</h2>
         {#each userDecks as deck}
             <div class="course-wrap" style="height:6rem;" transition:slide>
                 <button><i class="bi bi-gear-fill"></i></button>
@@ -58,9 +59,9 @@
                 <p style="font-size: 1rem;">{deck.level}%</p>
                 <div class="overlay">
                     {#if activeDeck == deck}
-                    This is already your active deck.
+                    {$_('decks.all.this_is_already_your_active_deck')}
                     {:else}
-                    Switch active deck
+                    {$_('decks.all.switch_active_deck')}
                     {/if}
                 </div>
             </div>
