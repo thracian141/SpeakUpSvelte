@@ -63,11 +63,9 @@
         {:else}
             <i class="bi bi-brightness-high" in:slide out:slide></i>
         {/if}
-        <span>{$_("layout.highly_experimental")}</span>
     </button>
     <button class="change-theme" style="right:6rem; {$isNarrowScreen ? "top:1rem; right:5rem;" : ""}" on:click={changeLang}>
         <i class="bi bi-translate" in:slide out:slide></i>
-        <span>{$_("layout.highly_experimental")}</span>
     </button>
     {/if}
     {#if !loggedIn && !overriden}
@@ -106,28 +104,12 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
-        .change-theme > span {
-            position: absolute;
-            top: 50%;
-            right:100%;
-            transform: translate(0%, -50%);
-            padding: 0.5rem;
-            background-color: var(--bg-highlight-2);
-            color: var(--fg-color);
-            border-radius: 0.5rem;
-            font-size: 0.75rem;
-            opacity: 0;
-        }
         .change-theme:hover {
             cursor: pointer;
             background-color:var(--bg-highlight-2);
             color: var(--fg-color);
             z-index: 5;
         }
-            .change-theme:hover > span {
-                opacity: 1;
-                z-index: 4;
-            }
     .app {
 		display: flex;
 		flex-direction: row;
@@ -143,6 +125,7 @@
 		flex-direction: column;
 		box-sizing: border-box;
         flex-grow: 1;
+        max-width: 100%;
         background-color: #00000000;
 	}
     .wrap {

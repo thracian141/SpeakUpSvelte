@@ -31,10 +31,10 @@ body.light-theme {
     --fg-ultra: #000000;
     --fg-color: #161616;
     --fg-color-2: #2b2934;
-    --bg-color: #efefef;
+    --bg-color: #e1e1e1;
     --bg-middle: #dddddd;
-    --el-bg-color: #d5d5d5;
-    --el-bg-color-half: #ffffff70;
+    --el-bg-color: #cdcdcd;
+    --el-bg-color-half: #cdcdcd70;
     --bg-highlight: #f5f5f5;
     --bg-highlight-2: #ffffff;
     --selected-color: #8956a9;

@@ -1,8 +1,27 @@
 {
     "yes": "Yes",
     "no": "No",
+    "home" : {
+        "welcome_back": "Welcome back,",
+        "jump_back_into_your_last_course": "Jump back into your last course",
+        "day_streak": "Day streak",
+        "days": "days",
+        "words_learnt": "words learnt",
+        "out_of": "out of",
+        "this_week": "This week",
+        "last_2_weeks": "Last 2 weeks",
+        "7_days": "7 days",
+        "14_days": "14 days",
+        "monday_short": "M",
+        "tuesday_short": "T",
+        "wednesday_short": "W",
+        "thursday_short": "T",
+        "friday_short": "F",
+        "saturday_short": "S",
+        "sunday_short": "S"
+    },
     "layout": {
-        "highly_experimental": "Highly experimental!",
+        "highly_experimental": "This will refresh the website",
         "home": "Home",
         "learn": "Learn",
         "decks": "Decks",
@@ -81,6 +100,45 @@
         "sat": "SAT",
         "sun": "SUN",
         "change_photo": "Change photo?",
-        "use_a_secure_password": "Use a secure password."
+        "use_a_secure_password": "Use a secure password.",
+        "youve_learned": "You've learned",
+        "words": "words"
+    },
+    "create": {
+        "deck": {
+            "create_a_personal_deck": "Create a personal deck",
+            "deck_name": "Deck name",
+            "description": "Description",
+            "create": "Create",
+            "change": "Change",
+            "all": {
+                "list": "List",
+                "create_deck": "Create deck",
+                "search": "Search",
+                "your_active_courses": "Your active courses",
+                "your_personal_decks": "Your personal decks",
+                "switch_active_course": "Switch active course",
+                "create_personal_deck": "Create personal deck"
+            }
+        },
+        "course": {
+            "pick_a_course_to_edit": "Pick a course to edit",
+            "sections": "sections",
+            "cards": "cards",
+            "last_edited_by": "Last edited by:",
+            "on": "on",
+            "at": "at",
+            "add_sections_to": "Add sections to",
+            "cards_uppercase": "Cards",
+            "title": "Title",
+            "section": "Section",
+            "no_cards_added_yet": "No cards added yet.",
+            "no_sections_added_yet": "No sections added yet.",
+            "add_cards_to": "Add cards to",
+            "front": "Front",
+            "back": "Back",
+            "level": "Level",
+            "difficulty": "Difficulty"
+        }
     }
 }

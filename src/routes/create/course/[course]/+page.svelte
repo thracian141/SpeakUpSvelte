@@ -69,7 +69,7 @@
 <div class="outwrap" style="{$isNarrowScreen ? "width:100%; height:100%; border-radius:0; margin-top:5rem;" : ""}">
     <div class="top-row" style="{$isNarrowScreen ? "width:100%; height:10%;" : ""}">
         <img src="{deck?.image ?? ''}" alt="{$_(deck?.getName() ?? '')}" />
-        <p style="{$isNarrowScreen ? "font-size:1.2rem" : ""}">Add sections to 
+        <p style="{$isNarrowScreen ? "font-size:1.2rem" : ""}">{$_('create.course.add_sections_to')}
             <span role="banner"
             on:mouseenter={()=>{descriptionOpened=true;}} on:mouseleave={()=>{descriptionOpened=false;}}>
                 {$_(deck?.getName() ?? '')}
@@ -84,8 +84,8 @@
     </div>
     <div class="cards-list" id='list' bind:this={container}>
         <div class="card-input-row">
-            <input type="text" placeholder="Title" id="front" bind:value={currentTitle}/>
-            <input type="text" placeholder="Description"  bind:value={currentDescription}/>
+            <input type="text" placeholder="{$_('create.course.title')}" id="front" bind:value={currentTitle}/>
+            <input type="text" placeholder="{$_('create.deck.description')}"  bind:value={currentDescription}/>
             <button on:click={async()=>{await addCurrentSection();}} class:btn-disabled={currentTitle=='' || currentDescription==''}>+</button>
             <button on:click={()=>{rotateIcon(); resetValues()}}>
                 <div class="{isRotating ? 'rotate' : ''}">
@@ -95,13 +95,13 @@
         </div>
         {#if $testsections.length == 0}
             <div class="info-row" transition:slide>
-                <span style="width:100%; text-align:center;">No cards added yet</span>
+                <span style="width:100%; text-align:center;">{$_('create.course.no_sections_added_yet')}</span>
             </div>
         {:else}
             <div class="info-row" transition:slide>
-                <span style="width:20%;">Section</span>
-                <span style="width:40%;">Description</span>
-                <span style="width:10%; margin-right:0;">Cards</span>
+                <span style="width:20%;">{$_('create.course.section')}</span>
+                <span style="width:40%;">{$_('create.deck.description')}</span>
+                <span style="width:10%; margin-right:0;">{$_('create.course.cards_uppercase')}</span>
                 <span style="width:20%"></span>
             </div>
         {/if}

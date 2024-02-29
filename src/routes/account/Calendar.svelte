@@ -1,22 +1,25 @@
 <script lang="ts">
     import { slide } from "svelte/transition";
     import { isNarrowScreen } from "$lib/store";
-    import {_} from "$lib/i18n";
+    import {_, locale} from "$lib/i18n";
 
     let currentDate = new Date();
     let dateRangeSelection = "week";
+    let localeVar = "en-GB";
+    $: localeVar = $locale == "bg" ? "bg-BG" : "en-GB";
 
-    let weekDates = Array.from({length: 7}, (_, i) => {
+    $: weekDates = Array.from({length: 7}, (_, i) => {
+        let d = new Date(currentDate);
+        d.setDate(d.getDate() - i);
+        return d.toLocaleDateString(localeVar, { weekday: 'short' });
+    }).reverse();
+
+    $: monthDates = Array.from({length: 35}, (_, i) => {
         let d = new Date(currentDate);
         d.setDate(d.getDate() - i);
         return d;
     }).reverse();
-
-    let monthDates = Array.from({length: 35}, (_, i) => {
-        let d = new Date(currentDate);
-        d.setDate(d.getDate() - i);
-        return d;
-    }).reverse();
+    $: lastMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1);
 
     let hasStudied = new Map();
     for (let i = 0; i < 90; i++) {
@@ -35,11 +38,11 @@
         <div class="week-wrapper" in:slide out:slide>
             {#each weekDates as day (day)}
                 <div class="day-box" style="{$isNarrowScreen ? "padding:0.21rem; width:14%;" : ""}">
-                    <div class="week-day-box" class:filled={hasStudied.get(day.toISOString().split('T')[0])}
+                    <div class="week-day-box" class:filled={hasStudied.get(day.split('T')[0])}
                                      style="{$isNarrowScreen ? " width:100%;" : ""}">
                         <i class="bi bi-check-lg"></i>
                     </div>
-                    <span>{day.toLocaleString('en-US', { weekday: 'short' }).toUpperCase()}</span>
+                    <span>{day.toUpperCase()}</span>
                 </div>
             {/each}
         </div>
@@ -56,7 +59,7 @@
         <!-- Previous month -->
     <div class="month-wrap" style="flex-wrap:wrap; {$isNarrowScreen ? "align-content:flex-start" : ""}" in:slide out:slide>
         <div class="month-text"><h3 style="{$isNarrowScreen ? "margin-top:-0.8rem;" : ""}">
-            {new Date(currentDate.getFullYear(), currentDate.getMonth() - 1).toLocaleString('en-GB', { month: 'long' })}
+            {new Date(lastMonth.getMonth()).toLocaleString(localeVar, { month: 'long' })}
         </h3></div>
         {#each monthDates.filter(day => day.getMonth() !== currentDate.getMonth()) as day (day)}
         <div class="day-box" style="opacity: 0.4; {$isNarrowScreen ? "padding:0.21rem; margin-bottom:1.4rem; margin-right:0.25rem; width:2.3rem;" : ""}">
@@ -67,7 +70,7 @@
         </div>
         {/each}
         <div class="month-text"><h3 style="{$isNarrowScreen ? "margin-top:-0.8rem;" : ""}">
-            {new Date(currentDate.getMonth()).toLocaleString('en-GB', { month: 'long' })}
+            {new Date().toLocaleString(localeVar, { month: 'long' })}
         </h3></div>
         {#each monthDates.filter(day => day.getMonth() === currentDate.getMonth()) as day (day)}
         <div class="day-box" style="{$isNarrowScreen ? "padding:0.21rem; margin-bottom:1rem; margin-right:0.25rem; width:2.3rem;" : ""}">

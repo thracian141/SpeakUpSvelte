@@ -194,6 +194,9 @@
         background-color: var(--el-bg-color);
         width:100%;
         height:20%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     .edit-row > span {
         font-size: 1rem;

@@ -1,6 +1,7 @@
 <script lang="ts">
     import { fade, slide } from 'svelte/transition';
     import {decks} from '../../decks/testDecks';
+    import {_} from '$lib/i18n';
 
     let date = new Date();
     let todayDate = date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear();
@@ -19,7 +20,7 @@
 
 
 <div class="wrap" transition:slide>
-    <h1>Pick a course to edit</h1>
+    <h1>{$_('create.course.pick_a_course_to_edit')}</h1>
     <div class="course-list">
         <div class="course-box">
             <a href="/create/course/en" class="course-link" class:any-hovered={anyHovered} class:this-hovered={currentHovered=='en'}
@@ -28,8 +29,8 @@
                 <span>English</span>
             </a>
             <div class="description">
-                <span><span style="color: var(--selected-text);">18</span> sections</span>
-                <span><span style="color: var(--cyan);">317</span> cards</span>
+                <span><span style="color: var(--selected-text);">18</span> {$_('create.course.sections')}</span>
+                <span><span style="color: var(--cyan);">317</span> {$_('create.course.cards')}</span>
             </div>
         </div>
         <div class="course-box">
@@ -39,8 +40,8 @@
                 <span>Bulgarian</span>
             </a>
             <div class="description">
-                <span><span style="color: var(--selected-text);">21</span> sections</span>
-                <span><span style="color: var(--cyan);">317</span> cards</span>
+                <span><span style="color: var(--selected-text);">21</span> {$_('create.course.sections')}</span>
+                <span><span style="color: var(--cyan);">317</span> {$_('create.course.cards')}</span>
             </div>
         </div>
         <div class="course-box">
@@ -50,8 +51,8 @@
                 <span>German</span>
             </a>
             <div class="description">
-                <span><span style="color: var(--selected-text);">14</span> sections</span>
-                <span><span style="color: var(--cyan);">276</span> cards</span>
+                <span><span style="color: var(--selected-text);">14</span> {$_('create.course.sections')}</span>
+                <span><span style="color: var(--cyan);">276</span> {$_('create.course.cards')}</span>
             </div>
         </div>
         <div class="course-box">
@@ -61,8 +62,8 @@
                 <span>Turkish</span>
             </a>
             <div class="description">
-                <span><span style="color: var(--selected-text);">15</span> sections</span>
-                <span><span style="color: var(--cyan);">325</span> cards</span>
+                <span><span style="color: var(--selected-text);">15</span> {$_('create.course.sections')}</span>
+                <span><span style="color: var(--cyan);">325</span> {$_('create.course.cards')}</span>
             </div>
         </div>
         <div class="course-box">
@@ -72,17 +73,17 @@
                 <span>Italian</span>
             </a>
             <div class="description">
-                <span><span style="color: var(--selected-text);">9</span> sections</span>
-                <span><span style="color: var(--cyan);">198</span> cards</span>
+                <span><span style="color: var(--selected-text);">9</span> {$_('create.course.sections')}</span>
+                <span><span style="color: var(--cyan);">198</span> {$_('create.course.cards')}</span>
             </div>
         </div>
     </div>
     {#if anyHovered}
         <h3 transition:fade={{duration:150}} style="margin-bottom: 0.5rem;">
-            Last edited by: <span style="color: var(--cyan);">vasillopata</span>
+            {$_('create.course.last_edited_by')} <span style="color: var(--cyan);">vasillopata</span>
         </h3>
         <h4 transition:fade={{duration:150}} style="margin:0;">
-            On <span style="color: var(--green);">{todayDate}</span> at 
+            {$_('create.course.on')} <span style="color: var(--green);">{todayDate}</span> {$_('create.course.at')} 
             <span style="color: var(--fg-color-2);">{todayHour}</span>
         </h4>
     {/if}

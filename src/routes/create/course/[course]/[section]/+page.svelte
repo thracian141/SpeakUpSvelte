@@ -5,6 +5,7 @@
     import { slide } from 'svelte/transition';
     import { testsections } from '../testsections';
     import type { Section } from '../testsections';
+    import {_} from '$lib/i18n';
 
     let isRotating = false;
 
@@ -72,7 +73,7 @@
 
 <div class="outwrap" style="{$isNarrowScreen ? "width:100%; height:100%; border-radius:0; margin-top:5rem;" : ""}">
     <div class="top-row" style="{$isNarrowScreen ? "width:100%; height:10%;" : ""}">
-        <p style="{$isNarrowScreen ? "font-size:1.2rem" : ""}">Add cards to 
+        <p style="{$isNarrowScreen ? "font-size:1.2rem" : ""}">{$_('create.course.add_cards_to')} 
             <span role="banner"
             on:mouseenter={()=>{descriptionOpened=true;}} on:mouseleave={()=>{descriptionOpened=false;}}>
                 {section?.title}
@@ -87,8 +88,8 @@
     </div>
     <div class="cards-list" id='list' bind:this={cardsListElement}>
         <div class="card-input-row">
-            <input type="text" placeholder="Front" id="front" bind:value={currentFront}/>
-            <input type="text" placeholder="Back"  bind:value={currentBack}/>
+            <input type="text" placeholder="{$_('create.course.front')}" id="front" bind:value={currentFront}/>
+            <input type="text" placeholder="{$_('create.course.back')}"  bind:value={currentBack}/>
             <button on:click={async()=>{await addCurrentCard();}} class:btn-disabled={currentFront=='' || currentBack==''}>+</button>
             <button on:click={()=>{rotateIcon(); resetValues()}}>
                 <div class="{isRotating ? 'rotate' : ''}">
@@ -98,14 +99,14 @@
         </div>
         {#if $testcards.length == 0}
             <div class="info-row" transition:slide>
-                <span style="width:100%; text-align:center;">No cards added yet</span>
+                <span style="width:100%; text-align:center;">{$_('create.course.no_cards_added_yet')}</span>
             </div>
         {:else}
             <div class="info-row" transition:slide>
-                <span style="width:35%;">Front</span>
-                <span style="width:35%;">Back</span>
-                <span style="width:10%; margin-right:0;">Level</span>
-                <span style="width:10%; ">Difficulty</span>
+                <span style="width:35%;">{$_('create.course.front')}</span>
+                <span style="width:35%;">{$_('create.course.back')}</span>
+                <span style="width:10%; margin-right:0;">{$_('create.course.level')}</span>
+                <span style="width:10%; ">{$_('create.course.difficulty')}</span>
                 <span style="width: 8%;"></span>
             </div>
         {/if}

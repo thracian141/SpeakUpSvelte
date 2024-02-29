@@ -73,17 +73,17 @@
             </div>
             <div style="font-size: 1.3rem; padding: 0.4rem 1rem 0.4rem 1rem; font-weight:bold; border: 1px solid var(--bg-highlight);
                         border-radius:0 0 0.6rem 0.6rem; border-top:0; ">
-                You've learned <br/> 
-                <span style="color:var(--green);font-size:2rem;">{wordsLearnt}</span> words.
+                {$_('account.youve_learned')} <br/> 
+                <span style="color:var(--green);font-size:2rem;">{wordsLearnt}</span> {$_('account.words')}.
             </div>
         </div>
         <div class="words-learnt-wrap" style="{$isNarrowScreen ? "width:8.5rem;" : ""}">
             <span style="font-size:0.95rem; color:var(--fg-color); margin-left:auto; margin-right:0.8rem;">{goalWords}</span>
             <span style="position: absolute; left:0%; bottom:0%; font-size:0.95rem; font-weight:bold;">{Math.round((wordsLearnt/goalWords)*100)}%</span>
             <span style="position: absolute; left:0%; top:5%; font-size:0.95rem;">{wordsLearnt}</span>
-            <span style="position: absolute; left:0%; top:17%; font-size:0.95rem; color:var(--fg-color-2)">learnt</span>
+            <span style="position: absolute; left:0%; top:17%; font-size:0.95rem; color:var(--fg-color-2)">{$_('account.learned')}</span>
             <span style="position: absolute; left:0%; top:44%; font-size:0.95rem;">{goalWords-wordsLearnt}</span>
-            <span style="position: absolute; left:0%; top:56%; font-size:0.95rem; color:var(--fg-color-2)">left</span>
+            <span style="position: absolute; left:0%; top:56%; font-size:0.95rem; color:var(--fg-color-2)">{$_('account.left')}</span>
             <div class="words-learnt-bar" on:mouseenter={async()=>handleHover("ygoal")} role="presentation" style="margin-right:0;margin-left:auto;">
                 <div id="ygoal" class="words-learnt-progress your-goal" style="height: {(wordsLearnt/goalWords)*100}%;transform: scaleY(1)"></div>
                 <span style="position: absolute; color:var(--bg-color); right:8%; font-size:0.95rem;">{wordsLearnt}</span>

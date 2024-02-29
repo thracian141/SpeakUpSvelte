@@ -3,6 +3,7 @@
     import {decks} from './decks/testDecks';
     import type { Section } from './create/course/[course]/testsections';
     import {testsections as sectionlist} from './create/course/[course]/testsections';
+    import { _, locale } from '$lib/i18n';
 
     let testsections = $sectionlist;
     let testCourse = decks[2];
@@ -14,22 +15,23 @@
     let days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
     let today = new Date().getDay();
     let lastSevenDays = [...days.slice(today + 1), ...days.slice(0, today + 1)].reverse();
+    let lastTwoWeeks = [...lastSevenDays, ...lastSevenDays];
 </script>
 
 
 <div class="outter-wrap" transition:slide>
-    <p class="p-welcome-back">Welcome back, <span style="font-weight: bold;">vasillopata</span></p>
+    <p class="p-welcome-back">{$_('home.welcome_back')} <span style="font-weight: bold;">vasillopata</span></p>
     <div style="height:1px; width:100%; background-color:var(--bg-highlight-2); margin-bottom:2rem; color:#00000000">a</div>
     <div class="inner-wrap">
         <div class="courses wrap">
             <div class="last-course">
                 <div class="last-course-row-1">
-                    Jump back into your last course
+                    {$_('home.jump_back_into_your_last_course')}
                 </div>
                 <a href="/learn" class="last-course-row-2">
                     <img class="course-img" src={testCourse.image} alt="{testCourse.getName()}" />
                     <span class="course-txts">
-                        <span>{testCourse.getName()}</span>
+                        <span>{$_(testCourse.getName())}</span>
                         <span>Basic Phrases</span>
                     </span>
                     <i class="bi bi-play-fill"></i>
@@ -55,36 +57,47 @@
             <div class="statistics-row-1">
                 <div class="daily-goal stat">
                     <span style="font-weight: bold; font-size:3rem; color:var(--cyan)">3</span>
-                    <span class="daily-goal-txt-2">day streak <button class="streak-info-btn">i</button></span>
+                    <span class="daily-goal-txt-2">{$_('home.day_streak')} <button class="streak-info-btn">i</button></span>
                     <div class="daily-goal-bar">
                         <div style="width:{weeklyStreakTest/7*100}%; height:100%; background-color:var(--green); border-radius:inherit">
                         </div>
                         <i class="bi bi-star-fill"></i>
-                        <span>{weeklyStreakTest}/7 days</span>
+                        <span>{weeklyStreakTest}/{$_('home.7_days')}</span>
                     </div>
                 </div>
                 <div class="word-count stat">
                     <span style="font-weight: bold; font-size:3rem; color:var(--cyan)">{wordCountTest}</span>
-                    <span class="daily-goal-txt-2">words learned</span>
+                    <span class="daily-goal-txt-2">{$_('home.words_learnt')}</span>
                     <span style="margin: 1.5rem 0 auto 0; color:var(--fg-color-2); font-size:1.1rem;">
-                    out of <span style="color: var(--selected-text); font-weight:bold;">6173</span></span>
+                    {$_('home.out_of')} <span style="color: var(--selected-text); font-weight:bold;">6173</span></span>
                 </div>
             </div>
             <div class="statistics-row-2">
-                <h2>This week</h2>
+                <h2>{$_(weekOr2Weeks === 'week' ? 'home.this_week' : 'home.last_2_weeks')}</h2>
                 <div class="week-graph">
-                    {#each lastSevenDays as day}
-                        <div class="week-day">
-                            <span>{Math.round(Math.random() * 50)}</span>
-                            <span>{day}</span>
-                        </div>
-                    {/each}
+                    {#if weekOr2Weeks == 'week'}
+                        {#each lastSevenDays as day}
+                            <div class="week-day">
+                                <div class="week-day-fill"></div>
+                                <span style="position: absolute;top: -1.5rem;color: var(--fg-color);">{Math.round(Math.random() * 50)}</span>
+                                <span style="position: absolute;bottom: -1.5rem;color: var(--fg-color-2);">{day}</span>
+                            </div>
+                        {/each}
+                    {:else if weekOr2Weeks == '2weeks'}
+                        {#each lastTwoWeeks as day}
+                            <div class="week-day" style="width:0.75rem">
+                                <div class="week-day-fill"></div>
+                                <span style="position: absolute;top: -1.5rem;color: var(--fg-color); font-size:0.9rem;">{Math.round(Math.random() * 50)}</span>
+                                <span style="position: absolute;bottom: -1.5rem;color: var(--fg-color-2); font-size:0.9rem;">{day}</span>
+                            </div>
+                        {/each}
+                    {/if}
                 </div>
                 <div class="week-buttons">
                     <button class="week-btn" class:week-btn-active={weekOr2Weeks=='week'}
-                    on:click={()=>weekOr2Weeks='week'}>Last 7 days</button>
+                    on:click={()=>weekOr2Weeks='week'}>{$_('home.7_days')}</button>
                     <button class="week-btn" class:week-btn-active={weekOr2Weeks=='2weeks'}
-                    on:click={()=>weekOr2Weeks='2weeks'}>Last 14 days</button>
+                    on:click={()=>weekOr2Weeks='2weeks'}>{$_('home.14_days')}</button>
                 </div>
             </div>
         </div>
@@ -299,17 +312,14 @@
                             flex-direction: column;
                             background-color: var(--bg-highlight);
                             align-items: center;
+                            justify-content: flex-end;
                             position: relative;
                         }
-                            .week-day > span:first-child {
-                                position: absolute;
-                                top: -1.5rem;
-                                color: var(--fg-color);
-                            }
-                            .week-day > span:last-child {
-                                position: absolute;
-                                bottom: -1.5rem;
-                                color: var(--fg-color-2);
+                            .week-day-fill {
+                                width: 80%;
+                                height: 50%;
+                                background-color: var(--green);
+                                border-radius: inherit;
                             }
                     .week-buttons {
                         align-self: center;

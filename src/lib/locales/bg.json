@@ -1,8 +1,27 @@
 {
     "yes": "Да",
     "no": "Не",
+    "home" : {
+        "welcome_back": "Добре дошли отново,",
+        "jump_back_into_your_last_course": "Върнете се обратно в последния си курс",
+        "day_streak": "дни серия",
+        "days": "дни",
+        "words_learnt": "думи научени",
+        "out_of": "от",
+        "this_week": "Тази седмица",
+        "last_2_weeks": "Последните 2 седмици",
+        "7_days": "7 дни",
+        "14_days": "14 дни",
+        "monday_short": "П",
+        "tuesday_short": "В",
+        "wednesday_short": "С",
+        "thursday_short": "Ч",
+        "friday_short": "П",
+        "saturday_short": "С",
+        "sunday_short": "Н"
+    },
     "layout": {
-        "highly_experimental": "Силно експериментално!",
+        "highly_experimental": "Сайтът ще се презареди",
         "home": "Начало",
         "learn": "Учене",
         "decks": "Тестета",
@@ -81,6 +100,45 @@
         "sat": "СЪБ",
         "sun": "НЕД",
         "change_photo": "Смени снимка",
-        "use_a_secure_password": "Използвайте сигурна парола."
+        "use_a_secure_password": "Използвайте сигурна парола.",
+        "youve_learned": "Научили сте",
+        "words": "думи"
+    },
+    "create": {
+        "deck": {
+            "create_a_personal_deck": "Създай персонално тесте",
+            "deck_name": "Име на тестето",
+            "description": "Описание",
+            "create": "Създай",
+            "change": "Промени",
+            "all": {
+                "list": "List",
+                "create_deck": "Create deck",
+                "search": "Search",
+                "your_active_courses": "Your active courses",
+                "your_personal_decks": "Your personal decks",
+                "switch_active_course": "Switch active course",
+                "create_personal_deck": "Create personal deck"
+            }
+        },
+        "course": {
+            "pick_a_course_to_edit": "Изберете курс за редакция",
+            "sections": "секции",
+            "cards": "карти",
+            "last_edited_by": "Последно редактиран от:",
+            "on": "на",
+            "at": "в",
+            "add_sections_to": "Добави секция към",
+            "cards_uppercase": "Карти",
+            "title": "Заглавие",
+            "section": "Секция",
+            "no_cards_added_yet": "Все още няма добавени карти.",
+            "no_sections_added_yet": "Все още няма добавени секции.",
+            "add_cards_to": "Добави карти към",
+            "front": "Лице",
+            "back": "Гръб",
+            "level": "Ниво",
+            "difficulty": "Сложност"
+        }
     }
 }

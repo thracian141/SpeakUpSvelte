@@ -4,6 +4,7 @@
     import type { DeckInputModel } from '$lib/scripts/models/inputModels';
     import { deckStore } from './deckStore';
     import { goto } from '$app/navigation';
+    import {_} from '$lib/i18n';
 
     let imageUrl = '';
     let deckName = '';
@@ -49,13 +50,13 @@
     }
 </script>
 
-<h1 transition:slide>Create a personal deck</h1>
+<h1 transition:slide>{$_('create.deck.create_a_personal_deck')}</h1>
 <form enctype="multipart/form-data" transition:slide style="{$isNarrowScreen ? '' : 'padding:2rem;width:40rem;border:1px solid var(--bg-highlight); border-radius:0.75rem;'}">
     <div class="inner-wrap" style="{$isNarrowScreen ? 'flex-direction:column;' : ''}">
         <div class="img-wrap" style="{$isNarrowScreen ? 'align-items:center;' : ''}">
             <label for="image" class="custom-file-input">
                 {#if imageUrl}
-                    <span>Change</span>
+                    <span>{$_('create.deck.change')}</span>
                     <img src={imageUrl} alt="Uploaded" style="width: 100%; height: 100%; object-fit: cover;" />
                 {:else}
                     +
@@ -65,19 +66,19 @@
         </div>
         <div class="fields-wrap">
             <div class="field-group">
-                <label for="name" style="{deckName != '' ? "top:0%;opacity: 0.75;font-size: 1rem;" : ""}">Deck name</label>
+                <label for="name" style="{deckName != '' ? "top:0%;opacity: 0.75;font-size: 1rem;" : ""}">{$_('create.deck.deck_name')}</label>
                 <input id="name" type="text" name="name" bind:value={deckName} autocomplete="off">
             </div>
             <div class="field-group" style="margin-top: 1rem;">
                 <label for="description" style="{deckDescription!='' ? 'top:-8%;opacity: 0.75;font-size: 1rem;' : ""}">
-                    {deckDescription!='' ? "Description" : "Description..."}
+                    {deckDescription!='' ? $_('create.deck.description') : $_('create.deck.description')+"..."}
                 </label>
                 <textarea id="description" name="description" bind:value={deckDescription} autocomplete="off"></textarea>
             </div>
         </div>
     </div>
     <div class="buttons" style="{$isNarrowScreen ? 'width:100%;' : ''}">
-        <button type="submit" on:click={async(e)=>{await handleSubmit(e);}}>Create</button>
+        <button type="submit" on:click={async(e)=>{await handleSubmit(e);}}>{$_('create.deck.create')}</button>
         <button type="reset" on:click={()=>{rotateIcon(); resetValues()}}>
             <div class="{isRotating ? 'rotate' : ''}">
                 <i class="bi bi-arrow-counterclockwise"></i>

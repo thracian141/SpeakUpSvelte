@@ -65,7 +65,7 @@
     >
     <div class="logo" style="display: flex; flex-direction:row;">
         <img src="/logo.svg" alt="SpeakUp Logo"/>
-        <p>SPEAKUP</p>
+        <p>SPEAK <span>-</span>UP</p>
     </div>
     <ul id="mainOptions" style="list-style-type:none; padding: 0.5rem;">
         <a href="/" class="nav-option" class:active={$page.url.pathname == "/"}>
@@ -121,7 +121,23 @@
         font-size: 1rem;
         opacity: 0;
         transition: opacity 0.2s ease-in-out;
+        text-wrap: nowrap;
+        position: relative;
+        word-spacing: 0.1rem;
     }
+        .logo p span {
+            position: absolute;
+            color: #00000000;
+            background-color: var(--selected-text);
+            height:0.25rem;
+            width: 0.3rem;
+            top:52%;
+            z-index: -1;
+            left:66.5%;
+            box-shadow: 0 0 1px 1px var(--el-bg-color);
+            transform: translate(-50%, -50%) scaleX(1.3);
+            
+        }
     .logo img {
         margin-right:0.2rem;
         width:auto;
