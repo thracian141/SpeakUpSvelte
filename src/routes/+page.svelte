@@ -73,7 +73,7 @@
         </div>
         <div class="statistics-row-2">
             <h2>{$_(weekOr2Weeks === 'week' ? 'home.this_week' : 'home.last_2_weeks')}</h2>
-            <div class="week-graph">
+            <div class="week-graph" class:week-graph-m={$isNarrowScreen}>
                 {#if weekOr2Weeks == 'week'}
                     {#each lastSevenDays as day}
                         <div class="week-day">
