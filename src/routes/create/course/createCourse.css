@@ -1,0 +1,14 @@
+.wrap-m {
+    width:100% !important;
+    height:100% !important;
+    margin-top: 5rem;
+}
+.course-list-m {
+    width: 100% !important;
+    justify-content: space-between !important;
+}
+.course-list-m > .course-box {
+    width:49% !important;
+    height: 10rem !important;
+    margin-right: 0 !important;
+}

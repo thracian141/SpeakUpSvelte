@@ -59,7 +59,7 @@ style="{$isNarrowScreen ? "width:100%; padding: 1rem 0.2rem; border-radius:0;" :
             <div style="display: flex; flex-direction:column; justify-content:space-between; {$isNarrowScreen ? "margin-top:2rem;" : ""}">
                 <a href="/" style="font-size: 11pt !important; ">{$_('authenticate.forgot_your_password')}</a>
                 <div style="width: 100%; height:1px; background-color:var(--bg-color); margin:0.5rem 0 0.5rem 0"></div>
-                <a href="../authenticate/register" style="font-size: 11pt !important;">{$_('authenticate.dont_have_an_account')}</a>
+                <a href="./register" style="font-size: 11pt !important;">{$_('authenticate.dont_have_an_account')}</a>
             </div>
         </div>
     </form>

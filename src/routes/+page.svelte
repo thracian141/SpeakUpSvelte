@@ -203,6 +203,7 @@
                     padding: 1.5rem 2rem;
                     padding-bottom: 0;
                     overflow-y: scroll;
+                    border-right: 0;
                 }
                     .courses > .sections::-webkit-scrollbar-thumb {
                         background: #3a3d40;

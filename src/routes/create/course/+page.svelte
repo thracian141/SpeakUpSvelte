@@ -2,6 +2,8 @@
     import { fade, slide } from 'svelte/transition';
     import {decks} from '../../decks/testDecks';
     import {_} from '$lib/i18n';
+    import {isNarrowScreen} from '$lib/store';
+    import './createCourse.css'
 
     let date = new Date();
     let todayDate = date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear();
@@ -19,9 +21,9 @@
 </script>
 
 
-<div class="wrap" transition:slide>
+<div class="wrap" class:wrap-m={$isNarrowScreen} transition:slide>
     <h1>{$_('create.course.pick_a_course_to_edit')}</h1>
-    <div class="course-list">
+    <div class="course-list" class:course-list-m={$isNarrowScreen}>
         <div class="course-box">
             <a href="/create/course/en" class="course-link" class:any-hovered={anyHovered} class:this-hovered={currentHovered=='en'}
             on:mouseenter={()=>{handleEnter('en')}} on:mouseleave={()=>{handleLeave()}}>
