@@ -1,4 +1,5 @@
 import { browser } from "$app/environment";
+import { goto } from "$app/navigation";
 
 export interface User {
     id: string;
@@ -20,7 +21,7 @@ export interface UserLastDeck {
     [key: string]: string | number | boolean;
 }
 
-async function getToken() {
+export async function getToken() {
     let cookie;
     if (browser) {
         cookie = document.cookie.split('; ').find(row => row.startsWith('token'));
@@ -36,7 +37,6 @@ async function getToken() {
 
 export async function getUserName() {
     let token = await getToken();
-    console.log(token);
     const response = await fetch('https://localhost:5000/account/getusername', {
         method: 'GET',
         headers: {
@@ -110,4 +110,34 @@ export async function getLastDeck(userLastDeckId : number) {
     });
 
     return response.json();
+}
+
+export async function register(event: Event, username:string, email:string, password:string, displayname:string|null) {
+    event.preventDefault();
+
+    const model = {
+        UserName: username,
+        DisplayName: displayname,
+        Password: password,
+        Email: email
+    };
+
+    const response = await fetch('https://localhost:5000/authenticate/register', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(model),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+        console.log("Login successful!");
+        document.cookie = `token=${data.token};path=/;Secure;SameSite=Strict;`;
+        await goto('/');
+        location.reload();
+    } else {
+        console.error("Login failed: ", data.message);
+    }
 }

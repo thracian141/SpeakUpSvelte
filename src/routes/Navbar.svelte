@@ -96,9 +96,6 @@
             </ul>
         {:else}
             <ul style="list-style-type:none; padding: 12px; margin-top:auto">
-                {#if username}
-                <p>{username}</p>
-                {/if}
                 <a id="authForm" class="nav-option" href="/" class:active={isLogoutConfirmed} on:click|preventDefault={handleLogoutClick}>
                     <i class="bi bi-box-arrow-right"></i>
                     <p style="text-overflow:clip; white-space:nowrap">{isLogoutConfirmed ? 'Confirm' : 'Sign Out'}</p>

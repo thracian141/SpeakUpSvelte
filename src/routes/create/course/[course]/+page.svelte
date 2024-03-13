@@ -1,22 +1,25 @@
 <script lang="ts">
-    import { isNarrowScreen } from '$lib/store';
-    import { fade, slide } from 'svelte/transition';
-    import { _, locale } from '$lib/i18n';
-    let isRotating = false;
-
-    import type { Section } from './testsections'
-    import { testsections } from './testsections';
+    import { slide } from 'svelte/transition';
     import { onMount } from 'svelte';
-    import SectionRow from './SectionRow.svelte';
     import { page } from '$app/stores';
-    import type {Deck} from '../../../decks/testDecks';
-    import { decks } from '../../../decks/testDecks';
+    import { _ } from '$lib/i18n';
+    import { isNarrowScreen } from '$lib/store';
+    import SectionRow from './SectionRow.svelte';
+    import {getCourseByCode} from '$lib/scripts/CourseHandler';
+    import type {Course} from '$lib/scripts/CourseHandler';
+    import type { Section, SectionInput } from '$lib/scripts/SectionHandler';
+    import {createSection, listSectionsByCourse} from '$lib/scripts/SectionHandler';
+    import {sectionsListStore} from '$lib/stores/sectionsStore'
 
+
+    const pageParameter = $page.params.course;
+    let selectedCourse: Course | undefined;
+    let sectionsList: Section[] = [];
+
+
+    let isRotating = false;
     let currentTitle = '';
     let currentDescription = '';
-    const pageParameter = $page.params.course;
-    let deck:Deck|undefined = decks.find((deck) => deck.id == pageParameter);
-
 
     function rotateIcon() {
         isRotating = true;
@@ -28,32 +31,24 @@
         currentTitle = '';
         currentDescription = '';
     }
+
     let container:HTMLDivElement;
+
     async function addCurrentSection() {
-        let lastIndex = $testsections.length;
-        let section: Section = {
-            id: lastIndex,
+        const section:SectionInput = {
             title: currentTitle,
             description: currentDescription,
-            level: 0,
-            order: lastIndex+1
-            
-        }
-        await testsections.update((value) => {
-            value.push(section);
-            return value;
-        });
+            courseCode: pageParameter
+        };
+
+        await createSection(section);
 
         resetValues();
 
         container.scrollTop = container.scrollHeight;
+        //refresh
+        location.reload();
     }
-
-    let section: Section;
-    testsections.subscribe((value: Section[]) => {
-        if (value !== null) 
-            section = value[0];
-    });
 
     let descriptionOpened = false;
 
@@ -61,27 +56,33 @@
         let frontInput = document.getElementById('front');
         if (frontInput)     
             await frontInput?.focus();
+
+        selectedCourse = await getCourseByCode(pageParameter);
+        sectionsList = await listSectionsByCourse(pageParameter);
+        sectionsListStore.set(sectionsList);
     });
 
 </script>
 
 
 <div class="outwrap" style="{$isNarrowScreen ? "width:100%; height:100%; border-radius:0; margin-top:5rem;" : ""}">
+    {#if selectedCourse != undefined}
     <div class="top-row" style="{$isNarrowScreen ? "width:100%; height:10%;" : ""}">
-        <img src="{deck?.image ?? ''}" alt="{$_(deck?.getName() ?? '')}" />
+        <img src="{selectedCourse.image}" alt="{selectedCourse.title}" />
         <p style="{$isNarrowScreen ? "font-size:1.2rem" : ""}">{$_('create.course.add_sections_to')}
             <span role="banner"
             on:mouseenter={()=>{descriptionOpened=true;}} on:mouseleave={()=>{descriptionOpened=false;}}>
-                {$_(deck?.getName() ?? '')}
+                {selectedCourse.title}
                 {#if descriptionOpened}
                     <div class="dropdownDescription" transition:slide>
-                        <span>{deck?.description}</span>
+                        <span>{selectedCourse.description}</span>
                     </div>
                 {/if}
             </span>
         </p>
         <button><i class="bi bi-three-dots-vertical"></i></button>
     </div>
+    {/if}
     <div class="cards-list" id='list' bind:this={container}>
         <div class="card-input-row">
             <input type="text" placeholder="{$_('create.course.title')}" id="front" bind:value={currentTitle}/>
@@ -93,7 +94,7 @@
                 </div>
             </button>
         </div>
-        {#if $testsections.length == 0}
+        {#if sectionsList.length == 0}
             <div class="info-row" transition:slide>
                 <span style="width:100%; text-align:center;">{$_('create.course.no_sections_added_yet')}</span>
             </div>
@@ -105,7 +106,7 @@
                 <span style="width:20%"></span>
             </div>
         {/if}
-        {#each $testsections as section (section.id)}
+        {#each $sectionsListStore as section (section.id)}
             {#key section.order}
                 <SectionRow section={section} />
             {/key}

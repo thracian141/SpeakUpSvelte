@@ -6,6 +6,10 @@
     import { _, locale } from '$lib/i18n';
     import { isNarrowScreen } from '$lib/store';
     import './home.css';
+    import { onMount } from 'svelte';
+    import * as UserHandler from "../lib/scripts/UserHandler";
+    import type { Course } from '$lib/scripts/CourseHandler';
+    import { getLastCourse } from '$lib/scripts/CourseHandler';
 
     let testsections = $sectionlist;
     let testCourse = decks[2];
@@ -18,25 +22,43 @@
     let today = new Date().getDay();
     let lastSevenDays = [...days.slice(today + 1), ...days.slice(0, today + 1)].reverse();
     let lastTwoWeeks = [...lastSevenDays, ...lastSevenDays];
+    let username = '';
+    let isLoggedIn = UserHandler.isLoggedIn();
+    let lastCourse: Course|null = null;
+
+    onMount(async () => {
+        if (await isLoggedIn) {
+            username = await UserHandler.getUserName();
+            lastCourse = await getLastCourse();
+        }
+    });
 </script>
 
 
 <div class="outter-wrap {$isNarrowScreen ? "outter-wrap-m" : ""}" transition:slide >
-    <p class="p-welcome-back">{$_('home.welcome_back')} <span style="font-weight: bold;">vasillopata</span></p>
-    <div style="height:1px; width:100%; background-color:var(--bg-highlight-2); margin-bottom:2rem; color:#00000000">a</div>
+    <p class="p-welcome-back">{$_('home.welcome_back')} 
+        <span style="font-weight: bold;">
+            {#if username}{username}{/if}
+        </span>
+    </p>
+    <div style="height:1px; width:100%; background-color:var(--bg-highlight-2); margin-bottom:2rem; color:#00000000">SpeakUp</div>
     <div class="courses wrap" class:wrap-m={$isNarrowScreen}>
         <div class="last-course" class:last-course-m={$isNarrowScreen}>
             <div class="last-course-row-1">
                 {$_('home.jump_back_into_your_last_course')}
             </div>
+            {#if lastCourse != null}
             <a href="/learn" class="last-course-row-2">
-                <img class="course-img" src={testCourse.image} alt="{testCourse.getName()}" />
+                <img class="course-img" src={lastCourse.image} alt="Last Course" />
                 <span class="course-txts">
-                    <span>{$_(testCourse.getName())}</span>
+                    <span>{lastCourse.title}</span>
                     <span>Basic Phrases</span>
                 </span>
                 <i class="bi bi-play-fill"></i>
             </a>
+            {:else}
+                <a href="/decks" style="height:50%; padding-top:1rem">{$_('home.no_active_course')}</a>
+            {/if}
         </div>
         <div class="statistics-row-1">
             <div class="daily-goal stat">

@@ -5,6 +5,7 @@
     import { deckStore } from './deckStore';
     import { goto } from '$app/navigation';
     import {_} from '$lib/i18n';
+    import { createDeck, type DeckInput } from '$lib/scripts/DeckHandler';
 
     let imageUrl = '';
     let deckName = '';
@@ -43,10 +44,15 @@
             description: deckDescription,
             image: imageUrl,
         };
+        const deckModel: DeckInput = { //this is the real one
+            deckName: deckName,
+            deckDescription: deckDescription
+        }
+        const createdDeckId = await createDeck(deckModel);
 
         await deckStore.set(deck);
 
-        goto('/create/deck/cards/');
+        goto(`/create/deck/${createdDeckId}`);
     }
 </script>
 

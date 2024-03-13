@@ -1,16 +1,10 @@
 <script lang="ts">
-    import { fade, fly, slide } from "svelte/transition";
-    import { testsections } from "./testsections";
-    import { onDestroy, onMount } from "svelte";
-    import { flip } from "svelte/animate";
+    import { fade } from "svelte/transition";
     import { page } from "$app/stores";
+    import {orderSectionDown, orderSectionUp, deleteSection, listSectionsByCourse} from '$lib/scripts/SectionHandler'
+    import type {Section} from '$lib/scripts/SectionHandler';
+    import { sectionsListStore } from '$lib/stores/sectionsStore'
 
-    interface Section { 
-        id: number;
-        title: string;
-        description: string;
-        order: number;
-    }
     export let section: Section;
 
     let frontForRow = section.title;
@@ -28,8 +22,10 @@
                 if (deleteTimer <= 0) {
                     clearInterval(intervalId);
                     setTimeout(() => {
-                        testsections.update((value) => {
-                            return value.filter((s) => s.id !== section.id);
+                        deleteSection(section.id);
+                        //remove section from $sectionsListStore
+                        sectionsListStore.update((sections) => {
+                            return sections.filter((s) => s.id !== section.id);
                         });
                         isDeleting = false;
                         intervalStarted = false;
@@ -46,29 +42,17 @@
 
     let isEditing = false;
 
-    function orderDown() {
-        testsections.update((value) => {
-            const sectionBelow = value.find((s) => s.order === section.order + 1);
-            const sectionToUpdate = value.find((s) => s.id === section.id);
-            if (sectionBelow && sectionToUpdate) {
-                const tempOrder = sectionBelow.order;
-                sectionBelow.order = sectionToUpdate.order;
-                sectionToUpdate.order = tempOrder;
-            }
-            return value.sort((a, b) => a.order - b.order);
-        });
+    async function orderUp() {
+        const courseCode = $page.params.course;
+        await orderSectionUp(section.id);
+        const reordered = await listSectionsByCourse(courseCode);
+        await sectionsListStore.set(reordered);
     }
-    function orderUp() {
-        testsections.update((value) => {
-            const sectionAbove = value.find((s) => s.order === section.order - 1);
-            const sectionToUpdate = value.find((s) => s.id === section.id);
-            if (sectionAbove && sectionToUpdate) {
-                const tempOrder = sectionAbove.order;
-                sectionAbove.order = sectionToUpdate.order;
-                sectionToUpdate.order = tempOrder;
-            }
-            return value.sort((a, b) => a.order - b.order);
-        });
+    async function orderDown() {
+        const courseCode = $page.params.course;
+        await orderSectionDown(section.id);
+        const reordered = await listSectionsByCourse(courseCode);
+        await sectionsListStore.set(reordered);
     }
 </script>
 
@@ -86,8 +70,8 @@
     </div>
     <div class="section-row-button">
         <div class="change-order">
-            <button on:click={orderUp}><i class="bi bi-arrow-up-short"></i></button>
-            <button on:click={orderDown}><i class="bi bi-arrow-down-short"></i></button>
+            <button on:click={async()=>{await orderUp()}}><i class="bi bi-arrow-up-short"></i></button>
+            <button on:click={async()=>{await orderDown()}}><i class="bi bi-arrow-down-short"></i></button>
         </div>
         <button on:click={async()=>{isEditing=!isEditing}} class:edit-button-active={isEditing}><i class="bi bi-pen"></i></button>
         <button on:click={async()=>{isDeleting=!isDeleting}} class:delete-button-active={isDeleting}>

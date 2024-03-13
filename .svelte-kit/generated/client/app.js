@@ -32,7 +32,7 @@ export const dictionary = {
 		"/create/course/[course]": [8],
 		"/create/course/[course]/[section]": [9],
 		"/create/deck": [10],
-		"/create/deck/cards": [11],
+		"/create/deck/[deckid]": [11],
 		"/decks": [12],
 		"/decks/all": [13],
 		"/decks/[language]": [14],

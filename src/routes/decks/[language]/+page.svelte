@@ -7,6 +7,7 @@
     import { _, locale } from '$lib/i18n';
     import { isNarrowScreen } from "$lib/store";
     import { page } from "$app/stores";
+    import {setActiveCourse} from '$lib/scripts/CourseHandler';
 
     let url: string | undefined;
     let targetLang: Deck | undefined;
@@ -22,7 +23,7 @@
             websiteLanguage = await JSON.parse(localStorage.getItem('websiteLanguage') as string);
         }
         targetLang = await decks.find((deck) => deck.id == url);
-        fromLang = await decks.find((deck) => deck.id == websiteLanguage);
+        fromLang = await decks.find((deck) => deck.id.slice(0,2) == websiteLanguage);
         availableFromLangs = await decks.filter(deck => targetLang?.fromLang.some(langId => langId == deck.id) && deck.getName() != fromLang?.getName());
     });
 
@@ -36,6 +37,12 @@
                 locale.set('en');
             }
         }
+        goto("/");
+    }
+
+    async function handleSubmit() {
+        if (targetLang != undefined)
+            await setActiveCourse(targetLang.id)
         goto("/");
     }
 </script>
@@ -75,6 +82,9 @@
             <span style="margin-left: 1rem; font-size: calc(0.8rem + 2vmin); margin-bottom:0.5rem;">{deck.getName()}</span>
         </div>
         {/each}
+        <button class="learn-button" on:click={async()=>{await handleSubmit()}}>
+            {$_('decks.language.learn')}
+        </button>
     </div>
     {#if changeLangPrompted}
     <div class="wrap-changelang" style="{$isNarrowScreen ? "width:90%;" : ""}"
@@ -94,6 +104,24 @@
 
 
 <style>
+    .learn-button {
+        width:10rem;
+        height:3.5rem;
+        border-radius: 0.5rem;
+        border:none;
+        background-color:var(--fg-color);
+        font-size: 1.5rem;
+        box-shadow: 0 0 0 0 #000000;
+        opacity: 1;
+        margin-top: 0.5rem;
+        transition: all 0.12s ease-in-out;
+    }
+        .learn-button:hover {
+            cursor:pointer;
+            background-color: var(--fg-color-2);
+            color: var(--selected-color);
+            box-shadow: 0 0 4px 2px var(--selected-color);
+        }
     .option {
         width: 7rem;
         height: 3rem;

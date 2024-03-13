@@ -1,28 +1,31 @@
 <script lang="ts">
     import { slide } from 'svelte/transition';
-	import { PersonalDeck } from "$lib/scripts/types/Materials.js";
-	import { isNarrowScreen } from '$lib/store';
-    import { decks } from "../testDecks";
-    import type { Deck } from "../testDecks";
+    import { onMount } from 'svelte';
     import {_} from '$lib/i18n';
+	import { isNarrowScreen } from '$lib/store';
+    import {getDecksList} from '$lib/scripts/DeckHandler';
+    import type {Deck} from '$lib/scripts/DeckHandler';
+    import type { Course } from '$lib/scripts/CourseHandler';
+    import {listActiveCourses} from '$lib/scripts/CourseHandler';
+
 
     let searchbarInput = '';
-    let allUserCourses: Deck[] = [decks[3], decks[4]];
-    let allUserDecks: PersonalDeck[] = [
-        new PersonalDeck(0, "Test deck 1", "This is a test deck", '', 0),
-        new PersonalDeck(1, "Test deck 2", "This is another test deck", '', 0),
-        new PersonalDeck(2, "Test deck 3", "Yet another test deck", '', 0),
-        new PersonalDeck(3, "Test deck 4", "One more test deck", '', 0),
-        new PersonalDeck(4, "Test deck 5", "Final test deck", '', 0)
-    ];
-    let userCourses: Deck[] = [];
-    let userDecks: PersonalDeck[] = [];
+
+    let decksList:Deck[] = [];
+    let coursesList: Course[] = [];
+
+    let filteredDecks: Deck[] = [];
+    let filteredCourses: Course[] = [];
+
+    onMount(async () => {
+        decksList = await getDecksList();
+        coursesList = await listActiveCourses();
+    });
+
     $: {
-        userCourses = allUserCourses.filter(course => course.getName().toLowerCase().includes(searchbarInput.toLowerCase()));
-        userDecks = allUserDecks.filter(deck => deck.name.toLowerCase().includes(searchbarInput.toLowerCase()));
+        filteredDecks = decksList.filter(deck => deck.deckName.toLowerCase().includes(searchbarInput.toLowerCase()));
+        filteredCourses = coursesList.filter(course => course.title.toLowerCase().includes(searchbarInput.toLowerCase()));
     }
-    let activeCourse: Deck = userCourses[0];
-    let activeDeck: PersonalDeck = userDecks[0];
 </script>
 
 
@@ -30,21 +33,19 @@
 <div class="bottom-wrap" style="{$isNarrowScreen ? 'flex-direction: column;' : 'flex-direction:row; height: 26rem;'}" transition:slide>
     <div class="courses" style="{$isNarrowScreen ? 'width:100%; height:35vh !important;' : 'width:34rem; height: 100%;'}">
         <h2>{$_('decks.all.your_active_courses')}</h2>
-        {#each userCourses as course}
+        {#if coursesList.length > 0}
+        {#each filteredCourses as course}
             <div class="course-wrap" transition:slide>
                 <button><i class="bi bi-gear-fill"></i></button>
-                <img src="{course.image}" alt="{course.getName()}" />
-                <span style="margin-right: 1rem;">{course.getName()}</span>
+                <img src="{course.image}" alt="{course.courseCode}" />
+                <span style="margin-right: 1rem;">{course.title}</span>
                 <p>78%</p>
                 <div class="overlay">
-                    {#if activeCourse == course}
-                    {$_('decks.all.this_is_already_your_active_course')}
-                    {:else}
-                    {$_('decks.all.switch_active_course')}
-                    {/if}
+                    {$_('decks.language.learn')}
                 </div>
             </div>
         {/each}
+        {/if}
     </div>
     <div class="separator-line"  transition:slide style="{$isNarrowScreen ? 
         'width:100%; height:1px; flex-direction: row; margin: 1.5rem 0;' : 
@@ -52,20 +53,18 @@
     </div>
     <div class="courses" style="{$isNarrowScreen ? 'width:100%; height:50vh;' : 'width:34rem; height: 100%;'}">
         <h2>{$_('decks.all.your_personal_decks')}</h2>
-        {#each userDecks as deck}
-            <div class="course-wrap" style="height:6rem;" transition:slide>
+        {#if decksList.length !== 0}
+        {#each filteredDecks as deck}
+            <a href="/create/deck/{deck.id}" class="course-wrap" style="height:6rem;" transition:slide>
                 <button><i class="bi bi-gear-fill"></i></button>
-                <span style="font-size: 1.8rem;">{deck.name}</span>
+                <span style="font-size: 1.8rem;">{deck.deckName}</span>
                 <p style="font-size: 1rem;">{deck.level}%</p>
                 <div class="overlay">
-                    {#if activeDeck == deck}
-                    {$_('decks.all.this_is_already_your_active_deck')}
-                    {:else}
-                    {$_('decks.all.switch_active_deck')}
-                    {/if}
+                    {$_('decks.language.learn')}
                 </div>
-            </div>
+            </a>
         {/each}
+        {/if}
     </div>
 </div>
 
@@ -131,6 +130,11 @@
             margin-right: auto;
             color: var(--fg-color);
             transition: all 0.15s ease-in-out;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width:78%;
+            text-align: center;
         }
         .course-wrap > p {
             font-size: 1.2rem;

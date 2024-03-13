@@ -1,4 +1,7 @@
 <script lang="ts">
+    import { getLastCourse } from "$lib/scripts/CourseHandler";
+
+
     import { onDestroy, onMount } from "svelte";
     import { Deck, decks }  from "./testDecks";
     import { browser } from "$app/environment";
@@ -15,6 +18,10 @@
     let selectedLangId = 'none';
 
     onMount(async () => {
+        let lastCourse = await getLastCourse();
+        if (lastCourse != null) 
+            goto('decks/all')
+
         if (browser) {
             const fromLangData = JSON.parse(localStorage.getItem("websiteLanguage") as string);
             fromLang = await decks.find((deck) => deck.id == fromLangData);

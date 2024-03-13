@@ -4,6 +4,8 @@
     import {_} from '$lib/i18n';
     import {isNarrowScreen} from '$lib/store';
     import './createCourse.css'
+    import { onMount } from 'svelte';
+    import { getLastEdit } from '$lib/scripts/CourseHandler';
 
     let date = new Date();
     let todayDate = date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear();
@@ -12,7 +14,14 @@
     let currentHovered = '';
     $: anyHovered = currentHovered != '';
 
-    function handleEnter(lang: string) {
+
+    let lastEditUsername:string = '';
+    let lastEditDate: Date = new Date();
+    async function handleEnter(lang: string) {
+        const tuple = await getLastEdit(lang);
+        lastEditUsername = tuple.username;
+        lastEditDate = tuple.date;
+        console.log(lang)
         currentHovered = lang;
     }
     function handleLeave() {
@@ -25,8 +34,8 @@
     <h1>{$_('create.course.pick_a_course_to_edit')}</h1>
     <div class="course-list" class:course-list-m={$isNarrowScreen}>
         <div class="course-box">
-            <a href="/create/course/en" class="course-link" class:any-hovered={anyHovered} class:this-hovered={currentHovered=='en'}
-            on:mouseenter={()=>{handleEnter('en')}} on:mouseleave={()=>{handleLeave()}}>
+            <a href="/create/course/bg-to-en" class="course-link" class:any-hovered={anyHovered} class:this-hovered={currentHovered=='en'}
+            on:mouseenter={()=>{handleEnter('bg-to-en')}} on:mouseleave={()=>{handleLeave()}}>
                 <img src={decks[1].image} alt="English deck">
                 <span>English</span>
             </a>
@@ -36,8 +45,8 @@
             </div>
         </div>
         <div class="course-box">
-            <a href="/create/course/bg" class="course-link" class:any-hovered={anyHovered} class:this-hovered={currentHovered=='bg'}
-            on:mouseenter={()=>{handleEnter('bg')}} on:mouseleave={()=>{handleLeave()}}>
+            <a href="/create/course/en-to-bg" class="course-link" class:any-hovered={anyHovered} class:this-hovered={currentHovered=='bg'}
+            on:mouseenter={()=>{handleEnter('en-to-bg')}} on:mouseleave={()=>{handleLeave()}}>
                 <img src={decks[0].image} alt="Bulgarian deck">
                 <span>Bulgarian</span>
             </a>
@@ -47,8 +56,8 @@
             </div>
         </div>
         <div class="course-box">
-            <a href="/create/course/de" class="course-link" class:any-hovered={anyHovered} class:this-hovered={currentHovered=='de'}
-            on:mouseenter={()=>{handleEnter('de')}} on:mouseleave={()=>{handleLeave()}}>
+            <a href="/create/course/en-to-de" class="course-link" class:any-hovered={anyHovered} class:this-hovered={currentHovered=='de'}
+            on:mouseenter={()=>{handleEnter('en-to-de')}} on:mouseleave={()=>{handleLeave()}}>
                 <img src={decks[2].image} alt="German deck">
                 <span>German</span>
             </a>
@@ -58,8 +67,8 @@
             </div>
         </div>
         <div class="course-box">
-            <a href="/create/course/tr" class="course-link" class:any-hovered={anyHovered} class:this-hovered={currentHovered=='tr'}
-            on:mouseenter={()=>{handleEnter('tr')}} on:mouseleave={()=>{handleLeave()}}>
+            <a href="/create/course/en-to-tr" class="course-link" class:any-hovered={anyHovered} class:this-hovered={currentHovered=='tr'}
+            on:mouseenter={()=>{handleEnter('en-to-tr')}} on:mouseleave={()=>{handleLeave()}}>
                 <img src={decks[3].image} alt="Turkish deck">
                 <span>Turkish</span>
             </a>
@@ -69,8 +78,8 @@
             </div>
         </div>
         <div class="course-box">
-            <a href="/create/course/it" class="course-link" class:any-hovered={anyHovered} class:this-hovered={currentHovered=='it'}
-            on:mouseenter={()=>{handleEnter('it')}} on:mouseleave={()=>{handleLeave()}}>
+            <a href="/create/course/en-to-it" class="course-link" class:any-hovered={anyHovered} class:this-hovered={currentHovered=='it'}
+            on:mouseenter={()=>{handleEnter('en-to-it')}} on:mouseleave={()=>{handleLeave()}}>
                 <img src={decks[4].image} alt="Italian deck">
                 <span>Italian</span>
             </a>
@@ -82,7 +91,7 @@
     </div>
     {#if anyHovered}
         <h3 transition:fade={{duration:150}} style="margin-bottom: 0.5rem;">
-            {$_('create.course.last_edited_by')} <span style="color: var(--cyan);">vasillopata</span>
+            {$_('create.course.last_edited_by')} <span style="color: var(--cyan);">{lastEditUsername}</span>
         </h3>
         <h4 transition:fade={{duration:150}} style="margin:0;">
             {$_('create.course.on')} <span style="color: var(--green);">{todayDate}</span> {$_('create.course.at')} 

@@ -1,91 +1,88 @@
 <script lang="ts">
-    import { isNarrowScreen } from '$lib/store';
-    import type { DeckInputModel } from '$lib/scripts/models/inputModels';
-    import {deckStore} from '../../../../decks//all/deckStore';
-    import { slide } from 'svelte/transition';
-    import { testsections } from '../testsections';
-    import type { Section } from '../testsections';
-    import {_} from '$lib/i18n';
-
-    let isRotating = false;
-
-    import { testcards } from '../../../deck/cards/testcards';
     import { onMount } from 'svelte';
-    import CardRow from '../../../deck/cards/CardRow.svelte';
     import { page } from '$app/stores';
-    
-    interface Card { 
-        id: number;
-        front: string;
-        back: string;
-        level: number;
-        difficulty: number;
-    }
+    import { slide } from 'svelte/transition';
+    import {_} from '$lib/i18n';
+    import { isNarrowScreen } from '$lib/store';
+    import CardRow from '../../../deck/[deckid]/CardRow.svelte';
+    import {cardsListStore} from '$lib/stores/cardsStore';
+    import type {Section} from '$lib/scripts/SectionHandler';
+    import {getSectionById} from '$lib/scripts/SectionHandler';
+    import type {Card, CardInput} from '$lib/scripts/CardHandler';
+    import {listCardsBySection, addCard} from '$lib/scripts/CardHandler';
 
-    let cards: Card[] = $testcards;
 
+    let cardsList: Card[] = [];
     let cardsListElement: HTMLDivElement;
 
     let currentFront = '';
     let currentBack = '';
+    function resetValues() {
+        currentBack = '';
+        currentFront = '';
+    }
+    let descriptionOpened = false;
 
+    let isRotating = false;
     function rotateIcon() {
         isRotating = true;
         setTimeout(() => {
             isRotating = false;
         }, 500); // Duration of the rotation animation
     }
-    function resetValues() {
-        currentBack = '';
-        currentFront = '';
-    }
-    async function addCurrentCard() {
-        let lastIndex = cards.length;
-        let card: Card = {
-            id: (lastIndex+1),
-            front: currentFront,
-            back: currentBack,
-            level: 0,
-            difficulty: 0
-        }
-        await testcards.update((value) => {
-            value.push(card);
-            return value;
-        });
-
-        resetValues();
-    }
 
 
     let sectionId = Number($page.params.section);
-    let section: Section | undefined = $testsections.find((section) => section.id == sectionId);
+    let section: Section | undefined = undefined;
 
-    let descriptionOpened = false;
 
     onMount(async () => {
+        console.log(sectionId)
+        section = await getSectionById(sectionId);
+        console.log(section);
+        cardsList = await listCardsBySection(sectionId);
+        cardsListStore.set(cardsList);
+
         let frontInput = document.getElementById('front');
         if (frontInput)     
             await frontInput?.focus();
     });
 
+    async function addCurrentCard() {
+        const sectionId = $page.params.section;
+        const card: CardInput = {
+            front: currentFront,
+            back: currentBack,
+            difficulty: 0,
+            deckId: 0, //no deck
+            sectionId: Number(sectionId)
+        };
+        let newCard = await addCard(card);
+        await cardsList.push(newCard);
+        await cardsListStore.set(cardsList);
+
+        resetValues();
+    }
 </script>
 
 
 <div class="outwrap" style="{$isNarrowScreen ? "width:100%; height:100%; border-radius:0; margin-top:5rem;" : ""}">
-    <div class="top-row" style="{$isNarrowScreen ? "width:100%; height:10%;" : ""}">
+    {#if section != undefined}
+    <div class="top-row" style="{$isNarrowScreen ? "width:100%; height:10%;" : ""}" transition:slide>
         <p style="{$isNarrowScreen ? "font-size:1.2rem" : ""}">{$_('create.course.add_cards_to')} 
             <span role="banner"
             on:mouseenter={()=>{descriptionOpened=true;}} on:mouseleave={()=>{descriptionOpened=false;}}>
-                {section?.title}
+                {section.title}
                 {#if descriptionOpened}
                     <div class="dropdownDescription" transition:slide>
-                        <span>{section?.description}</span>
+                        <span>{section.description}</span>
                     </div>
                 {/if}
             </span>
         </p>
         <button><i class="bi bi-three-dots-vertical"></i></button>
     </div>
+    {/if}
     <div class="cards-list" id='list' bind:this={cardsListElement}>
         <div class="card-input-row">
             <input type="text" placeholder="{$_('create.course.front')}" id="front" bind:value={currentFront}/>
@@ -97,7 +94,7 @@
                 </div>
             </button>
         </div>
-        {#if $testcards.length == 0}
+        {#if cardsList.length == 0}
             <div class="info-row" transition:slide>
                 <span style="width:100%; text-align:center;">{$_('create.course.no_cards_added_yet')}</span>
             </div>
@@ -110,7 +107,7 @@
                 <span style="width: 8%;"></span>
             </div>
         {/if}
-        {#each $testcards as card (card.id)}
+        {#each $cardsListStore as card (card.id)}
             <CardRow card={card} />
         {/each}
     </div>

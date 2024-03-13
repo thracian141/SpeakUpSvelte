@@ -1,25 +1,16 @@
 <script lang="ts">
     import { isNarrowScreen } from '$lib/store';
-    import type { DeckInputModel } from '$lib/scripts/models/inputModels';
-    import {deckStore} from '../../../decks/all/deckStore';
+    import type { Deck } from '$lib/scripts/DeckHandler';
     import { slide } from 'svelte/transition';
     import {_} from '$lib/i18n';
 
     let isRotating = false;
 
-    import { testcards } from './testcards';
     import { onMount } from 'svelte';
     import CardRow from './CardRow.svelte';
-    
-    interface Card { 
-        id: number;
-        front: string;
-        back: string;
-        level: number;
-        difficulty: number;
-    }
-
-    let cards: Card[] = $testcards;
+    import { getDeckById } from '$lib/scripts/DeckHandler';
+    import { page } from '$app/stores';
+    import { listCardsByDeck, type Card, type CardInput, addCard } from '$lib/scripts/CardHandler';
 
     let cardsListElement: HTMLDivElement;
 
@@ -36,53 +27,50 @@
         currentBack = '';
         currentFront = '';
     }
-    async function addCurrentCard() {
-        let lastIndex = cards.length;
-        console.log(lastIndex)
-        let card: Card = {
-            id: (lastIndex+1),
-            front: currentFront,
-            back: currentBack,
-            level: 0,
-            difficulty: 0
-        }
-        await testcards.update((value) => {
-            value.push(card);
-            return value;
-        });
 
-        resetValues();
-    }
-
-
-
-    let deck: DeckInputModel;
-    deckStore.subscribe((value: DeckInputModel | null) => {
-        if (value !== null) 
-            deck = value;
-    });
+    let deckModel:Deck;
+    let cards: Card[] = [];
+    let addingCard = false;
 
     let descriptionOpened = false;
 
+    let deckid = $page.params.deckid;
     onMount(async () => {
-        let frontInput = document.getElementById('front');
+        deckModel = await getDeckById(Number(deckid));
+        cards = await listCardsByDeck(Number(deckid));
+
+        let frontInput = await document.getElementById('front');
         if (frontInput)     
             await frontInput?.focus();
     });
 
+    async function addCurrentCard() {
+        let card: CardInput = {
+            front: currentFront,
+            back: currentBack,
+            difficulty: 0,
+            deckId: Number(deckid),
+            sectionId: 0
+        }
+        addingCard = true;
+        const newCard:Card = await addCard(card);
+        cards = await cards.concat(newCard);
+        addingCard = false;
+
+        resetValues();
+    }
 </script>
 
-
+{#if deckModel}
 <div class="outwrap" style="{$isNarrowScreen ? "width:100%; height:100%; border-radius:0; margin-top:5rem;" : ""}">
     <div class="top-row" style="{$isNarrowScreen ? "width:100%; height:10%;" : ""}">
-        <img src="{deck.image}" alt="{deck.name}" />
         <p style="{$isNarrowScreen ? "font-size:1.2rem" : ""}">{$_('create.course.add_cards_to')}
             <span role="banner"
             on:mouseenter={()=>{descriptionOpened=true;}} on:mouseleave={()=>{descriptionOpened=false;}}>
-                {deck.name}
+                {deckModel.deckName}
                 {#if descriptionOpened}
                     <div class="dropdownDescription" transition:slide>
-                        <span>{deck.description}</span>
+                        <span>{deckModel.deckDescription}</span>
                     </div>
                 {/if}
             </span>
@@ -100,12 +88,12 @@
                 </div>
             </button>
         </div>
-        {#if $testcards.length == 0}
+        {#if cards.length == 0}
             <div class="info-row" transition:slide>
                 <span style="width:100%; text-align:center;">{$_('create.course.no_cards_added_yet')}</span>
             </div>
         {:else}
-            <div class="info-row" transition:slide>
+            <div class="info-row">
                 <span style="width:35%;">{$_('create.course.front')}</span>
                 <span style="width:35%;">{$_('create.course.back')}</span>
                 <span style="width:10%; margin-right:0;">{$_('create.course.level')}</span>
@@ -113,11 +101,14 @@
                 <span style="width: 8%;"></span>
             </div>
         {/if}
-        {#each $testcards as card (card.id)}
-            <CardRow card={card} />
-        {/each}
+        {#if !addingCard && cards.length > 0} 
+            {#each cards as card, index (card.id)}
+                <CardRow card={card} />
+            {/each}
+        {/if}
     </div>
 </div>
+{/if}
 
 
 <style>
@@ -253,12 +244,6 @@
                 background: var(--bg-highlight);
                 cursor: pointer;
             }
-        .top-row > img {
-            height: 100%;
-            aspect-ratio: 1/1;
-            margin-right: 1rem;
-            border-radius: 0.3rem;
-        }
         .top-row > p {
             font-size: 2rem;
             margin: 0;

@@ -8,7 +8,7 @@
 	"/create/course/[course]": [],
 	"/create/course/[course]/[section]": [],
 	"/create/deck": [],
-	"/create/deck/cards": [],
+	"/create/deck/[deckid]": [],
 	"/decks": [],
 	"/decks/all": [],
 	"/decks/[language]": [],

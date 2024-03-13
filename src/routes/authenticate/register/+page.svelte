@@ -11,7 +11,7 @@
     let confirmpassword = '';
     let email = '';
 
-    async function handleSubmit(event: Event) {
+    export async function handleSubmit(event: Event) {
         event.preventDefault();
 
         const model = {

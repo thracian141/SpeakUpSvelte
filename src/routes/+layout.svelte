@@ -9,6 +9,7 @@
     import { goto } from "$app/navigation";
     import { isNarrowScreen } from "$lib/store";
     import { page } from "$app/stores";
+    import { isLoggedIn } from "$lib/scripts/UserHandler";
 
     let theme = 'dark';
     function changeTheme() {
@@ -21,22 +22,13 @@
         goto('/');
     }
 
-    $: loggedIn = ($page.url.pathname != "/learn" && $page.url.pathname != "/learn/" && $page.url.pathname != "/welcome/" && $page.url.pathname != "/welcome");
-    let overriden = false;
-    //make a reactive statement that puts overriden in localstorage when it changes
+    let loggedIn:boolean;
+    
     onMount(async () => {
-        overriden = await Boolean(await JSON.parse(await localStorage.getItem('overriden') as string));
-        if (browser) {
-            if (overriden == true) {
-                await console.log('proceeding to website');
-                if (await $page.url.pathname.includes('welcome')) {
-                    await console.log('redirecting to /');
-                    await goto('/');
-                }
-            } else {
-                goto('/welcome');
-            }
-        }
+        loggedIn = await isLoggedIn();
+        if (!loggedIn) {
+            goto('welcome');
+        } 
         if (browser) {
             if (localStorage.getItem('websiteLanguage') != null && localStorage.getItem('websiteLanguage') != undefined) {
                 locale.set(JSON.parse(localStorage.getItem('websiteLanguage') as string));
@@ -45,18 +37,11 @@
                 localStorage.setItem('websiteLanguage', JSON.stringify($locale));
             }
         }
-    });
-    $: {
-        if (overriden) {
-            if (browser) {
-                localStorage.setItem('overriden', JSON.stringify(overriden));
-            }
-        }
-    }
+    })
 </script>
 
 <div class="app">
-    {#if loggedIn || overriden}
+    {#if loggedIn}
     <button class="change-theme" on:click={changeTheme} style="{$isNarrowScreen ? "top:1rem; right:0.75rem" : ""}">
         {#if theme === 'dark'}
             <i class="bi bi-moon" in:slide out:slide></i>
@@ -68,12 +53,12 @@
         <i class="bi bi-translate" in:slide out:slide></i>
     </button>
     {/if}
-    {#if !loggedIn && !overriden}
-        <a href="/" style="position: absolute; top:0; left:0; font-size:1.5rem; z-index:50" on:click={()=>overriden=true}>debug. go to site</a>
-    {:else if !$isNarrowScreen}
-        <Navbar />
-    {:else if $isNarrowScreen}
-        <NavbarPhone />
+    {#if loggedIn}
+        {#if !$isNarrowScreen}
+            <Navbar />
+        {:else if $isNarrowScreen}
+            <NavbarPhone />
+        {/if}
     {/if}
     <main style="padding-left: {$isNarrowScreen == true || !loggedIn ? "0" : "4rem"}">
         <div class="wrap" style="{$isNarrowScreen || !loggedIn ? "padding-left:0rem; width:100%;" : "padding-left:1rem;"}">

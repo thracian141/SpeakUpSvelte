@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition'; import { onMount } from "svelte";
+    import {register} from '$lib/scripts/UserHandler';
 
     let langs: HTMLDivElement[] = [];
     let anyHovered = false;
@@ -27,6 +28,9 @@
             });
         });
     });
+
+    
+
 </script>
 
 
@@ -37,6 +41,7 @@
             <img src="/logo.svg" style="height:6rem; width:auto; margin-bottom:-1rem; margin-right:-0.5rem; filter:drop-shadow(-2px 4px 3px var(--fg-color-half))" alt="logo"/>
             <span style="color: var(--selected-text); text-shadow: -1px 5px 6px var(--cyan-half);">SPEAKUP</span>
         </h1>
+        <a href="/authenticate/login" style="text-shadow: -1px 3px 5px var(--cyan-half);">already have an account?</a>
     </div>
     <div class="cards">
         <div class="card" style="rotate:-5deg">
@@ -85,7 +90,8 @@
             <span>Turkish</span>
         </div>
         {#if selectedLang != '' && selectedLang != undefined}
-        <form class="register" in:slide={{duration:600}} out:slide>
+        <form class="register" name="register" in:slide={{duration:600}} out:slide 
+        on:submit={async(e)=>{await register(e, username,email,password,null)}}>
             <h1>Create a <span>free</span> account<br>and 
                 <span>
                     speak up
@@ -94,19 +100,19 @@
             </h1>
             <div class="group">
                 <label for="username" class:filled={username!=''}>USERNAME</label>
-                <input bind:value={username} type="text" name="username" id="username" style="padding-right: 11rem;"/>
+                <input bind:value={username} type="text" style="padding-right: 11rem;" autocomplete="off"/>
             </div>
             <div class="group">
                 <label for="email" class:filled={email!=''}>EMAIL</label>
-                <input bind:value={email} type="email" name="email" id="email" style="padding-right: 7rem;"/>
+                <input bind:value={email} type="email" style="padding-right: 7rem;" autocomplete="off"/>
             </div>
             <div class="group">
                 <label for="password" class:filled={password!=''}>PASSWORD</label>
-                <input bind:value={password} type="password" name="password" id="password" style="padding-right: 11rem;"/>
+                <input bind:value={password} type="password"  style="padding-right: 11rem;" autocomplete="off"/>
             </div>
             <div class="group">
                 <label for="confirmpassword" class:filled={confirmpassword!=''}>CONFIRM PASSWORD</label>
-                <input bind:value={confirmpassword} type="password" name="confirmpassword" id="confirmpassword" style="padding-right: 18rem;"/>
+                <input bind:value={confirmpassword} type="password" style="padding-right: 18rem;" autocomplete="off"/>
             </div>
             <div class="buttons">
                 <button type="submit">
@@ -297,31 +303,46 @@
         }
     .top {
         width: 100%;
-        height: 60vh;
-        position: relative;
+        height: 30rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 5rem;
+        box-sizing: border-box;
     }
         .top h1 {
-            position: absolute;
-            right:5%;
-            top:40%;
-            transform: translateY(-50%);
             font-size: 5rem;
+            margin-left: 30rem;
+            margin-bottom: 2rem;
         }
+        .top a {
+            font-size: 1.7rem;
+            font-weight: normal;
+            font-variant: small-caps;
+            color: var(--fg-color-2);
+            transition: all 0.1s ease-in-out;
+            margin-left: 65rem;
+        }
+            .top a:hover {
+                color:white;
+                text-shadow: -1px 4px 7px var(--cyan-half) !important;
+            }
     .cards {
         width: 100%;
-        height:80vh;
+        height:40rem;
         display: flex;
         flex-direction: row;
-        justify-content: space-around;
+        justify-content: center;
         box-sizing: border-box;
-        padding: 0 6vw;
+        gap:1rem;
     }
     .card {
         display: flex;
         flex-direction: column;
         align-items: center;
-        height:calc(30rem + 6.5vh);
-        width:calc(26rem + 3vw);
+        width:27rem;
+        height:32rem;
         border-radius: 0.5rem;
         background-color: var(--el-bg-color-half);
         box-sizing: border-box;
@@ -329,17 +350,16 @@
         backdrop-filter:blur(12px);
         transition: all 0.2s ease-in-out;
         box-shadow: 0 1rem 2.5rem 0.5rem #00000010;
+        overflow: hidden;
     }
         .card h1 {
+            font-size:2.2rem;
             height:40%;
             width:100%;
-            font-size: calc(2.5rem + 0.25vw);
-            margin: 0 auto;
             font-family: var(--font-important);
         }
         .art {
             height:63%;
-            margin-top: 2rem;
             border-radius: 0.4rem;
         }
         .card:nth-child(2) {
@@ -351,9 +371,13 @@
             box-shadow: 0 1.1rem 3rem 0.5rem #00000050;
         }
     .outwrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         position: relative;
         box-sizing: border-box;
         width: 100%;
+        padding: 2rem;
         background: radial-gradient(at bottom, var(--cyan-half) 0%, var(--bg-color) 100%);
     }
 </style>

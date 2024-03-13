@@ -1,17 +1,11 @@
 <script lang="ts">
     import { slide } from "svelte/transition";
-    import { testcards } from "./testcards";
     import { onDestroy, onMount } from "svelte";
     import { browser } from "$app/environment";
+    import { deleteCard, type Card } from "$lib/scripts/CardHandler";
 
     export let card: Card;
-    interface Card { 
-        id: number;
-        front: string;
-        back: string;
-        level: number;
-        difficulty: number;
-    }
+    let element: HTMLDivElement;
 
     let frontForRow = card.front;
     let backForRow = card.back;
@@ -29,9 +23,10 @@
                 if (deleteTimer <= 0) {
                     clearInterval(intervalId);
                     setTimeout(() => {
-                        testcards.update((value) => {
-                            return value.filter((c) => c.id !== card.id);
-                        });
+                        deleteCard(card.id);
+                        if (browser) {
+                            element.remove();
+                        }
                         isDeleting = false;
                         intervalStarted = false;
                     }, 10);
@@ -57,10 +52,7 @@
         if (isMouseDown) isMouseDown = false;
         let rounded = Math.round(arrowRotation / 10) * 10;
         arrowRotation = rounded;
-        testcards.update((value) => {
-            value.find((c) => c.front === card.front)!.difficulty = Math.round((rounded/10+10)/2);
-            return value;
-        });
+        card.difficulty = Math.round((rounded/10+10)/2);
     }
     function handleMouseMove(event: MouseEvent) {
         if (!isEditing || !isMouseDown) return;
@@ -97,7 +89,7 @@
 </script>
 
 
-<div class="card-row" transition:slide>
+<div class="card-row" transition:slide bind:this={element}>
     {#if isEditing}
         <input type="text" class="card-row-text-input" bind:value={frontForRow} />
         <input type="text" class="card-row-text-input" bind:value={backForRow} />
@@ -296,6 +288,7 @@
         color: var(--fg-color-2);
         border-radius: 0.5rem;
         min-height: 0;
+        height:0;
     }
         .card-row-number {
             margin-right: 1rem;

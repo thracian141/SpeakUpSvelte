@@ -3,12 +3,15 @@
     import Statistics from "./Statistics.svelte";
     import {_} from "$lib/i18n";
     import { isNarrowScreen } from "$lib/store";
+    import {getUser} from '$lib/scripts/UserHandler';
+    import { onMount } from "svelte";
 
     let src = "/zdravkoqnkov.jpg"
     let username = "Shefa"
     let displayname = "John Doe"
     let email = "email@gmail.com"
-    let accountCreatedDate = "12.09.2013"
+    let accountCreatedDate = "12.09.2013";
+    let user:any = {};
     
     let editEnabled = false;
     let currentEdit = "";
@@ -47,6 +50,14 @@
             }
         }
     }
+    onMount(async () => {
+        user = await getUser();
+        src = user.pfp;
+        username = user.username;
+        displayname = user.displayname;
+        email = user.email;
+        accountCreatedDate = user.accountCreatedDate;
+    });
 </script>
 
 <div class="wrap" style="{$isNarrowScreen ? "width:100vw; max-width:100vw; padding:0; padding-top:4.75rem;": ""}">
