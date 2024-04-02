@@ -3,18 +3,19 @@
     import Statistics from "./Statistics.svelte";
     import {_} from "$lib/i18n";
     import { isNarrowScreen } from "$lib/store";
-    import {getUser} from '$lib/scripts/UserHandler';
+    import type {User} from "$lib/scripts/UserHandler";
+    import {getUser, editDisplayName, editEmail, editPassword, editUsername} from '$lib/scripts/UserHandler';
     import { onMount } from "svelte";
 
-    let src = "/zdravkoqnkov.jpg"
-    let username = "Shefa"
-    let displayname = "John Doe"
-    let email = "email@gmail.com"
-    let accountCreatedDate = "12.09.2013";
-    let user:any = {};
-    
+    let username = ""
+    let displayname = ""
+    let email = ""
+    let accountCreatedDate = new Date();
+
+    let user:User|undefined = undefined;
     let editEnabled = false;
     let currentEdit = "";
+    let currentPassword = "";
     function handleEditClick(e : Event, button : string) {
         e.preventDefault();
         editEnabled = true;
@@ -52,32 +53,38 @@
     }
     onMount(async () => {
         user = await getUser();
-        src = user.pfp;
-        username = user.username;
-        displayname = user.displayname;
-        email = user.email;
-        accountCreatedDate = user.accountCreatedDate;
+        if (user) {
+            username = user.userName;
+            displayname = user.displayName;
+            email = user.email;
+            accountCreatedDate = user.accountCreatedDate;
+        }
     });
+
+    async function handleSubmitEdit() {
+        if (currentEdit === "username") {
+            username = await editUsername(currentPassword, editInput);
+        } else if (currentEdit === "display name") {
+            displayname = await editDisplayName(currentPassword, editInput);
+        } else if (currentEdit === "email") {
+            email = await editEmail(currentPassword, editInput);
+        } else if (currentEdit === "password") {
+            await editPassword(currentPassword, editInput);
+        }
+        editEnabled = false;
+    }
 </script>
 
 <div class="wrap" style="{$isNarrowScreen ? "width:100vw; max-width:100vw; padding:0; padding-top:4.75rem;": ""}">
     <div class="panel" style="{$isNarrowScreen ? "border-radius: 0 !important; height:35rem;" : ""}">
-        <div class="fields" style="{$isNarrowScreen ? "padding-bottom:0;" : ""}">
-            <div class="top-row">
-                <a href="/" class="pfp-wrap" on:click={(e) => {e.preventDefault();alert(`You've been banned for trying to change the default picture.`)}}>
-                    <img {src} alt="pfp" class="pfp" />
-                    <div class="pfp-overlay">{$_('account.change_photo')}</div>
-                </a>
-                <div class="username-and-date" style="{$isNarrowScreen ? "left:110%;" : ""}">
-                    <h1 style="margin:0; margin-bottom:2.5rem; {$isNarrowScreen ? "margin-left:1.25rem; height:2rem;": ""}">{username}</h1>
-                    <div style="display: flex;flex-direction:row;align-items:center; text-align:center">
-                        <img src="/icons/calendar-event.svg" alt="account created" style="{$isNarrowScreen ? "margin-right:0.3rem; height:1.6rem;":""}"/>
-                        <div style="display: flex; {$isNarrowScreen ? "flex-direction:column-reverse; position:relative;" : "flex-direction:column;"} width:10rem; align-items:flex-start">
-                            <span style="font-weight: bold; font-size:0.85rem; {$isNarrowScreen ? "font-size: 0.9rem; position:absolute; top:125%; right:29.5%; width:100%;" : "padding-left:0.2rem"}">{$_('account.account_created')}</span>
-                            <span style="{$isNarrowScreen ? "font-size: 1.2rem;" : "font-size: 1.5rem;"}">{accountCreatedDate}</span>
-                        </div>
-                    </div>
+        {#if user != undefined}
+        <div class="fields" style="{$isNarrowScreen ? "padding-bottom:0;" : "height:100%;"}" transition:slide>
+            <div class="row">
+                <div class="user-field">
+                    <span>{$_('account.account_created')}</span>
+                    <p>{accountCreatedDate}</p>
                 </div>
+                <i class="bi bi-calendar2-event" style="font-size: 2.5rem; margin-right:0.75rem;"></i>
             </div>
             <div class="row">
                 <div class="user-field">
@@ -89,7 +96,7 @@
             <div class="row">
                 <div class="user-field">
                     <span>{$_('account.display_name')}</span>
-                    <p>{displayname}</p>
+                    <p>{displayname == null ? "" : displayname}</p>
                 </div>
                 <button class="edit-button" on:click={(e) => handleEditClick(e, 'display name')}>{$_('account.edit')}</button>
             </div>
@@ -108,6 +115,7 @@
                 <button class="edit-button" on:click={(e) => handleEditClick(e, 'password')}>{$_('account.edit')}</button>
             </div>
         </div>
+        {/if}
     </div>
     <Statistics />
 </div>
@@ -118,30 +126,30 @@
             on:click={(e) => {e.preventDefault(); editEnabled=false;}}><img src="/icons/x-lg.svg" alt="close"></a>
             <h1 style="margin-bottom:0.5rem; {$isNarrowScreen ? "font-size:1.4rem;" : "font-size:1.8rem;"}">Change your {currentEdit} </h1>
             <p style="color: var(--fg-color-2); font-size:1.1rem; margin-bottom:{currentEdit=="password" ? "1rem" : "2rem"};">Enter a new {currentEdit} and your current password.</p>
-            <div class="edit-fields">
+            <form class="edit-fields" autocomplete="off">
                 <div class="edit-row" in:slide>
                     <span style="margin-bottom:0.5rem">{currentEdit.toUpperCase()} 
                         <span style="color:red; font-weight:normal; margin-left:0.5rem;">{error}</span>
                     </span>
                     {#if currentEdit == "email"}
-                        <input type="email" autocomplete="off" style="width:97.5%;" bind:value={editInput}/>
+                        <input type="email" id="email" name="email" autocomplete="organization-title" placeholder="" style="width:97.5%;" bind:value={editInput}/>
                     {:else if currentEdit == "password"}
-                        <input type="password" autocomplete="off" style="width:97.5%;" bind:value={editInput}/>
+                        <input type="password" id="password" name="password" autocomplete="organization-title" style="width:97.5%;" bind:value={editInput}/>
                     {:else}
-                        <input type="text" autocomplete="off" style="width:97.5%;" bind:value={editInput}/>
+                        <input type="text" id="name" name="name" autocomplete="organization-title" style="width:97.5%;" bind:value={editInput}/>
                     {/if}
                 </div>
                 <div class="edit-row" in:slide style="margin-bottom: auto !important;">
                     <span style="margin-bottom:0.5rem">CURRENT PASSWORD</span>
-                    <input type="password" autocomplete="off" style="width:97.5%;"/>
+                    <input type="password" autocomplete="organization-title" style="width:97.5%;" bind:value={currentPassword}/>
                 </div>
-            </div>
+            </form>
         </div>
         <div class="edit-bottom" style="{$isNarrowScreen ? "width:100%; border-radius:0;" : ""}">
             <button class="cancel-button" on:click={(e) => {e.preventDefault(); editEnabled=false;}}>
                 Cancel
             </button>
-            <button class="confirm-button">
+            <button class="confirm-button" on:click={async()=>{await handleSubmitEdit()}}>
                 Confirm
             </button>
         </div>
@@ -299,19 +307,6 @@
             background-color: var(--bg-highlight-2);
             color: white;
         }
-    .username-and-date {
-        display: flex;
-        flex-direction: column;
-        position: absolute;
-        left:120%;
-        top:15%;
-    }
-        .username-and-date > div > img {
-            filter: brightness(0) saturate(100%) invert(92%) sepia(3%) saturate(1186%) hue-rotate(193deg) brightness(84%) contrast(88%);
-            height:3rem;
-            font-size: 1.2rem;
-            margin-right: 1rem;
-        }
     .fields {
         position: relative;
         background-color: var(--bg-color);
@@ -321,51 +316,10 @@
         margin-top: 1rem;
         display: flex;
         flex-direction: column;
-        padding-top: 8rem;
-        padding-bottom: 2rem;
+        padding-top: 3rem;
+        padding-bottom: 4rem;
         box-sizing: border-box;
         justify-content: space-between;
-    }
-    .top-row {
-        position: absolute;
-        top:0%;
-        transform: translateY(-50%);
-        display: flex;
-        box-sizing: border-box;
-        flex-direction: row;
-        align-items: top;
-        gap:2rem;
-    }
-    .pfp-wrap {
-        width:10rem;
-        height:10rem;
-        border-radius: 100%;
-        display: flex;
-        overflow: hidden;
-        outline: 0.5rem solid var(--bg-color);
-        position: relative;
-        margin-left: 0.35rem;
-    }
-        .pfp-wrap:hover .pfp-overlay {
-            cursor: pointer;
-            opacity: 1;
-        }
-    .pfp {
-        object-fit:fill;
-    }
-    .pfp-overlay {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        height: 100%;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #00000070;
-        opacity: 0;
-        transition: opacity 0.2s ease-in-out;
     }
     .panel {
         background-color: var(--el-bg-color);
@@ -389,5 +343,8 @@
         gap:1rem;
         justify-content: center;
         align-items: center;
+    }
+    * {
+        box-sizing: border-box;
     }
 </style>

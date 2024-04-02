@@ -1,5 +1,7 @@
-import type { Card } from "$lib/scripts/CardHandler";
+import type { CourseCard, DeckCard } from "$lib/scripts/CardHandler";
 import { writable } from "svelte/store";
 
-let cardsListStore = writable<Card[]>([]);
-export { cardsListStore };
+let courseCardsStore = writable<CourseCard[]>([]);
+export { courseCardsStore };
+let deckCardsStore = writable<DeckCard[]>([]);
+export { deckCardsStore };

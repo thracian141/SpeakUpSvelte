@@ -17,7 +17,10 @@ export const nodes = [
 	() => import('./nodes/13'),
 	() => import('./nodes/14'),
 	() => import('./nodes/15'),
-	() => import('./nodes/16')
+	() => import('./nodes/16'),
+	() => import('./nodes/17'),
+	() => import('./nodes/18'),
+	() => import('./nodes/19')
 ];
 
 export const server_loads = [];
@@ -31,13 +34,16 @@ export const dictionary = {
 		"/create/course": [7],
 		"/create/course/[course]": [8],
 		"/create/course/[course]/[section]": [9],
-		"/create/deck": [10],
-		"/create/deck/[deckid]": [11],
-		"/decks": [12],
-		"/decks/all": [13],
-		"/decks/[language]": [14],
-		"/learn": [15],
-		"/welcome": [16]
+		"/create/course/[course]/[section]/[card]": [10],
+		"/create/deck": [11],
+		"/create/deck/[deckid]": [12],
+		"/decks": [13],
+		"/decks/all": [14],
+		"/decks/[language]": [15],
+		"/learn": [16],
+		"/learn/course": [17],
+		"/learn/deck": [18],
+		"/welcome": [19]
 	};
 
 export const hooks = {

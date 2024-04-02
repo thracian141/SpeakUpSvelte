@@ -34,17 +34,22 @@
     <div class="courses" style="{$isNarrowScreen ? 'width:100%; height:35vh !important;' : 'width:34rem; height: 100%;'}">
         <h2>{$_('decks.all.your_active_courses')}</h2>
         {#if coursesList.length > 0}
-        {#each filteredCourses as course}
-            <div class="course-wrap" transition:slide>
-                <button><i class="bi bi-gear-fill"></i></button>
-                <img src="{course.image}" alt="{course.courseCode}" />
-                <span style="margin-right: 1rem;">{course.title}</span>
-                <p>78%</p>
-                <div class="overlay">
-                    {$_('decks.language.learn')}
+            {#each filteredCourses as course}
+                <div class="course-wrap" transition:slide>
+                    <button><i class="bi bi-gear-fill"></i></button>
+                    <img src="{course.image}" alt="{course.courseCode}" />
+                    <span style="margin-right: 1rem;">{course.title}</span>
+                    <p>78%</p>
+                    <div class="overlay">
+                        {$_('decks.language.learn')}
+                    </div>
                 </div>
-            </div>
-        {/each}
+            {/each}
+            {#if coursesList.length !== 5}
+                <a href="/decks" class="add-course">
+                    + <span>{$_('decks.all.switch_active_course')}</span>
+                </a>
+            {/if}
         {/if}
     </div>
     <div class="separator-line"  transition:slide style="{$isNarrowScreen ? 
@@ -70,6 +75,19 @@
 
 
 <style>
+    .add-course {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        width:100%;
+        height:3rem;
+        font-size: 4rem;
+    }
+        .add-course > span {
+            font-size: 1rem;
+            margin-left: 0.5rem;
+        }
     .overlay {
         position: absolute;
         left: 50%;

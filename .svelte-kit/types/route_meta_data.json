@@ -7,11 +7,14 @@
 	"/create/course": [],
 	"/create/course/[course]": [],
 	"/create/course/[course]/[section]": [],
+	"/create/course/[course]/[section]/[card]": [],
 	"/create/deck": [],
 	"/create/deck/[deckid]": [],
 	"/decks": [],
 	"/decks/all": [],
 	"/decks/[language]": [],
 	"/learn": [],
+	"/learn/course": [],
+	"/learn/deck": [],
 	"/welcome": []
 }

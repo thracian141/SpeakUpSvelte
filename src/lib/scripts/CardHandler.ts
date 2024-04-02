@@ -1,12 +1,38 @@
 import { getToken } from "./UserHandler";
 
-export interface CardInput {
+export let partsOfSpeech = [
+    "Noun",
+    "Verb",
+    "Adjective",
+    "Adverb",
+    "Pronoun",
+    "Preposition",
+    "Conjunction",
+    "Interjection"
+]
+
+export interface DeckCardInput {
     front: string;
     back: string;
     difficulty:number;
     deckId: number;
-    sectionId: number;
 }
+
+export interface CourseCardInput {
+    front: string;
+    back: string;
+    difficulty: number;
+    partOfSpeech: string;
+    sectionId: number;
+    courseCode: string;
+}
+    export interface EditCourseCardModel {
+        id: number;
+        front: string;
+        back: string;
+        difficulty: number;
+        partOfSpeech: string;
+    }
 
 export interface Card {
     id: number;
@@ -21,9 +47,46 @@ export interface Card {
     sectionId: number | null;
 }
 
-export async function addCard(cardInput:CardInput) {
+export interface DeckCard {
+    id: number;
+    front: string;
+    back: string;
+    level: number;
+    difficulty: number;
+    flaggedAsImportant: boolean;
+    dateAdded: Date;
+    lastReviewDate: Date;
+    nextReviewDate: Date;
+    deckId: number;
+    userId: number;
+}
+
+export interface CourseCard {
+    id: number;
+    front: string;
+    back: string;
+    difficulty: number;
+    partOfSpeech: string;
+    dateAdded: Date;
+    sectionId: number;
+    courseCode: string;
+}
+
+export interface CardLink {
+    id: number;
+    cardId: number;
+    card: CourseCard;
+    userId: number;
+    level: number;
+    lastReviewDate: Date;
+    nextReviewDate: Date;
+    flaggedAsImportant: boolean;
+    courseCode: string;
+}
+
+export async function addCardToDeck(cardInput:DeckCardInput) {
     let token = await getToken();   
-    const response = await fetch("https://localhost:5000/card/add", {
+    const response = await fetch("https://localhost:5000/card/addToDeck", {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -36,7 +99,27 @@ export async function addCard(cardInput:CardInput) {
         throw new Error('Error adding card');
 
     const data = await response.json();
-    const card:Card = data.card;
+    const card:DeckCard = data.card;
+    return card;
+}
+
+export async function addCardToSection(cardInput: CourseCardInput) {
+    let token = await getToken();   
+    const response = await fetch("https://localhost:5000/card/addToCourseSection", {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(cardInput)
+    });
+
+    if (!response.ok) {
+        console.log(response);
+        throw new Error('Error adding card');
+    }
+    const data = await response.json();
+    const card:CourseCard = data.card;
     return card;
 }
 
@@ -53,7 +136,7 @@ export async function listCardsByDeck(deckId:number) {
         throw new Error('Error getting cards');
 
     const data = await response.json();
-    const cardsList: Card[] = data.list;
+    const cardsList: DeckCard[] = data.list;
     return cardsList;
 }
 export async function listCardsBySection(sectionId: number) {
@@ -67,7 +150,7 @@ export async function listCardsBySection(sectionId: number) {
     if (!response.ok) 
         throw new Error('Error getting cards');
     const data = await response.json();
-    const cardsList: Card[] = data.list;
+    const cardsList: CourseCard[] = data.list;
     return cardsList;
 }
 
@@ -84,4 +167,43 @@ export async function deleteCard(cardId:number) {
         throw new Error('Error deleting card');
 
     return;
+}
+
+export async function editCardFromCourse(edit:EditCourseCardModel) { 
+    let token = await getToken();
+    const response = await fetch(`https://localhost:5000/card/editFromCourse`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(edit)
+    });
+
+    if (!response.ok) 
+        throw new Error('Error editing card');
+
+    const data = await response.json();
+    const card:CourseCard = data.oldCard; // the old car is now updated
+
+    return card;
+}
+
+export async function getCourseCardById(id: number) {
+    let token = await getToken();
+    let response = await fetch(`https://localhost:5000/card/getCourseCardById?id=${id}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error("Error getting course card");
+    }
+
+    let data = await response.json();
+    const card = data.card;
+    
+    return card;
 }

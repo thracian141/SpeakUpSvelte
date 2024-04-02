@@ -2,13 +2,15 @@
     import { slide } from "svelte/transition";
     import { onDestroy, onMount } from "svelte";
     import { browser } from "$app/environment";
-    import { deleteCard, type Card } from "$lib/scripts/CardHandler";
+    import { deleteCard, type CourseCard, type EditCourseCardModel, partsOfSpeech, editCardFromCourse } from "$lib/scripts/CardHandler";
+    import { page } from "$app/stores";
 
-    export let card: Card;
+    export let card: CourseCard;
     let element: HTMLDivElement;
 
     let frontForRow = card.front;
     let backForRow = card.back;
+    let partOfSpeechForRow = card.partOfSpeech;
     let difficultyForRow = card.difficulty;
 
     let isDeleting = false;
@@ -41,51 +43,29 @@
     }
 
     let isEditing = false;
+    let dropdownForRowOpen = false;
 
-    let arrowRotation = (((card.difficulty*10)/100)*180)-90;
-    let isMouseDown = false;
-    let difficultyElement: HTMLDivElement;
-    function handleMouseDown() {
-        if (isEditing) isMouseDown = true;
+    let arrowRotation = (((difficultyForRow*10)/100)*180)-90;
+
+    async function handleEdit() {
+        if (frontForRow === card.front && backForRow === card.back && partOfSpeechForRow === card.partOfSpeech && difficultyForRow === card.difficulty) {
+            isEditing = false;
+            return;
+        } else {
+            console.log("Editing card")
+            const edit: EditCourseCardModel = {
+                id: card.id,
+                front: frontForRow,
+                back: backForRow,
+                partOfSpeech: partOfSpeechForRow,
+                difficulty: difficultyForRow
+            };
+            card = await editCardFromCourse(edit);
+            console.log(card);
+            arrowRotation = (((difficultyForRow*10)/100)*180)-90;
+        }
+        isEditing=false;
     }
-    function handleMouseUp() {
-        if (isMouseDown) isMouseDown = false;
-        let rounded = Math.round(arrowRotation / 10) * 10;
-        arrowRotation = rounded;
-        card.difficulty = Math.round((rounded/10+10)/2);
-    }
-    function handleMouseMove(event: MouseEvent) {
-        if (!isEditing || !isMouseDown) return;
-
-        const rect = difficultyElement.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.bottom;
-
-        const x = event.clientX - centerX;
-        const y = centerY - event.clientY; 
-
-        let angleInRadians = Math.atan2(y, x); // Swap x and y
-        angleInRadians = (angleInRadians > 0) ? Math.PI * 1.5 - angleInRadians : Math.PI * 0.5 - angleInRadians;
-        if (angleInRadians < 0) angleInRadians += 2 * Math.PI;
-
-        const angleInDegrees = angleInRadians * (180 / Math.PI);
-
-        let rotation = (angleInDegrees-180)*1.5;
-        if (rotation < -90) rotation = -90;
-        if (rotation > 90) rotation = 90;
-        arrowRotation = rotation;
-    }
-    onMount(() => {
-        if (browser)
-            window.addEventListener('mouseup', handleMouseUp);
-    });
-
-    // Remove the event listener when the component is destroyed
-    onDestroy(() => {
-        if (browser)
-            window.removeEventListener('mouseup', handleMouseUp);
-    });
-
 </script>
 
 
@@ -93,39 +73,48 @@
     {#if isEditing}
         <input type="text" class="card-row-text-input" bind:value={frontForRow} />
         <input type="text" class="card-row-text-input" bind:value={backForRow} />
-    {:else}
-        <div class="card-row-text" id="{card.front.toLocaleLowerCase().replace(/ /g, '-')}-front">{card.front}</div>
-        <div class="card-row-text" id="{card.front.toLocaleLowerCase().replace(/ /g, '-')}-back">{card.back}</div>
-    {/if}
-    <div class="card-row-number">
-        <div class="level-wrap">
-            {#each Array(card.level | Number(Math.floor)) as _}
-                <div class="level-bar full"></div>
-            {/each}
-            {#if card.level % 1 !== 0}
-                <div class="level-bar half"></div>
-            {/if}
-            {#each Array(5 - card.level | Number(Math.ceil)) as _}
-                <div class="level-bar null"></div>
-            {/each}
-        </div>
-    </div>
-    <div class="card-row-number" style="margin-right: 0;">
-        <div class="difficulty-wrap" bind:this={difficultyElement} class:difficulty-wrap-edit={isEditing} on:mousedown={handleMouseDown} on:mousemove={handleMouseMove} role="slider" aria-valuenow="{card.difficulty}" tabindex="-1">
-            <div class="half-circle">
-                <div class="inner-circle">
-                    <div class="circle">
-                        <div class="arrow" style="transform: translate(-50%, -50%) rotate({arrowRotation}deg); transform-origin:bottom"></div>
-                    </div>
-                </div>
-                <div class="green-section"></div>
-                <div class="yellow-section"></div>
-                <div class="red-section"></div>
+        <button class="card-row-btn" on:click={()=>{dropdownForRowOpen = !dropdownForRowOpen}}>
+            <span>{partOfSpeechForRow}</span>
+            <i class="bi bi-caret-down-fill"></i>
+            {#if dropdownForRowOpen}
+            <div class="row-dropdown-body" transition:slide>
+                {#each partsOfSpeech as pos}
+                    <button on:click={async () => {partOfSpeechForRow = pos; await setTimeout(()=>{dropdownForRowOpen = false}, 5)}}>{pos}</button>
+                {/each}
             </div>
+            {/if}
+        </button>
+    {:else}
+        <a href="{$page.url}/{card.id}" class="card-row-text" style="width:25%; cursor:pointer; text-decoration:solid line !important;" id="{card.front.toLocaleLowerCase().replace(/ /g, '-')}-front">{card.front}</a>
+        <div class="card-row-text" style="width:25%;" id="{card.front.toLocaleLowerCase().replace(/ /g, '-')}-back">{card.back}</div>
+        <div class="card-row-text" style="width: 20%;" id="{card.partOfSpeech.toLocaleLowerCase().replace(/ /g, '-')}-pos">{card.partOfSpeech}</div>
+    {/if}
+    <div class="card-row-number" style="margin-right: 0;">
+        <div class="difficulty-wrap" class:difficulty-wrap-edit={isEditing}>
+            {#if isEditing}
+                <input class="edit-dif-input" type="number" min="0" max="10" step="1" bind:value={difficultyForRow}/>
+            {:else}
+                <div class="half-circle">
+                    <div class="inner-circle">
+                        <div class="circle">
+                            <div class="arrow" style="transform: translate(-50%, -50%) rotate({arrowRotation}deg); transform-origin:bottom"></div>
+                        </div>
+                    </div>
+                    <div class="green-section"></div>
+                    <div class="yellow-section"></div>
+                    <div class="red-section"></div>
+                </div>
+            {/if}
         </div>
     </div>
     <div class="card-row-button">
-        <button on:click={async()=>{isEditing=!isEditing}} class:edit-button-active={isEditing}><i class="bi bi-pen"></i></button>
+        <button on:click={async()=>{
+            if (isEditing) {
+                await handleEdit();
+            } else {
+                isEditing=true;
+            }
+        }} class:edit-button-active={isEditing}><i class="bi bi-pen"></i></button>
         <button on:click={async()=>{isDeleting=!isDeleting}} class:delete-button-active={isDeleting}>
             {#if isDeleting}
                 <span>{deleteTimer}</span>
@@ -138,6 +127,55 @@
 
 
 <style>
+    .edit-dif-input {
+        position: absolute;
+        width: 2.5rem;
+        height: 2.5rem;
+        left:50%;
+        bottom:15%;
+        transform: translateX(-50%);
+        background-color: var(--bg-color);
+        color: var(--fg-color);
+        border: 1px solid var(--bg-highlight);
+        border-radius: 0.5rem;
+        z-index: 999;
+        text-align: center;
+        padding:0;
+    }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            appearance: none;
+            -moz-appearance: textfield;
+        }
+    .card-row-btn {
+        width: 24%;
+        font-size: 1.2rem;
+        border-radius: 0.5rem;
+        border:none;
+        outline:none;
+        background-color: var(--bg-color);
+        color: var(--fg-color);
+        border:1px solid var(--bg-highlight) !important;
+        height: 2.6rem;
+        cursor:pointer;
+        transition: all 0.1s ease-in-out;
+        position: relative;
+    }
+        .card-row-btn:hover {
+            box-shadow: 0px 0px 3px var(--cyan);
+        }
+        .row-dropdown-body {
+            display: flex;
+            flex-direction: column;
+            z-index: 99;
+            width:100%;
+            position: absolute;
+            top: 100%;
+            left: 0;
+        }
     .delete-button-active {
         background-color: var(--red) !important;
         color: whitesmoke !important;
@@ -253,27 +291,6 @@
                         border-radius: 100% 100% 0 0;
                         background-color: var(--fg-color);
                     }
-    .level-bar {
-        width:2rem;
-        height:1rem;
-        border-radius: 999px;
-        margin-bottom: 2px;
-    }
-        .level-bar.full {
-            background-color: var(--cyan);
-        }
-        .level-bar.half {
-            background-color: var(--cyan-half);
-        }
-        .level-bar.null {
-            background-color: var(--bg-highlight);
-        }
-    .level-wrap {
-        display: flex;
-        flex-direction: column-reverse;
-        height:100%;
-        width:50%;
-    }
     .card-row {
         display: flex;
         flex-direction: row;
@@ -290,6 +307,9 @@
         min-height: 0;
         height:0;
     }
+        .card-row:hover {
+            z-index: 999;
+        }
         .card-row-number {
             margin-right: 1rem;
             height:2.5rem;
@@ -303,7 +323,6 @@
             align-items: center;
         }
         .card-row-text {
-            width: 35% !important;
             height: 2.5rem;
             padding: 1rem;
             font-size: 1.3rem !important;
@@ -312,7 +331,7 @@
         }
         :global(.card-row-text-input) {
             box-sizing: border-box;
-            width: 35% !important;
+            width: 23% !important;
             height: 2.5rem;
             padding: 1rem;
             font-size: 1.3rem !important;

@@ -1,46 +1,66 @@
 <script lang='ts'>
 	import { slide } from 'svelte/transition';
-    import {decks} from './decks/testDecks';
-    import type { Section } from './create/course/[course]/testsections';
-    import {testsections as sectionlist} from './create/course/[course]/testsections';
-    import { _, locale } from '$lib/i18n';
+    import {listSectionLinksByCourse} from '$lib/scripts/SectionHandler';
+    import type {SectionLink, Section} from '$lib/scripts/SectionHandler';
+    import { _ } from '$lib/i18n';
     import { isNarrowScreen } from '$lib/store';
     import './home.css';
     import { onMount } from 'svelte';
     import * as UserHandler from "../lib/scripts/UserHandler";
     import type { Course } from '$lib/scripts/CourseHandler';
     import { getLastCourse } from '$lib/scripts/CourseHandler';
+    import Load from './Load.svelte';
 
-    let testsections = $sectionlist;
-    let testCourse = decks[2];
     let weeklyStreakTest = 3;
     let wordCountTest = Math.floor(Math.random() * 1000);
-    let sectionsLearnedTest = 3;
     let weekOr2Weeks = 'week';
 
     let days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
     let today = new Date().getDay();
     let lastSevenDays = [...days.slice(today + 1), ...days.slice(0, today + 1)].reverse();
     let lastTwoWeeks = [...lastSevenDays, ...lastSevenDays];
-    let username = '';
+    let name = '';
     let isLoggedIn = UserHandler.isLoggedIn();
     let lastCourse: Course|null = null;
+    // ----------------------------------
+    let sectionLinks: SectionLink[] = [];
+    let activeLink: SectionLink|undefined = undefined;
+    let beforeActiveLinks: SectionLink[] = [];
+    let afterActiveLinks: SectionLink[] = [];
+    // ----------------------------------
+    let pageReady = false;
 
     onMount(async () => {
         if (await isLoggedIn) {
-            username = await UserHandler.getUserName();
+            name = await UserHandler.getName();
             lastCourse = await getLastCourse();
+            if (lastCourse != null)
+                sectionLinks = await listSectionLinksByCourse(lastCourse?.courseCode);
+            
+            let activeIndex = await sectionLinks.findIndex(link => link.currentActive);
+            activeLink = sectionLinks[activeIndex];
+            beforeActiveLinks = await sectionLinks.slice(0, activeIndex);
+            afterActiveLinks = await sectionLinks.slice(activeIndex + 1);
         }
+        pageReady = true;
     });
 </script>
 
-
+{#if pageReady}
 <div class="outter-wrap {$isNarrowScreen ? "outter-wrap-m" : ""}" transition:slide >
+    <div style="position: absolute; gap:1rem; display:flex; flex-direction:row; right:11%; top:6%;">
+        <a href="https://www.instagram.com/speakup.support/" style=" display:flex;flex-direction:row; gap:0.4rem;">
+            <i class="bi bi-instagram"></i>
+            <span>Support page</span>
+        </a>
+    </div>            
+    {#if name != '' || name != null}
     <p class="p-welcome-back">{$_('home.welcome_back')} 
         <span style="font-weight: bold;">
-            {#if username}{username}{/if}
+            {name}
         </span>
     </p>
+    {/if}
     <div style="height:1px; width:100%; background-color:var(--bg-highlight-2); margin-bottom:2rem; color:#00000000">SpeakUp</div>
     <div class="courses wrap" class:wrap-m={$isNarrowScreen}>
         <div class="last-course" class:last-course-m={$isNarrowScreen}>
@@ -79,18 +99,27 @@
             </div>
         </div>
         <div class="sections">
-            {#each testsections as section, i}
-                <div class="section" class:section-learned={i<=sectionsLearnedTest-1} 
-                class:section-current={i==sectionsLearnedTest}>
+            {#each beforeActiveLinks as link, i}
+                <div class="section section-learned=">
                     <div class="section-line"><div class="section-line-point"></div></div>
-                    <span>{section.title}</span>
+                    <span>{link.section.title}</span>
                 </div>
-                {#if i==sectionsLearnedTest}
-                <div class="current-section-desc">
-                    <div class="section-line"></div>
-                    <span>{section.description}</span>
+            {/each}
+            {#if activeLink != undefined}
+            <div class="section section-current">
+                <div class="section-line"><div class="section-line-point"></div></div>
+                <span>{activeLink.section.title}</span>
+            </div>
+            <a href="/learn" class="current-section-desc">
+                <div class="section-line"></div>
+                <span>{activeLink.section.description}</span>
+            </a>
+            {/if}
+            {#each afterActiveLinks as link, i}
+                <div class="section">
+                    <div class="section-line"><div class="section-line-point"></div></div>
+                    <span>{link.section.title}</span>
                 </div>
-                {/if}
             {/each}
         </div>
         <div class="statistics-row-2">
@@ -123,9 +152,13 @@
         </div>
     </div>
 </div>
+{:else}
+    <Load />
+{/if}
 
 
 <style>
+
     .outter-wrap {
         display: flex;
         flex-direction: column;
@@ -282,6 +315,12 @@
                         max-height:10rem;
                         width: 100%;
                     }
+                        .current-section-desc:hover {
+                            cursor: pointer;
+                        }
+                            .current-section-desc:hover > span {
+                                color: var(--fg-color);
+                            }
                         .current-section-desc > span {
                             min-height: 0%;
                             max-height:80%;
@@ -297,6 +336,7 @@
                             flex-direction: column;
                             justify-content: center;
                             align-items: flex-start;
+                            transition: color 0.1s ease-in-out;
                         }
                 .statistics-row-2 {
                     width:49.5%;

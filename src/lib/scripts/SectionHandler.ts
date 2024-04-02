@@ -15,6 +15,16 @@ export interface Section {
     lastEditorId: number;
 }
 
+export interface SectionLink {
+    id: number;
+    sectionId: number;
+    section: Section;
+    userId: number;
+    courseCode: string;
+    order: number;
+    currentActive: boolean;
+}
+
 export async function getSectionById(id:number) {
     let token = await getToken();
     const response = await fetch(`https://localhost:5000/section/getbyid?id=${id}`, {
@@ -125,4 +135,23 @@ export async function orderSectionDown(sectionId: number) {
 
     const data = await response.text();
     return data;
+}
+
+export async function listSectionLinksByCourse(courseCode: string) {
+    let token = await getToken();
+    const response = await fetch(`https://localhost:5000/section/linksPerCourse?courseCode=${courseCode}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    if (!response.ok) {
+        console.log(response);
+        throw new Error('Error getting section links by course code');
+    }
+
+    const data = await response.json();
+    const links:SectionLink[] = data.links;
+    console.log(links);
+    return links;
 }

@@ -4,19 +4,24 @@
     import { slide } from 'svelte/transition';
     import {_} from '$lib/i18n';
     import { isNarrowScreen } from '$lib/store';
-    import CardRow from '../../../deck/[deckid]/CardRow.svelte';
-    import {cardsListStore} from '$lib/stores/cardsStore';
+    import {courseCardsStore} from '$lib/stores/cardsStore';
     import type {Section} from '$lib/scripts/SectionHandler';
     import {getSectionById} from '$lib/scripts/SectionHandler';
-    import type {Card, CardInput} from '$lib/scripts/CardHandler';
-    import {listCardsBySection, addCard} from '$lib/scripts/CardHandler';
+    import type {CourseCard, CourseCardInput as CardInput} from '$lib/scripts/CardHandler';
+    import {listCardsBySection, addCardToSection} from '$lib/scripts/CardHandler';
+    import CourseCardRow from './CourseCardRow.svelte';
+    import {partsOfSpeech} from '$lib/scripts/CardHandler';
 
 
-    let cardsList: Card[] = [];
+    let cardsList: CourseCard[] = [];
     let cardsListElement: HTMLDivElement;
+    let courseCode = $page.params.course;
 
     let currentFront = '';
     let currentBack = '';
+    let currentPartOfSpeech = partsOfSpeech[0];
+    let posDropdownOpen = false;
+
     function resetValues() {
         currentBack = '';
         currentFront = '';
@@ -37,11 +42,12 @@
 
 
     onMount(async () => {
+        courseCode = $page.params.course;
         console.log(sectionId)
         section = await getSectionById(sectionId);
         console.log(section);
         cardsList = await listCardsBySection(sectionId);
-        cardsListStore.set(cardsList);
+        courseCardsStore.set(cardsList);
 
         let frontInput = document.getElementById('front');
         if (frontInput)     
@@ -54,14 +60,25 @@
             front: currentFront,
             back: currentBack,
             difficulty: 0,
-            deckId: 0, //no deck
-            sectionId: Number(sectionId)
+            partOfSpeech: currentPartOfSpeech,
+            sectionId: Number(sectionId),
+            courseCode: courseCode
         };
-        let newCard = await addCard(card);
+        let newCard = await addCardToSection(card);
         await cardsList.push(newCard);
-        await cardsListStore.set(cardsList);
+        await courseCardsStore.set(cardsList);
 
         resetValues();
+    }
+    function togglePOSDropdown() {
+        posDropdownOpen = !posDropdownOpen;
+    }
+    function switchPOS(index:number) {
+        currentPartOfSpeech = partsOfSpeech[index];
+        // Close the dropdown after 1 millisecond
+        setTimeout(() => {
+            posDropdownOpen = false;
+        }, 1);
     }
 </script>
 
@@ -87,6 +104,19 @@
         <div class="card-input-row">
             <input type="text" placeholder="{$_('create.course.front')}" id="front" bind:value={currentFront}/>
             <input type="text" placeholder="{$_('create.course.back')}"  bind:value={currentBack}/>
+            <button class="pos-dropdown" on:click={togglePOSDropdown}>
+                <span>{currentPartOfSpeech}</span>
+                <i class="bi bi-diagram-2-fill"></i>
+                {#if posDropdownOpen}
+                    <div class="pos-dropdown-body" transition:slide>
+                        {#each partsOfSpeech as partOfSpeech, i}
+                            <button value={partOfSpeech} on:click={()=>switchPOS(i)}>
+                                {partOfSpeech}
+                            </button>
+                        {/each}
+                    </div>
+                {/if}
+            </button>
             <button on:click={async()=>{await addCurrentCard();}} class:btn-disabled={currentFront=='' || currentBack==''}>+</button>
             <button on:click={()=>{rotateIcon(); resetValues()}}>
                 <div class="{isRotating ? 'rotate' : ''}">
@@ -100,15 +130,15 @@
             </div>
         {:else}
             <div class="info-row" transition:slide>
-                <span style="width:35%;">{$_('create.course.front')}</span>
-                <span style="width:35%;">{$_('create.course.back')}</span>
-                <span style="width:10%; margin-right:0;">{$_('create.course.level')}</span>
+                <span style="width:23.5%;">{$_('create.course.front')}</span>
+                <span style="width:23%;">{$_('create.course.back')}</span>
+                <span style="width:20%; margin-right:0;">{$_('create.course.part_of_speech')}</span>
                 <span style="width:10%; ">{$_('create.course.difficulty')}</span>
-                <span style="width: 8%;"></span>
+                <span style="width: 7%;"></span>
             </div>
         {/if}
-        {#each $cardsListStore as card (card.id)}
-            <CardRow card={card} />
+        {#each $courseCardsStore as card (card.id)}
+            <CourseCardRow card={card} />
         {/each}
     </div>
 </div>
@@ -136,6 +166,7 @@
             font-size: 1.3rem;
             margin-right: 1rem;
             line-height: 0.5rem;
+            white-space: nowrap;
             color: var(--fg-color);
         }
     
@@ -165,7 +196,7 @@
         order: 2;
     }
         .card-input-row > input {
-            width: 40%;
+            width: 27.5%;
             height: 3rem;
             padding: 1rem;
             border: 1px solid var(--bg-highlight);
@@ -175,6 +206,56 @@
             font-size: 1.5rem;
             margin-right: 1rem;
         }
+        .card-input-row > .pos-dropdown {
+            width:20%;
+            height:3rem;
+            padding-top: 0.2rem;
+            border: 1px solid var(--bg-highlight);
+            border-radius: 0.5rem;
+            background-color: var(--bg-middle);
+            color: var(--fg-color);
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            transition: box-shadow 0.1s ease-in-out;
+            z-index: 999;
+        }
+        .card-input-row > .pos-dropdown:hover {
+            cursor: pointer;
+            opacity: 1;
+            box-shadow: 0 0 4px var(--bg-highlight-2);
+        }
+            .card-input-row > .pos-dropdown > .pos-dropdown-body {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left:0;
+                width:100%;
+                transform: translateY(0);
+                overflow: hidden;
+                border-radius: 0 0 0.5rem 0.5rem;
+            }
+                .card-input-row > .pos-dropdown > .pos-dropdown-body > button {
+                    width:100%;
+                    height:2.5rem;
+                    font-size: 1.2rem;
+                    background-color: var(--bg-highlight);
+                    outline: none;
+                    border:none;
+                    border-bottom: 1px solid var(--bg-highlight-2);
+                    color: var(--fg-color);
+                    transition: all 0.1s ease-in-out;
+                    z-index: 999;
+                }
+                    .card-input-row > .pos-dropdown > .pos-dropdown-body > button:hover {
+                        background-color: var(--bg-highlight-2);
+                        cursor: pointer;
+                    }
         .card-input-row > button {
             width: 3rem;
             height: 3rem;
@@ -247,12 +328,6 @@
                 background: var(--bg-highlight);
                 cursor: pointer;
             }
-        .top-row > img {
-            height: 100%;
-            aspect-ratio: 1/1;
-            margin-right: 1rem;
-            border-radius: 0.3rem;
-        }
         .top-row > p {
             font-size: 2rem;
             margin: 0;

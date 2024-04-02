@@ -2,14 +2,13 @@ import { browser } from "$app/environment";
 import { goto } from "$app/navigation";
 
 export interface User {
-    id: string;
+    id: number;
     userName: string;
     email: string;
     displayName: string;
     profilePictureUrl: string;
-    accountCreatedDate: string;
+    accountCreatedDate: Date;
     lastDeck: string;
-    [key: string]: string;
 }
 
 export interface UserLastDeck {
@@ -35,6 +34,44 @@ export async function getToken() {
     return token;
 }
 
+export async function getName() {
+    let token = await getToken();
+    const response = await fetch('https://localhost:5000/account/getname', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        console.log(response);
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.name;
+}
+
+export async function learningDeckOverride() {
+    let token = await getToken();
+    const response = await fetch('https://localhost:5000/learn/learningDeck', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        console.log(response);
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const deckNcourse: boolean[] = data.learningDeckLearningCourse;
+
+    return deckNcourse;
+}
+
 export async function getUserName() {
     let token = await getToken();
     const response = await fetch('https://localhost:5000/account/getusername', {
@@ -57,9 +94,31 @@ export async function getUserName() {
     return data.username;
 }
 
+export async function getDisplayName() {
+    let token = await getToken();
+    const response = await fetch('https://localhost:5000/account/getdisplayname', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    if (data == null || data == undefined) {
+        return null;
+    }
+    return data.displayname;
+}
+
 export async function getUser() {
     let token = await getToken();
-    const response = await fetch('https://localhost:5000/account/userinfo', {
+    const response = await fetch('https://localhost:5000/account/allInfo', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -71,7 +130,9 @@ export async function getUser() {
     }
 
     const data = await response.json();
-    return data.userInfo;
+    const user = data.user;
+    user.accountCreatedDate = new Date(user.accountCreatedDate).toLocaleDateString('en-GB');
+    return user;
 }
 
 export async function isLoggedIn() {
@@ -139,5 +200,104 @@ export async function register(event: Event, username:string, email:string, pass
         location.reload();
     } else {
         console.error("Login failed: ", data.message);
+    }
+}
+
+export async function editUsername(currentPassword:string, newUsername:string) {
+    let token = await getToken();
+    const model = {
+        currentPassword,
+        newInput: newUsername
+    };
+
+    const response = await fetch('https://localhost:5000/account/editusername', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(model)
+    });
+
+    const data = await response.text();
+    return data;
+}
+
+export async function editPassword(currentPassword:string, newPassword:string) {
+    let token = await getToken();
+    const model = {
+        currentPassword,
+        newInput: newPassword
+    };
+
+    const response = await fetch('https://localhost:5000/account/editpassword', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(model)
+    });
+
+    const data = await response.text();
+    return data;
+}
+
+export async function editEmail(currentPassword:string, newEmail:string) {
+    let token = await getToken();
+    const model = {
+        currentPassword,
+        newInput: newEmail
+    };
+
+    const response = await fetch('https://localhost:5000/account/editemail', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(model)
+    });
+
+    const data = await response.text();
+    return data;
+}
+
+export async function editDisplayName(currentPassword:string, newDisplayName:string) {
+    let token = await getToken();
+    const model = {
+        currentPassword,
+        newInput: newDisplayName
+    };
+
+    const response = await fetch('https://localhost:5000/account/editdisplayname', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(model)
+    });
+
+    const data = await response.text();
+    return data;
+}
+
+export async function checkIfAdmin() {
+    let token = await getToken();
+    const response = await fetch('https://localhost:5000/account/checkifadmin', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    // if the response is ok, return true, if it is unauthorized, return false
+    if (response.ok) {
+        return true;
+    } else if (response.status == 401) {
+        return false;
+    } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
     }
 }

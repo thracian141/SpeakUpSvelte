@@ -6,10 +6,12 @@
     import './createCourse.css'
     import { onMount } from 'svelte';
     import { getLastEdit } from '$lib/scripts/CourseHandler';
+    import {checkIfAdmin} from '$lib/scripts/UserHandler';
 
     let date = new Date();
     let todayDate = date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear();
     let todayHour = date.getHours() + ':' + date.getMinutes();
+    let isAdmin = false;
 
     let currentHovered = '';
     $: anyHovered = currentHovered != '';
@@ -27,9 +29,13 @@
     function handleLeave() {
         currentHovered = '';
     }
+
+    onMount(async () => {
+        isAdmin = await checkIfAdmin();
+    });
 </script>
 
-
+{#if isAdmin}
 <div class="wrap" class:wrap-m={$isNarrowScreen} transition:slide>
     <h1>{$_('create.course.pick_a_course_to_edit')}</h1>
     <div class="course-list" class:course-list-m={$isNarrowScreen}>
@@ -99,6 +105,9 @@
         </h4>
     {/if}
 </div>
+{:else}
+    <h1>Unauthorized</h1>
+{/if}
 
 
 <style>

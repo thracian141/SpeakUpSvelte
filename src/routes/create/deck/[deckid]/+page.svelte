@@ -7,10 +7,10 @@
     let isRotating = false;
 
     import { onMount } from 'svelte';
-    import CardRow from './CardRow.svelte';
     import { getDeckById } from '$lib/scripts/DeckHandler';
     import { page } from '$app/stores';
-    import { listCardsByDeck, type Card, type CardInput, addCard } from '$lib/scripts/CardHandler';
+    import { listCardsByDeck, type Card, type DeckCardInput as CardInput, addCardToDeck as addCard, type DeckCard, addCardToDeck } from '$lib/scripts/CardHandler';
+    import DeckCardRow from './DeckCardRow.svelte';
 
     let cardsListElement: HTMLDivElement;
 
@@ -29,7 +29,7 @@
     }
 
     let deckModel:Deck;
-    let cards: Card[] = [];
+    let cards: DeckCard[] = [];
     let addingCard = false;
 
     let descriptionOpened = false;
@@ -49,11 +49,10 @@
             front: currentFront,
             back: currentBack,
             difficulty: 0,
-            deckId: Number(deckid),
-            sectionId: 0
+            deckId: Number(deckid)
         }
         addingCard = true;
-        const newCard:Card = await addCard(card);
+        const newCard:DeckCard = await addCardToDeck(card);
         cards = await cards.concat(newCard);
         addingCard = false;
 
@@ -103,7 +102,7 @@
         {/if}
         {#if !addingCard && cards.length > 0} 
             {#each cards as card, index (card.id)}
-                <CardRow card={card} />
+                <DeckCardRow card={card} />
             {/each}
         {/if}
     </div>

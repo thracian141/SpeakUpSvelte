@@ -3,7 +3,7 @@
     import { onMount } from "svelte";
     import { Deck, decks } from "../testDecks";
     import { goto } from "$app/navigation";
-    import { fade, fly, slide } from "svelte/transition";
+    import { fade, slide } from "svelte/transition";
     import { _, locale } from '$lib/i18n';
     import { isNarrowScreen } from "$lib/store";
     import { page } from "$app/stores";
@@ -23,7 +23,7 @@
             websiteLanguage = await JSON.parse(localStorage.getItem('websiteLanguage') as string);
         }
         targetLang = await decks.find((deck) => deck.id == url);
-        fromLang = await decks.find((deck) => deck.id.slice(0,2) == websiteLanguage);
+        fromLang = await decks.find((deck) => targetLang?.fromLang[0] == deck.id)
         availableFromLangs = await decks.filter(deck => targetLang?.fromLang.some(langId => langId == deck.id) && deck.getName() != fromLang?.getName());
     });
 
@@ -47,7 +47,7 @@
     }
 </script>
 
-<div class="outer-wrap" style="{$isNarrowScreen ? "width:100vw; height:100%; padding-top:5rem" : ""}">
+<div class="outer-wrap" style="{$isNarrowScreen ? "width:100vw; height:100%; padding-top:5rem" : "margin-top:5rem"}">
     <div class="target-lang-wrap" style="{$isNarrowScreen ? "border-radius:0 !important;" : ""}">
         {#if targetLang}
         <span style="font-size: 1.3rem; margin-bottom:1.5rem; font-weight:bold; transform:scaleY(0.95)">{$_('decks.language.target_language')}</span>
@@ -113,7 +113,7 @@
         font-size: 1.5rem;
         box-shadow: 0 0 0 0 #000000;
         opacity: 1;
-        margin-top: 0.5rem;
+        margin-top: 2rem;
         transition: all 0.12s ease-in-out;
     }
         .learn-button:hover {

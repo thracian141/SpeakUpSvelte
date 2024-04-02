@@ -144,7 +144,8 @@
             "front": "Front",
             "back": "Back",
             "level": "Level",
-            "difficulty": "Difficulty"
+            "difficulty": "Difficulty",
+            "part_of_speech": "Part of speech"
         }
     }
 }

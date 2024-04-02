@@ -144,7 +144,8 @@
             "front": "Лице",
             "back": "Гръб",
             "level": "Ниво",
-            "difficulty": "Сложност"
+            "difficulty": "Сложност",
+            "part_of_speech": "Част на речта"
         }
     }
 }

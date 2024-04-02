@@ -18,10 +18,6 @@
     let selectedLangId = 'none';
 
     onMount(async () => {
-        let lastCourse = await getLastCourse();
-        if (lastCourse != null) 
-            goto('decks/all')
-
         if (browser) {
             const fromLangData = JSON.parse(localStorage.getItem("websiteLanguage") as string);
             fromLang = await decks.find((deck) => deck.id == fromLangData);
@@ -44,7 +40,6 @@
 </script>
 
 <div class="outer-wrap" style="{$isNarrowScreen ? "width:100%; flex-wrap:wrap; height:100%; margin-top:5rem;" : ""}">
-    <a href="/decks/all" style="position: absolute; right:0;">debug: go to "View your decks"</a>
     <div class="wrap-top">
         <h1 style="margin-bottom: 1rem;">{$_('decks.what_language_do_you_want_to_learn')}</h1>
         <h1 style="color: var(--fg-color-2); font-size:1.8rem; font-weight:normal;">{$_('decks.choose_a_language')}</h1>
