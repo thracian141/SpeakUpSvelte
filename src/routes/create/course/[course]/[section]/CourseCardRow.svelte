@@ -85,7 +85,7 @@
             {/if}
         </button>
     {:else}
-        <a href="{$page.url}/{card.id}" class="card-row-text" style="width:25%; cursor:pointer; text-decoration:solid line !important;" id="{card.front.toLocaleLowerCase().replace(/ /g, '-')}-front">{card.front}</a>
+        <a href="{card.id}/" class="card-row-text" style="width:25%; cursor:pointer; text-decoration:solid line !important;" id="{card.front.toLocaleLowerCase().replace(/ /g, '-')}-front">{card.front}</a>
         <div class="card-row-text" style="width:25%;" id="{card.front.toLocaleLowerCase().replace(/ /g, '-')}-back">{card.back}</div>
         <div class="card-row-text" style="width: 20%;" id="{card.partOfSpeech.toLocaleLowerCase().replace(/ /g, '-')}-pos">{card.partOfSpeech}</div>
     {/if}
