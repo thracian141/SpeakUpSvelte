@@ -7,7 +7,6 @@
     import { courseLearnStore, sentenceStore } from "$lib/scripts/LearnHandler"
     import { goto } from "$app/navigation";
 
-    console.log("RENDERING LEARN PAGE")
     let ready = false; // Initialize with not ready.
     let direction = -1; // Direction in which the card will fly.
 
@@ -39,15 +38,17 @@
         return [...filledBars, ...halfBar, ...emptyBars];
     }
 
-    function changeTestData(increment: number) {
+    async function changeTestData(increment: number) {
         ready = false;
         direction = increment;
         currentIndex = (currentIndex + increment);
         setTimeout(() => { ready = true; }, 300);
+        await calculateAnswerWidth();
     }
 
     let answerTempWidth : number;
-    $: sentenceMeaningParts = $sentenceStore[currentIndex].back.split($courseLearnStore[currentIndex].card.back);
+    $: delimiter = new RegExp($courseLearnStore[currentIndex].card.back, 'i');
+    $: sentenceMeaningParts = $sentenceStore[currentIndex].back.split(delimiter);
     let dropdownOpen = false;
 
     function toggleDropdown() {
@@ -102,10 +103,21 @@
         }, 500);
     }
 
-    onMount(async () => {
-        let answerTemp = document.getElementById('answerTemp');
-        answerTempWidth = answerTemp ? answerTemp.clientWidth : 0;
+    let widthElement: HTMLDivElement;
+    let changingCard = false;
+    async function calculateAnswerWidth() {
+        if (answerInput == undefined) return;
+        changingCard = true;
+        //add a 1 millisecond timeout
+        await new Promise(resolve => setTimeout(resolve, 1));
+        let newWidth = widthElement.clientWidth;
+        answerInput.style.width = `${newWidth + 10}px`;
+        changingCard = false;
+    }
 
+    onMount(async () => {
+        await calculateAnswerWidth();
+        
         ready = true;
         await tick();
         answerInput.focus();
@@ -116,7 +128,7 @@
 </script>
 
 <div transition:slide style="{$isNarrowScreen ? "font-size: 1.5rem;" : "font-size: 3rem;"} display:inline-block; width:fit-content; position:absolute; visibility:hidden;" id="answerTemp" 
-    bind:clientWidth={answerTempWidth}>{$courseLearnStore[currentIndex].card.back}
+    bind:clientWidth={answerTempWidth} bind:this={widthElement}>{$courseLearnStore[currentIndex].card.back}
 </div>
 <div transition:slide style="display:flex; margin-left: auto; 
     margin-right: auto; overflow:hidden; width:100%; 
@@ -176,8 +188,10 @@
                 <div class="wrapper-section center" style="{$isNarrowScreen ? "height: 9rem; padding-top:1.75rem" : ""}">
                     <div class="sentence" style="{$isNarrowScreen ? "font-size:1.5rem !important; margin-top:0; margin-bottom:0.5rem;" : ""}">
                         <span style="{$isNarrowScreen ? "line-height:2rem;" : "line-height:4rem;"}">{sentenceMeaningParts[0]}</span>
+                        {#if !changingCard}
                         <input id="answer" bind:this={answerInput} style="{$isNarrowScreen ? "font-size:1.5rem !important; height:2rem; border-radius:0.15rem; padding:0 0.5rem" : ""}; 
                                                 width:{answerTempWidth+10}px" autocomplete="off"/>
+                        {/if}
                         <span style="{$isNarrowScreen ? "line-height:2rem;" : "line-height:4rem;"}">{sentenceMeaningParts[1]}</span>
                     </div>
                     <div class="part-of-speech" style="{$isNarrowScreen ? "margin:0 auto 0.25rem auto; height:1.5rem; width:90%; background-color:var(--el-bg-color);" : ""}">
@@ -216,7 +230,3 @@
         </div>
     {/if}
 </div>
-
-<style>
-
-</style>

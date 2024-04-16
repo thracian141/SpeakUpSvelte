@@ -29,8 +29,12 @@ export async function updateCourseLearnStore() {
 
     let data = await response.json();
 
-    const cards: CardLink[] = data.cardLinks;
-    await courseLearnStore.set(cards);
+    const cardlinks: CardLink[] = data.cardLinks;
+    const cards: CourseCard[] = data.cards;
+    for (let i = 0; i < cardlinks.length; i++) {
+        cardlinks[i].card = cards[i]
+    }
+    await courseLearnStore.set(cardlinks);
 
     const sentences: Sentence[] = data.sentences;
     await sentenceStore.set(sentences);
