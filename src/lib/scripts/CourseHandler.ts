@@ -1,3 +1,4 @@
+import { goto } from "$app/navigation";
 import { getToken } from "./UserHandler";
 
 export interface Course {
@@ -7,13 +8,13 @@ export interface Course {
     image: string;
 }
 const bulgarian: Course = {
-    courseCode: "bg-to-en",
+    courseCode: "en-to-bg",
     title: "Bulgarian",
     description: "Bulgarian, spoken by 10 million people, offers opportunities for travel and business. Learning it can ease understanding of other Slavic languages. This course covers basic Bulgarian grammar, vocabulary, pronunciation, and cultural insights.",
     image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Flag_of_Bulgaria.svg/1920px-Flag_of_Bulgaria.svg.png"
 }
 const english: Course = {
-    courseCode: "en-to-bg",
+    courseCode: "bg-to-en",
     title: "Английски",
     description: "Английският е най-широко разпространеният език в света. Неговото учене може да отвори врати към бизнеса, пътуванията и културата. Този курс обхваща основна граматика, лексика, произношение и културни познания на английски.",
     image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Flag_of_England.svg/1920px-Flag_of_England.svg.png"
@@ -40,9 +41,9 @@ const italian: Course = {
 export async function getCourseByCode(courseCode:string) {
     switch (courseCode) {
         case "bg-to-en":
-            return bulgarian;
-        case "en-to-bg":
             return english;
+        case "en-to-bg":
+            return bulgarian;
         case "en-to-de":
             return german;
         case "en-to-tr":
@@ -91,6 +92,26 @@ export async function setActiveCourse(courseCode: string) {
     const code = await response.text();
     return code;
 }
+
+export async function changeActiveCourse(courseCode: string) {
+    let token = await getToken();
+    const response = await fetch(`https://localhost:5000/course/changeactive`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(courseCode)
+    });
+
+    if (!response.ok) 
+        throw new Error('Error changing active course');
+
+    const code = await response.text();
+    goto('/')
+    return code;
+}
+
 export async function listActiveCourses() {
     let token = await getToken();
     const response = await fetch("https://localhost:5000/course/getactive", {

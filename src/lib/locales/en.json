@@ -72,7 +72,8 @@
         "information_about_this_word": "Information about this word",
         "learn": "Learn",
         "this_word_is_new": "This word is new!",
-        "you_know_this_lets_keep_going": "You know this, let's keep going."
+        "you_know_this_lets_keep_going": "You know this, let's keep going.",
+        "check_answer": "Check answer"
     },
     "authenticate": {
         "sign_up_to": "Sign up to",

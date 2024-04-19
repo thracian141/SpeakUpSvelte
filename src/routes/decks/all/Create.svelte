@@ -7,20 +7,8 @@
     import {_} from '$lib/i18n';
     import { createDeck, type DeckInput } from '$lib/scripts/DeckHandler';
 
-    let imageUrl = '';
     let deckName = '';
     let deckDescription = '';
-
-    function handleFileUpload(event: Event) {
-        const file = (event.target as HTMLInputElement)?.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                imageUrl = reader.result as string;
-            };
-            reader.readAsDataURL(file);
-        }
-    }
 
     let isRotating = false;
 
@@ -31,7 +19,6 @@
         }, 500); // Duration of the rotation animation
     }
     function resetValues() {
-        imageUrl = '';
         deckName = '';
         deckDescription = '';
     }
@@ -41,8 +28,7 @@
 
         const deck: DeckInputModel = {
             name: deckName,
-            description: deckDescription,
-            image: imageUrl,
+            description: deckDescription
         };
         const deckModel: DeckInput = { //this is the real one
             deckName: deckName,
@@ -59,17 +45,6 @@
 <h1 transition:slide>{$_('create.deck.create_a_personal_deck')}</h1>
 <form enctype="multipart/form-data" transition:slide style="{$isNarrowScreen ? '' : 'padding:2rem;width:40rem;border:1px solid var(--bg-highlight); border-radius:0.75rem;'}">
     <div class="inner-wrap" style="{$isNarrowScreen ? 'flex-direction:column;' : ''}">
-        <div class="img-wrap" style="{$isNarrowScreen ? 'align-items:center;' : ''}">
-            <label for="image" class="custom-file-input">
-                {#if imageUrl}
-                    <span>{$_('create.deck.change')}</span>
-                    <img src={imageUrl} alt="Uploaded" style="width: 100%; height: 100%; object-fit: cover;" />
-                {:else}
-                    +
-                {/if}
-            </label>
-            <input id="image" type="file" name="image" accept="image/*" style="display: none;" on:change={handleFileUpload} />
-        </div>
         <div class="fields-wrap">
             <div class="field-group">
                 <label for="name" style="{deckName != '' ? "top:0%;opacity: 0.75;font-size: 1rem;" : ""}">{$_('create.deck.deck_name')}</label>
@@ -154,7 +129,7 @@
         }
     textarea, textarea:focus, textarea:active, textarea:hover { 
         resize: none;
-        width: 20rem;
+        width: 30rem;
         height: 10.25rem;
         background-color: var(--bg-color) !important;
         color: var(--fg-color) !important;
@@ -230,25 +205,6 @@
                 opacity: 0.75;
                 font-size: 1rem;
             }
-        label > span {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            opacity: 0;
-            transform: translate(-50%, -50%);
-            font-size: 1.5rem;
-            transition: opacity 0.2s ease-in-out;
-        }
-        label > img {
-            opacity:1;
-            transition: opacity 0.2s ease-in-out;
-        }
-        .img-wrap:hover > label > img {
-            opacity: 0.5;
-        }
-        .img-wrap:hover > label > span {
-            opacity: 1;
-        }
     .inner-wrap {
         display: flex;
         flex-direction: row;
@@ -257,34 +213,6 @@
         display: flex;
         flex-direction: column;
     }
-    .custom-file-input {
-        display: block;
-        width: 15rem; 
-        height: 15rem;
-        border: 1px solid var(--fg-color);
-        border-radius: 1rem;
-        cursor: pointer;
-        line-height: 15rem;
-        text-align: center;
-        font-size: 3rem;
-        position: relative;
-        overflow: hidden;
-        cursor: pointer;
-        transition: border 0.12s ease-in-out;
-    }
-        .img-wrap:hover > .custom-file-input {
-            border: 1px solid var(--bg-highlight);
-        }
-        .img-wrap:hover > label {
-            color: var(--bg-highlight);
-        }
-    .img-wrap {
-        display: flex;
-        flex-direction: column;
-    }
-        .img-wrap > label {
-            transition: color 0.1s ease-in-out;
-        }
     form {
         display: flex;
         flex-direction: column;

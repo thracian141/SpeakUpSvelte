@@ -1,3 +1,22 @@
+.check-card-btn {
+    width:10rem;
+    height:4.5rem;
+    position: absolute;
+    right: 5%;
+    bottom: 10%;
+    border-radius: 0.5rem;
+    background-color: var(--bg-middle);
+    border: 1px solid var(--bg-highlight);
+    color: var(--fg-color-2);
+    font-size: 1.2rem;
+}
+    .check-card-btn:hover {
+        cursor: pointer;
+        background-color: var(--bg-highlight);
+        border-color: var(--bg-highlight-2);
+        color: var(--fg-color);
+    }
+
 .narrowscreen {
     display: none;
 }
@@ -296,9 +315,4 @@ p {
     gap:0.3rem;
     margin-left: 2rem;
     align-items: center;
-}
-@font-face {
-    font-family: 'lolFont';
-    src: url('/fonts/BeaufortforLOL-Bold.woff2'),
-         url('/fonts/BeaufortforLOL-Bold.ttf');
 }

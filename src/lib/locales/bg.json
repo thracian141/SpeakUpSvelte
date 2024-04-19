@@ -72,7 +72,8 @@
         "information_about_this_word": "Информация за тази дума",
         "learn": "Научи",
         "this_word_is_new": "Тази дума е нова!",
-        "you_know_this_lets_keep_going": "Вече знаеш тази дума, нека продължаваме!"
+        "you_know_this_lets_keep_going": "Вече знаеш тази дума, нека продължаваме!",
+        "check_answer": "Провери отговор"
     },
     "authenticate": {
         "sign_up_to": "Създай профил в",

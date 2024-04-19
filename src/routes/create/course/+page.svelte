@@ -43,7 +43,7 @@
             <a href="/create/course/bg-to-en" class="course-link" class:any-hovered={anyHovered} class:this-hovered={currentHovered=='en'}
             on:mouseenter={()=>{handleEnter('bg-to-en')}} on:mouseleave={()=>{handleLeave()}}>
                 <img src={decks[1].image} alt="English deck">
-                <span>English</span>
+                <span>Английски</span>
             </a>
             <div class="description">
                 <span><span style="color: var(--selected-text);">18</span> {$_('create.course.sections')}</span>

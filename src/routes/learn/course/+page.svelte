@@ -3,9 +3,8 @@
     import { _ } from "$lib/i18n";
     import { isNarrowScreen } from "$lib/store";
     import { fly, slide } from "svelte/transition";
-    import '../learn.css';
     import { courseLearnStore, sentenceStore } from "$lib/scripts/LearnHandler"
-    import { goto } from "$app/navigation";
+    import {getPOS} from "$lib/scripts/CardHandler";
 
     let ready = false; // Initialize with not ready.
     let direction = -1; // Direction in which the card will fly.
@@ -44,6 +43,7 @@
         currentIndex = (currentIndex + increment);
         setTimeout(() => { ready = true; }, 300);
         await calculateAnswerWidth();
+        currentPOS = await getPOS($courseLearnStore[currentIndex].card.partOfSpeech);
     }
 
     let answerTempWidth : number;
@@ -115,8 +115,10 @@
         changingCard = false;
     }
 
+    let currentPOS: string|undefined = '';
     onMount(async () => {
         await calculateAnswerWidth();
+        currentPOS = await getPOS($courseLearnStore[currentIndex].card.partOfSpeech);
         
         ready = true;
         await tick();
@@ -126,6 +128,7 @@
     $: leftDisabled = currentIndex <= 0;
     $: rightDisabled = currentIndex >= $courseLearnStore.length-1;
 </script>
+
 
 <div transition:slide style="{$isNarrowScreen ? "font-size: 1.5rem;" : "font-size: 3rem;"} display:inline-block; width:fit-content; position:absolute; visibility:hidden;" id="answerTemp" 
     bind:clientWidth={answerTempWidth} bind:this={widthElement}>{$courseLearnStore[currentIndex].card.back}
@@ -195,17 +198,14 @@
                         <span style="{$isNarrowScreen ? "line-height:2rem;" : "line-height:4rem;"}">{sentenceMeaningParts[1]}</span>
                     </div>
                     <div class="part-of-speech" style="{$isNarrowScreen ? "margin:0 auto 0.25rem auto; height:1.5rem; width:90%; background-color:var(--el-bg-color);" : ""}">
-                        <span style="{$isNarrowScreen ? "color:var(--bg-highlight-2); font-size:1rem" : ""}"><i class="bi bi-diagram-2-fill" style="color:var(--bg-highlight)"></i>{$courseLearnStore[currentIndex].card.partOfSpeech}</span>
+                        <span style="{$isNarrowScreen ? "color:var(--bg-highlight-2); font-size:1rem" : ""}"><i class="bi bi-diagram-2-fill" style="color:var(--bg-highlight)"></i>{currentPOS}</span>
                     </div>
                 </div>
                 <div class="wrapper-section bottom" style="{$isNarrowScreen ? "height:5rem; position:relative; padding-top:0.5rem; padding-bottom:0.5rem" : ""}">
                     <p style="{$isNarrowScreen ? "margin-bottom:0rem; font-size:1.5rem; margin-top:0rem;" : ""}">{$courseLearnStore[currentIndex].card.front}</p>
                     <p style="{$isNarrowScreen ? "margin-left:0rem; width:14rem; text-align:left; font-size:1rem;" : ""}">{$sentenceStore[currentIndex].front}</p>
-                    <button class="etymology-button" on:click={() => goto('/')}
-                        style="{$isNarrowScreen ? "top:25%; right:7.5%; height:3rem;" : ""}">
-                        <img src="/icons/search-tilted.svg" alt="etymology of word" style="{$isNarrowScreen ? "height:2rem; " : ""}"/>
-                        <p style="{$isNarrowScreen ? "margin:0; font-size:1.2rem; top:40%;" : ""}">λόγος</p>
-                        <span style="{$isNarrowScreen ? "transform: none; right:0; top:100%; height:1.2rem" : ""}">Information about this word</span>
+                    <button class="check-card-btn">
+                        {$_('learn.check_answer')}
                     </button>
                 </div>
             </div>
@@ -230,3 +230,7 @@
         </div>
     {/if}
 </div>
+
+<style>
+    @import '../learn.css';
+</style>

@@ -7,6 +7,7 @@
     import type {Deck} from '$lib/scripts/DeckHandler';
     import type { Course } from '$lib/scripts/CourseHandler';
     import {listActiveCourses} from '$lib/scripts/CourseHandler';
+    import {changeActiveCourse} from '$lib/scripts/CourseHandler';
 
 
     let searchbarInput = '';
@@ -34,8 +35,10 @@
     <div class="courses" style="{$isNarrowScreen ? 'width:100%; height:35vh !important;' : 'width:34rem; height: 100%;'}">
         <h2>{$_('decks.all.your_active_courses')}</h2>
         {#if coursesList.length > 0}
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
             {#each filteredCourses as course}
-                <div class="course-wrap" transition:slide>
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <div class="course-wrap" transition:slide on:click={async()=>{await changeActiveCourse(course.courseCode)}}>
                     <button><i class="bi bi-gear-fill"></i></button>
                     <img src="{course.image}" alt="{course.courseCode}" />
                     <span style="margin-right: 1rem;">{course.title}</span>

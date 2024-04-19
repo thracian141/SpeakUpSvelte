@@ -1,4 +1,5 @@
 import { getToken } from "./UserHandler";
+import { _, locale} from "svelte-i18n";
 
 export let partsOfSpeech = [
     "Noun",
@@ -8,8 +9,40 @@ export let partsOfSpeech = [
     "Pronoun",
     "Preposition",
     "Conjunction",
-    "Interjection"
+    "Interjection",
+    "Phrase"
 ]
+
+export async function getPOS(pos: string) {
+    //check if locale is en
+    let lang = await localStorage.getItem('websiteLanguage');
+    if (lang?.includes('en')) {
+        return pos;
+    }else {
+        switch (pos) {
+            case "Noun":
+                return "Съществително";
+            case "Verb":
+                return "Глагол";
+            case "Adjective":
+                return "Прилагателно";
+            case "Adverb":
+                return "Наречие";
+            case "Pronoun":
+                return "Местоимение";
+            case "Preposition":
+                return "Предлог";
+            case "Conjunction":
+                return "Съюз";
+            case "Interjection":
+                return "Междуметие";
+            case "Phrase":
+                return "Фраза";
+            default:
+                break;
+        }
+    }
+}
 
 export interface DeckCardInput {
     front: string;
