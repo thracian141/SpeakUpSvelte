@@ -30,6 +30,7 @@ export async function updateCourseLearnStore() {
     let data = await response.json();
 
     const cardlinks: CardLink[] = data.cardLinks;
+    console.log(cardlinks);
     const cards: CourseCard[] = data.cards;
     for (let i = 0; i < cardlinks.length; i++) {
         cardlinks[i].card = cards[i]
@@ -37,6 +38,7 @@ export async function updateCourseLearnStore() {
     await courseLearnStore.set(cardlinks);
 
     const sentences: Sentence[] = data.sentences;
+    console.log(sentences)
     await sentenceStore.set(sentences);
 }
 
