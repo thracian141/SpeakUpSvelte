@@ -1,3 +1,3 @@
-<a href="/create/course">Courses (debug as dev)</a>
+<a href="/create/course">Courses (dev)</a>
 <br>
 <a href="/create/deck">Decks</a>

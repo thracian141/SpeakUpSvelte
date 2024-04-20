@@ -7,6 +7,7 @@
     import {_} from 'svelte-i18n';
     import { slide } from 'svelte/transition';
 
+    let isDev = false;
     let ready = false;
     let bugReports: BugReport[] = [];
     let selectedCourse = 'all';
@@ -14,14 +15,15 @@
     let courseDropDownOpen = false;
 
     onMount(async()=>{
-        let dev = await checkIfDev();
-        console.log(dev);
+        isDev = await checkIfDev();
         bugReports = await listBugReports('all');
         ready = true;
     });
 </script>
 
-{#if ready}
+{#if !isDev}
+    <h1>Unauthorized</h1>
+{:else if ready}
 <div class="bugs-wrap" transition:slide>
     <div style="display: flex; flex-direction:row; justify-content:space-between; align-items:center;">
         <h1 style="margin:0;">{$_('bugs.reported_bugs')}</h1>

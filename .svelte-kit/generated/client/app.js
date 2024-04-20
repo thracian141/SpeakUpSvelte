@@ -21,7 +21,8 @@ export const nodes = [
 	() => import('./nodes/17'),
 	() => import('./nodes/18'),
 	() => import('./nodes/19'),
-	() => import('./nodes/20')
+	() => import('./nodes/20'),
+	() => import('./nodes/21')
 ];
 
 export const server_loads = [];
@@ -29,23 +30,24 @@ export const server_loads = [];
 export const dictionary = {
 		"/": [2],
 		"/account": [3],
-		"/authenticate/login": [4],
-		"/authenticate/register": [5],
-		"/bugs": [6],
-		"/create": [7],
-		"/create/course": [8],
-		"/create/course/[course]": [9],
-		"/create/course/[course]/[section]": [10],
-		"/create/course/[course]/[section]/[card]": [11],
-		"/create/deck": [12],
-		"/create/deck/[deckid]": [13],
-		"/decks": [14],
-		"/decks/all": [15],
-		"/decks/[language]": [16],
-		"/learn": [17],
-		"/learn/course": [18],
-		"/learn/deck": [19],
-		"/welcome": [20]
+		"/adminpanel": [4],
+		"/authenticate/login": [5],
+		"/authenticate/register": [6],
+		"/bugs": [7],
+		"/create": [8],
+		"/create/course": [9],
+		"/create/course/[course]": [10],
+		"/create/course/[course]/[section]": [11],
+		"/create/course/[course]/[section]/[card]": [12],
+		"/create/deck": [13],
+		"/create/deck/[deckid]": [14],
+		"/decks": [15],
+		"/decks/all": [16],
+		"/decks/[language]": [17],
+		"/learn": [18],
+		"/learn/course": [19],
+		"/learn/deck": [20],
+		"/welcome": [21]
 	};
 
 export const hooks = {

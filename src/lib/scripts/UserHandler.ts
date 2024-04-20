@@ -317,3 +317,126 @@ export async function checkIfDev() {
     else 
         return false;
 }
+
+export async function searchUsers(search: string) {
+    let token = await getToken();
+    const response = await fetch(`https://localhost:5000/account/searchAccounts?search=${search}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        console.log(response);
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const users: User[] = data.users;
+    const roles: string[] = data.userRoles;
+    return {users, roles};
+}
+
+export async function deleteAccount(userId: number) {
+    let token = await getToken();
+    const response = await fetch(`https://localhost:5000/account/deleteaccount?userId=${userId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        console.log(response);
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.text();
+}
+
+export async function amHigherRole(than: number) {
+    let token = await getToken();
+    const response = await fetch(`https://localhost:5000/account/amhigherrole?than=${than}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (response.ok) {
+        return true;
+    } else if (response.status == 401) {
+        return false;
+    } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }        
+}
+
+export async function getRole(userId: number) {
+    let token = await getToken();
+    const response = await fetch(`https://localhost:5000/account/getrole?userId=${userId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        console.log(response);
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.text();
+}
+
+export async function getOwnRole() {
+    let token = await getToken();
+    const response = await fetch('https://localhost:5000/account/getownrole', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        console.log(response);
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.text();
+}
+
+export async function makeDev(userId: number) {
+    let token = await getToken();
+    const response = await fetch(`https://localhost:5000/account/makedev?userId=${userId}`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        console.log(response);
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.text();
+}
+
+export async function makeAdmin(userId: number) {
+    let token = await getToken();
+    const response = await fetch(`https://localhost:5000/account/makeadmin?userId=${userId}`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        console.log(response);
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.text();
+}

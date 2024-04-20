@@ -72,10 +72,10 @@
 <nav id="nav" on:mouseenter={enableExpansion} on:mouseleave={disableExpansion} 
      class={isExpanded ? 'nav-expanded' : ''}
     >
-    <div class="logo" style="display: flex; flex-direction:row;">
+    <a href="{isAdmin ? "/adminpanel" : "/"}" class="logo" style="display: flex; flex-direction:row; color:var(--fg-color)">
         <img src="/logo.svg" alt="SpeakUp Logo"/>
         <p>SPEAK <span>-</span>UP</p>
-    </div>
+    </a>
     <ul id="mainOptions" style="list-style-type:none; padding: 0.5rem;">
         <a href="/" class="nav-option" class:active={$page.url.pathname == "/"}>
             <i class="bi bi-house-door"></i><p>{$_('layout.home')}</p>

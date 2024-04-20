@@ -1,6 +1,7 @@
 {
 	"/": [],
 	"/account": [],
+	"/adminpanel": [],
 	"/authenticate/login": [],
 	"/authenticate/register": [],
 	"/bugs": [],

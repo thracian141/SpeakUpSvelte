@@ -65,3 +65,24 @@ export async function getDecksList() {
 
     return decksList;
 }
+
+export async function searchDecks(search: string) {
+    let token = await getToken();
+    const response = await fetch(`https://localhost:5000/deck/search?search=${search}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        console.log(response);
+        throw new Error('Error searching decks');
+    }
+
+    const data = await response.json();
+    console.log(data.list);
+    const decksList: Deck[] = data.list;
+
+    return decksList;
+}
