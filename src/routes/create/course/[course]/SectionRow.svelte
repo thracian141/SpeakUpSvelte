@@ -14,9 +14,10 @@
     let deleteTimer:number = 5;
     let intervalStarted = false;
 
-    $: {
+    $: { // Reactive statement to handle the deletion
         if (isDeleting && !intervalStarted) {
             intervalStarted = true;
+            // Start the timer
             const intervalId = setInterval(() => {
                 deleteTimer--;
                 if (deleteTimer <= 0) {

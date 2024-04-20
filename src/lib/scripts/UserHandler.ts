@@ -301,3 +301,19 @@ export async function checkIfAdmin() {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
 }
+
+export async function checkIfDev() {
+    let token = await getToken();
+    const response = await fetch('https://localhost:5000/bugs/checkifdev', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    // if the response is ok, return true, if it is unauthorized, return false
+    if (response.ok) 
+        return true;
+    else 
+        return false;
+}

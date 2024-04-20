@@ -6,7 +6,7 @@
     import { _ } from '$lib/i18n';
     import './styles.css';
     import { getLastCourse } from '$lib/scripts/CourseHandler';
-    import {checkIfAdmin} from '$lib/scripts/UserHandler';
+    import {checkIfAdmin, checkIfDev} from '$lib/scripts/UserHandler';
     
     let isExpanded = false;
     let isLogoutConfirmed = false;
@@ -14,6 +14,7 @@
     let username = '';
     let lastCourse:any|undefined = undefined;
     let isAdmin = false;
+    let isDev = false;
 
     if (browser && localStorage.getItem('isExpanded') === "true") {
         isExpanded = true;
@@ -56,6 +57,9 @@
     onMount(async () => {
         lastCourse = await getLastCourse();
         isAdmin = await checkIfAdmin();
+        isDev = await checkIfDev();
+        if (isAdmin)
+            isDev = true;
         currentPath = window.location.pathname;
         if (await isLoggedIn) {
             username = await UserHandler.getUserName();
@@ -82,9 +86,12 @@
         <a href="{lastCourse != null ? "/decks/all" : "/decks"}" class="nav-option" class:active={$page.url.pathname.includes("/decks")}>
             <i class="bi bi-card-list"></i><p>{$_('layout.decks')}</p>
         </a>
-        {#if true}
-        <a href="{isAdmin ? "/create" : "/create/deck"}" class="nav-option" class:active={$page.url.pathname.includes('/create')}>
+        {#if isDev}
+        <a href="/create" class="nav-option" class:active={$page.url.pathname.includes('/create')}>
             <i class="bi bi-pencil-square"></i><p>{$_('layout.create')}</p>
+        </a>
+        <a href="/bugs" class="nav-option" class:active={$page.url.pathname.includes('/bugs')}>
+            <i class="bi bi-bug"></i><p>{$_('layout.bug_reports')}</p>
         </a>
         {/if}
         <a href="/account" class="nav-option" class:active={$page.url.pathname.includes('/account')}>

@@ -29,6 +29,7 @@
         if (!loggedIn) {
             goto('welcome');
         } 
+        //In Svelte, the check for "browser" toggles client-side rendering
         if (browser) {
             if (localStorage.getItem('websiteLanguage') != null && localStorage.getItem('websiteLanguage') != undefined) {
                 locale.set(JSON.parse(localStorage.getItem('websiteLanguage') as string));

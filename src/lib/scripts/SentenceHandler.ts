@@ -8,6 +8,7 @@ export interface Sentence {
     wordId: number;
 }
 
+// This store contains a list of the current learning session's sentences
 export let sentencesStore = writable<Sentence[]>([]);
 
 export async function listSentences(cardId: number) {

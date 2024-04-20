@@ -3,6 +3,7 @@
 	"/account": [],
 	"/authenticate/login": [],
 	"/authenticate/register": [],
+	"/bugs": [],
 	"/create": [],
 	"/create/course": [],
 	"/create/course/[course]": [],

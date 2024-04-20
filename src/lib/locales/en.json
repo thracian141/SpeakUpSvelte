@@ -28,7 +28,8 @@
         "decks": "Decks",
         "account": "Account",
         "sign in": "Sign in",
-        "create": "Create"
+        "create": "Create",
+        "bug_reports": "Bugs"
     },
     "languages": {
         "english": "English",
@@ -148,5 +149,15 @@
             "difficulty": "Difficulty",
             "part_of_speech": "Part of speech"
         }
+    },
+    "bugs": {
+        "report_a_bug": "Report a bug",
+        "describe_bug": "Be as descriptive as possible to make sure the bug is resolved.",
+        "placeholder": "Specify which card, sentence, or section you are experiencing an issue with...",
+        "submit": "Submit",
+        "clear": "Clear",
+        "reported_bugs": "Reported bugs",
+        "for_course": "For course",
+        "mark_as_solved": "Mark as solved"
     }
 }
