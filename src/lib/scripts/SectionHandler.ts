@@ -22,7 +22,7 @@ export interface SectionLink {
     userId: number;
     courseCode: string;
     order: number;
-    currentActive: boolean;
+    finished: boolean;
 }
 
 export async function getSectionById(id:number) {
@@ -137,9 +137,9 @@ export async function orderSectionDown(sectionId: number) {
     return data;
 }
 
-export async function listSectionLinksByCourse(courseCode: string) {
+export async function listSectionLinksByCourse() {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/section/linksPerCourse?courseCode=${courseCode}`, {
+    const response = await fetch(`https://localhost:5000/section/linksPerCourse`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`

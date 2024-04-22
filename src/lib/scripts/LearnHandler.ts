@@ -60,3 +60,26 @@ export async function updateDeckLearnStore() {
     const cards: DeckCard[] = data.cards;
     await deckLearnStore.set(cards);
 }
+
+export async function nextCourseCard() {
+    let token = await getToken();
+    let response = await fetch("https://localhost:5000/learn/nextcoursecard", {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        console.log(response.text());
+        throw new Error("Error getting next course card");
+    }
+
+    let data = await response.json();
+    let cardLink: CardLink = data.cardLink;
+    const card: CourseCard = data.card;
+    cardLink.card = card;
+    const sentence = data.sentence;
+
+    return {cardLink, sentence};
+}

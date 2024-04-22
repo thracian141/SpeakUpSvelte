@@ -118,6 +118,16 @@
 
     let currentPOS: string|undefined = '';
     let reportBugOpen = false;
+
+    let currentInput = '';
+    async function checkAnswer() {
+        if (currentInput.toLowerCase() == $courseLearnStore[currentIndex].card.back.toLowerCase()) {
+            answerInput.classList.add('correct');
+        } else {
+            answerInput.classList.add('incorrect');
+        }
+    }
+
     onMount(async () => {
         await calculateAnswerWidth();
         currentPOS = await getPOS($courseLearnStore[currentIndex].card.partOfSpeech);
@@ -194,8 +204,8 @@
                     <div class="sentence" style="{$isNarrowScreen ? "font-size:1.5rem !important; margin-top:0; margin-bottom:0.5rem;" : ""}">
                         <span style="{$isNarrowScreen ? "line-height:2rem;" : "line-height:4rem;"}">{sentenceMeaningParts[0]}</span>
                         {#if !changingCard}
-                        <input id="answer" bind:this={answerInput} style="{$isNarrowScreen ? "font-size:1.5rem !important; height:2rem; border-radius:0.15rem; padding:0 0.5rem" : ""}; 
-                                                width:{answerTempWidth+10}px" autocomplete="off"/>
+                        <input id="answer" bind:this={answerInput} bind:value={currentInput} style="{$isNarrowScreen ? "font-size:1.5rem !important; height:2rem; border-radius:0.15rem; padding:0 0.5rem" : ""}; 
+                                        width:{answerTempWidth+10}px" autocomplete="off"/>
                         {/if}
                         <span style="{$isNarrowScreen ? "line-height:2rem;" : "line-height:4rem;"}">{sentenceMeaningParts[1]}</span>
                     </div>
@@ -206,7 +216,7 @@
                 <div class="wrapper-section bottom" style="{$isNarrowScreen ? "height:5rem; position:relative; padding-top:0.5rem; padding-bottom:0.5rem" : ""}">
                     <p style="{$isNarrowScreen ? "margin-bottom:0rem; font-size:1.5rem; margin-top:0rem;" : ""}">{$courseLearnStore[currentIndex].card.front}</p>
                     <p style="{$isNarrowScreen ? "margin-left:0rem; width:14rem; text-align:left; font-size:1rem;" : ""}">{$sentenceStore[currentIndex].front}</p>
-                    <button class="check-card-btn">
+                    <button class="check-card-btn" on:click={async()=>{await checkAnswer();}}>
                         {$_('learn.check_answer')}
                     </button>
                 </div>
@@ -237,7 +247,14 @@
 {/if}
 
 <style>
-    .check-card-btn {
+:global(.correct) {
+    color: var(--green) !important;
+    pointer-events: none;
+}
+:global(.incorrect) {
+    color: var(--red) !important;
+}
+.check-card-btn {
     width:10rem;
     height:4.5rem;
     position: absolute;
@@ -406,7 +423,7 @@
         outline: none;
         margin: 0;
         border-radius: 0.3rem;
-        color: var(--cyan) !important;
+        color: var(--cyan);
         display: inline-block;
         text-align: center;
         height:4rem;
@@ -414,8 +431,8 @@
         .sentence > input:focus, .sentence > input::placeholder, .sentence > input:active, .sentence > input:hover {
             background-color: var(--bg-color) !important;
             box-shadow: none !important;
-            color: var(--cyan) !important;
-            -webkit-text-fill-color: var(--cyan) !important;
+            color: var(--cyan);
+            -webkit-text-fill-color: var(--cyan);
         }
 .center {
     height:55%;

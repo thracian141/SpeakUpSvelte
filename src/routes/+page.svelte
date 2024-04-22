@@ -24,9 +24,9 @@
     let lastCourse: Course|null = null;
     // ----------------------------------
     let sectionLinks: SectionLink[] = [];
-    let activeLink: SectionLink|undefined = undefined;
-    let beforeActiveLinks: SectionLink[] = [];
-    let afterActiveLinks: SectionLink[] = [];
+    let finishedSections: SectionLink[] = [];
+    let activeSection: SectionLink|undefined = undefined;
+    let unfinishedSections: SectionLink[] = [];
     // ----------------------------------
     let pageReady = false;
 
@@ -34,13 +34,13 @@
         if (await isLoggedIn) {
             name = await UserHandler.getName();
             lastCourse = await getLastCourse();
-            if (lastCourse != null)
-                sectionLinks = await listSectionLinksByCourse(lastCourse?.courseCode);
-            
-            let activeIndex = await sectionLinks.findIndex(link => link.currentActive);
-            activeLink = sectionLinks[activeIndex];
-            beforeActiveLinks = await sectionLinks.slice(0, activeIndex);
-            afterActiveLinks = await sectionLinks.slice(activeIndex + 1);
+            if (lastCourse != null) {
+                sectionLinks = await listSectionLinksByCourse();
+            }
+            finishedSections = await sectionLinks.filter(link=> link.finished);
+            unfinishedSections = await sectionLinks.filter(link=> !link.finished);
+            activeSection = await unfinishedSections[0];
+            unfinishedSections = await unfinishedSections.slice(1);
         }
         pageReady = true;
     });
@@ -99,23 +99,23 @@
             </div>
         </div>
         <div class="sections">
-            {#each beforeActiveLinks as link, i}
+            {#each finishedSections as link, i}
                 <div class="section section-learned=">
                     <div class="section-line"><div class="section-line-point"></div></div>
                     <span>{link.section.title}</span>
                 </div>
             {/each}
-            {#if activeLink != undefined}
+            {#if activeSection != undefined}
             <div class="section section-current">
                 <div class="section-line"><div class="section-line-point"></div></div>
-                <span>{activeLink.section.title}</span>
+                <span>{activeSection.section.title}</span>
             </div>
             <a href="/learn" class="current-section-desc">
                 <div class="section-line"></div>
-                <span>{activeLink.section.description}</span>
+                <span>{activeSection.section.description}</span>
             </a>
             {/if}
-            {#each afterActiveLinks as link, i}
+            {#each unfinishedSections as link, i}
                 <div class="section">
                     <div class="section-line"><div class="section-line-point"></div></div>
                     <span>{link.section.title}</span>

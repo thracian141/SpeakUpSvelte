@@ -8,7 +8,9 @@ export interface User {
     displayName: string;
     profilePictureUrl: string;
     accountCreatedDate: Date;
-    lastDeck: string;
+    lastDeck: number;
+    lastCourse: string;
+    dailyWordGoal: number;
 }
 
 export interface UserLastDeck {
