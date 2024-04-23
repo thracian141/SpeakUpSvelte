@@ -10,6 +10,8 @@
     import type { Course } from '$lib/scripts/CourseHandler';
     import { getLastCourse } from '$lib/scripts/CourseHandler';
     import Load from './Load.svelte';
+    import type { DailyPerformance } from '$lib/scripts/DailyPerformanceHandler';
+    import {getDailyPerformance} from '$lib/scripts/DailyPerformanceHandler';
 
     let weeklyStreakTest = 3;
     let wordCountTest = Math.floor(Math.random() * 1000);
@@ -28,11 +30,12 @@
     let activeSection: SectionLink|undefined = undefined;
     let unfinishedSections: SectionLink[] = [];
     // ----------------------------------
+    let todaysPerformance: DailyPerformance|undefined;
+    // ----------------------------------
     let pageReady = false;
 
     onMount(async () => {
         if (await isLoggedIn) {
-            name = await UserHandler.getName();
             lastCourse = await getLastCourse();
             if (lastCourse != null) {
                 sectionLinks = await listSectionLinksByCourse();
@@ -41,6 +44,9 @@
             unfinishedSections = await sectionLinks.filter(link=> !link.finished);
             activeSection = await unfinishedSections[0];
             unfinishedSections = await unfinishedSections.slice(1);
+            // -------------------------------------------
+            todaysPerformance = await getDailyPerformance();
+            name = await UserHandler.getName();
         }
         pageReady = true;
     });
