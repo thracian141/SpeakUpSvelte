@@ -28,8 +28,8 @@
 declare module '$env/static/private' {
 	export const ALLUSERSPROFILE: string;
 	export const APPDATA: string;
-	export const ChocolateyInstall: string;
-	export const ChocolateyLastPathUpdate: string;
+	export const ASPNETCORE_ENVIRONMENT: string;
+	export const CABAL_DIR: string;
 	export const CHROME_CRASHPAD_PIPE_NAME: string;
 	export const COLOR: string;
 	export const COLORTERM: string;
@@ -37,13 +37,20 @@ declare module '$env/static/private' {
 	export const CommonProgramW6432: string;
 	export const COMPUTERNAME: string;
 	export const ComSpec: string;
+	export const CUDA_PATH: string;
+	export const CUDA_PATH_V12_3: string;
 	export const DriverData: string;
 	export const EDITOR: string;
+	export const FPS_BROWSER_APP_PROFILE_STRING: string;
+	export const FPS_BROWSER_USER_PROFILE_STRING: string;
+	export const FR_CUSTOMDATA_PATH: string;
+	export const GHCUP_INSTALL_BASE_PREFIX: string;
 	export const GIT_ASKPASS: string;
 	export const HOME: string;
 	export const HOMEDRIVE: string;
 	export const HOMEPATH: string;
 	export const INIT_CWD: string;
+	export const JAVA_HOME: string;
 	export const LANG: string;
 	export const LOCALAPPDATA: string;
 	export const LOGONSERVER: string;
@@ -58,9 +65,9 @@ declare module '$env/static/private' {
 	export const npm_config_global_prefix: string;
 	export const npm_config_init_module: string;
 	export const npm_config_local_prefix: string;
+	export const npm_config_metrics_registry: string;
 	export const npm_config_node_gyp: string;
 	export const npm_config_noproxy: string;
-	export const npm_config_npm_version: string;
 	export const npm_config_prefix: string;
 	export const npm_config_userconfig: string;
 	export const npm_config_user_agent: string;
@@ -100,12 +107,12 @@ declare module '$env/static/private' {
 	export const USERDOMAIN_ROAMINGPROFILE: string;
 	export const USERNAME: string;
 	export const USERPROFILE: string;
+	export const VBOX_HWVIRTEX_IGNORE_SVM_IN_USE: string;
 	export const VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 	export const VSCODE_GIT_ASKPASS_MAIN: string;
 	export const VSCODE_GIT_ASKPASS_NODE: string;
 	export const VSCODE_GIT_IPC_HANDLE: string;
 	export const VSCODE_INJECTION: string;
-	export const VSCODE_NONCE: string;
 	export const windir: string;
 }
 
@@ -138,8 +145,8 @@ declare module '$env/dynamic/private' {
 	export const env: {
 		ALLUSERSPROFILE: string;
 		APPDATA: string;
-		ChocolateyInstall: string;
-		ChocolateyLastPathUpdate: string;
+		ASPNETCORE_ENVIRONMENT: string;
+		CABAL_DIR: string;
 		CHROME_CRASHPAD_PIPE_NAME: string;
 		COLOR: string;
 		COLORTERM: string;
@@ -147,13 +154,20 @@ declare module '$env/dynamic/private' {
 		CommonProgramW6432: string;
 		COMPUTERNAME: string;
 		ComSpec: string;
+		CUDA_PATH: string;
+		CUDA_PATH_V12_3: string;
 		DriverData: string;
 		EDITOR: string;
+		FPS_BROWSER_APP_PROFILE_STRING: string;
+		FPS_BROWSER_USER_PROFILE_STRING: string;
+		FR_CUSTOMDATA_PATH: string;
+		GHCUP_INSTALL_BASE_PREFIX: string;
 		GIT_ASKPASS: string;
 		HOME: string;
 		HOMEDRIVE: string;
 		HOMEPATH: string;
 		INIT_CWD: string;
+		JAVA_HOME: string;
 		LANG: string;
 		LOCALAPPDATA: string;
 		LOGONSERVER: string;
@@ -168,9 +182,9 @@ declare module '$env/dynamic/private' {
 		npm_config_global_prefix: string;
 		npm_config_init_module: string;
 		npm_config_local_prefix: string;
+		npm_config_metrics_registry: string;
 		npm_config_node_gyp: string;
 		npm_config_noproxy: string;
-		npm_config_npm_version: string;
 		npm_config_prefix: string;
 		npm_config_userconfig: string;
 		npm_config_user_agent: string;
@@ -210,12 +224,12 @@ declare module '$env/dynamic/private' {
 		USERDOMAIN_ROAMINGPROFILE: string;
 		USERNAME: string;
 		USERPROFILE: string;
+		VBOX_HWVIRTEX_IGNORE_SVM_IN_USE: string;
 		VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 		VSCODE_GIT_ASKPASS_MAIN: string;
 		VSCODE_GIT_ASKPASS_NODE: string;
 		VSCODE_GIT_IPC_HANDLE: string;
 		VSCODE_INJECTION: string;
-		VSCODE_NONCE: string;
 		windir: string;
 		[key: `PUBLIC_${string}`]: undefined;
 		[key: `${string}`]: string | undefined;
