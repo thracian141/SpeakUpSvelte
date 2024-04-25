@@ -19,7 +19,11 @@
         "friday_short": "F",
         "saturday_short": "S",
         "sunday_short": "S",
-        "no_active_course": "No active course selected!"
+        "no_active_course": "No active course selected!",
+        "study_today": "Study today to keep up your streak!",
+        "cards_guessed": "cards guessed",
+        "continue_streak": "Continue your streak by learning the amount of new words set by your daily goal every day.",
+        "current_goal": "Current goal"
     },
     "layout": {
         "highly_experimental": "This will refresh the website",
