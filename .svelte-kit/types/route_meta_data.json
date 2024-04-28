@@ -17,7 +17,8 @@
 	"/decks/[language]": [],
 	"/learn": [],
 	"/learn/course": [],
+	"/learn/course/nocontent": [],
 	"/learn/deck": [],
-	"/learn/kurs": [],
+	"/learn/deck/nocontent": [],
 	"/welcome": []
 }

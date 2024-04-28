@@ -1,3 +1,4 @@
+import { goto } from '$app/navigation';
 import {getToken} from './UserHandler';
 
 export interface DeckInput {
@@ -85,4 +86,43 @@ export async function searchDecks(search: string) {
     const decksList: Deck[] = data.list;
 
     return decksList;
+}
+
+export async function setActiveDeck(deckId: number) {
+    let token = await getToken();
+    const response = await fetch(`https://localhost:5000/deck/setactivedeck?deckId=${deckId}`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error('Error setting active deck');
+    }
+
+    goto('/');
+    return response.text();
+}
+
+export async function getLastDeck() {
+    let token = await getToken();
+    const response = await fetch(`https://localhost:5000/deck/getlastdeck`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error('Error getting last deck');
+    }
+    
+    if (response.status === 204) {
+        return null;
+    } else {
+        const data = await response.json();
+        const deck: Deck = data.deck;
+        return deck;
+    }
 }

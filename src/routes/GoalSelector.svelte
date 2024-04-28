@@ -15,14 +15,14 @@
 <div transition:slide style="position: absolute; left:50%; top:100%; z-index:9999; transform:translateX(-50%); background-color:var(--bg-color); padding:1.5rem; border-radius:0.5rem; border:1px solid var(--bg-highlight-2); width:14rem; height:12rem; display:flex; flex-direction:column; justify-content:center; align-items:left;">
     <span style="font-size: 1.1rem;">{$_('home.current_goal')}: <span style="color: var(--selected-text); font-weight:bold;">{currentDailyGoal}</span></span>
     <div class="input-row">
-        <span style="margin-right: 0.2rem;">New goal:</span> 
+        <span style="margin-right: 0.2rem;">{$_('home.new_goal')}:</span> 
         <input min="1" max="30" type="number" bind:value={newDailyGoal} bind:this={inputElement}/>
         <div style="display: flex; flex-direction:column; align-items:center;">
             <button class="btn" on:click={()=>{newDailyGoal++}}>+</button>
             <button class="btn" on:click={()=>{newDailyGoal--}}>-</button>
         </div>
     </div>
-    <span style="color:var(--cyan)">New words a day</span>
+    <span style="color:var(--cyan)">{$_('home.new_words_a_day')}</span>
     <button on:click={async()=>await changeDailyGoal(newDailyGoal)} class="submit-btn"><i class="bi bi-check"></i></button>
 </div>
 

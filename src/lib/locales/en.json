@@ -23,7 +23,10 @@
         "study_today": "Study today to keep up your streak!",
         "cards_guessed": "cards guessed",
         "continue_streak": "Continue your streak by learning the amount of new words set by your daily goal every day.",
-        "current_goal": "Current goal"
+        "current_goal": "Current goal",
+        "new_goal": "New goal",
+        "new_words_a_day": "New words a day",
+        "change_your_daily_goal": "Change your daily goal"
     },
     "layout": {
         "highly_experimental": "This will refresh the website",
@@ -78,7 +81,8 @@
         "learn": "Learn",
         "this_word_is_new": "This word is new!",
         "you_know_this_lets_keep_going": "You know this, let's keep going.",
-        "check_answer": "Check answer"
+        "check_answer": "Check answer",
+        "youve_marked_this_as_important": "You've marked this card as important."
     },
     "authenticate": {
         "sign_up_to": "Sign up to",
@@ -163,5 +167,12 @@
         "reported_bugs": "Reported bugs",
         "for_course": "For course",
         "mark_as_solved": "Mark as solved"
+    },
+    "no_content": {
+        "no_more_cards": "There are no more cards to be studied in this deck.",
+        "wait_until_more_cards": "Wait until more cards require review",
+        "add_more_cards_to": "Add more cards to",
+        "or_pick_a": "or pick a",
+        "different_deck": "different deck"
     }
 }

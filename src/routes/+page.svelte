@@ -13,6 +13,8 @@
     import type { DailyPerformance } from '$lib/scripts/DailyPerformanceHandler';
     import {getDailyPerformance, getGoals} from '$lib/scripts/DailyPerformanceHandler';
     import GoalSelector from './GoalSelector.svelte';
+    import {getLastDeck} from '$lib/scripts/DeckHandler'
+    import type {Deck} from '$lib/scripts/DeckHandler';
 
 
     let infoOpen = false;
@@ -26,6 +28,7 @@
     let name = '';
     let isLoggedIn = UserHandler.isLoggedIn();
     let lastCourse: Course|null = null;
+    let lastDeck: Deck|null = null;
     // ----------------------------------
     let sectionLinks: SectionLink[] = [];
     let finishedSections: SectionLink[] = [];
@@ -40,14 +43,19 @@
 
     onMount(async () => {
         if (await isLoggedIn) {
-            lastCourse = await getLastCourse();
-            if (lastCourse != null) {
-                sectionLinks = await listSectionLinksByCourse();
+            const lastDeckData: any = await getLastDeck();
+            if (lastDeckData == null) {
+                lastCourse = await getLastCourse();
+                if (lastCourse != null) {
+                    sectionLinks = await listSectionLinksByCourse();
+                }
+                finishedSections = await sectionLinks.filter(link=> link.finished);
+                unfinishedSections = await sectionLinks.filter(link=> !link.finished);
+                activeSection = await unfinishedSections[0];
+                unfinishedSections = await unfinishedSections.slice(1);
+            } else if (lastDeckData != null) {
+                lastDeck = lastDeckData;
             }
-            finishedSections = await sectionLinks.filter(link=> link.finished);
-            unfinishedSections = await sectionLinks.filter(link=> !link.finished);
-            activeSection = await unfinishedSections[0];
-            unfinishedSections = await unfinishedSections.slice(1);
             // -------------------------------------------
             todaysPerformance = await getDailyPerformance();
             goals = await getGoals();
@@ -78,7 +86,15 @@
             <div class="last-course-row-1">
                 {$_('home.jump_back_into_your_last_course')}
             </div>
-            {#if lastCourse != null}
+            {#if lastDeck != null}
+            <a href="/learn" class="last-course-row-2">
+                <span class="course-txts">
+                    <span>{lastDeck.deckName}</span>
+                    <span>{lastDeck.deckDescription.slice(0,30)}...</span>
+                </span>
+                <i class="bi bi-play-fill"></i>
+            </a>
+            {:else if lastCourse != null}
             <a href="/learn" class="last-course-row-2">
                 <img class="course-img" src={lastCourse.image} alt="Last Course" />
                 <span class="course-txts">
@@ -120,16 +136,23 @@
                 </div>
                 <button class="change-goals-btn" on:click={()=>{goalDropdownOpen = !goalDropdownOpen}}>
                     <i class="bi bi-bullseye"></i>
-                    <span style="position: absolute; top:100%; left:50%; transform:translateX(-50%); font-size:1rem; color:var(--fg-color); background-color:var(--bg-color); width:12rem; border-radius:0.5rem; border:1px solid var(--bg-highlight); height:2rem; padding-top:0.4rem; display:none;">
-                        Change your daily goal
+                    <span style="position: absolute; top:100%; left:50%; transform:translateX(-50%); font-size:1rem; color:var(--fg-color); background-color:var(--bg-color); width:13rem; border-radius:0.5rem; border:1px solid var(--bg-highlight); height:2rem; padding-top:0.4rem; display:none;">
+                        {$_('home.change_your_daily_goal')}
                     </span>
                 </button>
-                {#if !goalDropdownOpen}
+                {#if goalDropdownOpen}
                     <GoalSelector currentDailyGoal={goals[1]} />
                 {/if}
             </div>
         </div>
         <div class="sections">
+            {#if lastDeck != null}
+                <span style="font-size: 2rem; margin-bottom:1.5rem;">You are currently learning a personal deck.</span>
+                <span style="font-size: 1.3rem;">
+                    To set an active <span style="color:var(--selected-text)">Course</span> instead, please visit the 
+                    <a href="/decks/all" class="decks-anchor">Decks</a> page.
+                </span>
+            {/if}
             {#each finishedSections as link, i}
                 <div class="section section-learned=">
                     <div class="section-line"><div class="section-line-point"></div></div>
@@ -189,6 +212,14 @@
 
 
 <style>
+    .decks-anchor {
+        color:var(--cyan); 
+        text-decoration:1px solid underline; 
+        text-underline-offset:3px;
+    }
+        .decks-anchor:hover {
+            color:var(--selected-text);
+        }
     .change-goals-btn {
         position: absolute;
         bottom:0;
@@ -240,6 +271,7 @@
                 justify-content: space-between;
                 width: 100%;
                 height: 100%;
+                min-height: 40rem;
             }
                 .courses>.last-course {
                     width:49.5%;

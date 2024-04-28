@@ -189,7 +189,7 @@ export async function listCardsBySection(sectionId: number) {
 
 export async function deleteCard(cardId:number) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/card/delete?id=${cardId}`, {
+    const response = await fetch(`https://localhost:5000/card/deleteFromCourse?id=${cardId}`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`

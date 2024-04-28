@@ -18,8 +18,8 @@
             halfBars = 0;
             emptyBars = 0;
         } else {
-            fullBars = Math.floor(level / 2);
-            halfBars = level % 2;
+            fullBars = Math.floor(level / 10);
+            halfBars = (level % 10) >= 5 ? 1 : 0;
             emptyBars = 5 - fullBars - halfBars;
         }
     });

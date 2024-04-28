@@ -3,7 +3,7 @@
     import { onMount } from 'svelte';
     import {_} from '$lib/i18n';
 	import { isNarrowScreen } from '$lib/store';
-    import {getDecksList} from '$lib/scripts/DeckHandler';
+    import {setActiveDeck, getDecksList} from '$lib/scripts/DeckHandler';
     import type {Deck} from '$lib/scripts/DeckHandler';
     import type { Course } from '$lib/scripts/CourseHandler';
     import {listActiveCourses} from '$lib/scripts/CourseHandler';
@@ -62,15 +62,17 @@
     <div class="courses" style="{$isNarrowScreen ? 'width:100%; height:50vh;' : 'width:34rem; height: 100%;'}">
         <h2>{$_('decks.all.your_personal_decks')}</h2>
         {#if decksList.length !== 0}
+        <!-- svelte-ignore a11y-no-static-element-interactions -->
         {#each filteredDecks as deck}
-            <a href="/create/deck/{deck.id}" class="course-wrap" style="height:6rem;" transition:slide>
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <div on:click={async()=>{await setActiveDeck(deck.id)}} class="course-wrap" style="height:6rem;" transition:slide>
                 <button><i class="bi bi-gear-fill"></i></button>
                 <span style="font-size: 1.8rem;">{deck.deckName}</span>
                 <p style="font-size: 1rem;">{deck.level}%</p>
                 <div class="overlay">
                     {$_('decks.language.learn')}
                 </div>
-            </a>
+            </div>
         {/each}
         {/if}
     </div>

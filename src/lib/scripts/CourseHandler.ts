@@ -54,6 +54,22 @@ export async function getCourseByCode(courseCode:string) {
             throw new Error('Course not found');
     }
 }
+export async function getCourseNameByCode(courseCode:string) {
+    switch (courseCode) {
+        case "bg-to-en":
+            return "Английски";
+        case "en-to-bg":
+            return "Bulgarian";
+        case "en-to-de":
+            return "German";
+        case "en-to-tr":
+            return "Turkish";
+        case "en-to-it":
+            return "Italian";
+        default:
+            throw new Error('Course not found');
+    }
+}
 
 export async function getLastCourse() {
     let token = await getToken();
@@ -157,4 +173,54 @@ export async function getLastEdit(courseCode: string) {
 
     let lastEditTuple = {date, username};
     return lastEditTuple;
+}
+
+export async function listActiveCourseCodes() {
+    let token = await getToken();
+    const response = await fetch("https://localhost:5000/course/listactivecoursecodes", {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) 
+        throw new Error('Error listing active course codes');
+
+    const data = await response.json();
+    const courseCodes:string[] = data.courses;
+
+    return courseCodes;
+}
+
+export async function getCoursePerformance(courseCode: string) {
+    let token = await getToken();
+    const response = await fetch(`https://localhost:5000/course/getCoursePerformance?courseCode=${courseCode}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) 
+        throw new Error('Error getting learned words count');
+
+    const data = await response.json();
+    return data;
+}
+
+export async function getLastCourseCode() {
+    let token = await getToken();
+    const response = await fetch("https://localhost:5000/course/getLastCourseCode", {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) 
+        throw new Error('Error getting last course code');
+
+    const data = await response.text();
+    return data;
 }
