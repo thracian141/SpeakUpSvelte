@@ -106,3 +106,23 @@ export async function hasStudiedMonth() {
 
     return month;
 }
+
+export async function getWeeklyGoals() {
+    const token = await getToken();
+    const response = await fetch('https://localhost:5000/dailyperformance/weeklyGoals', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        console.log(response);
+        throw new Error("Failed to fetch weekly goals data");
+    }
+
+    const data = await response.json();
+    let weeklyGoals: number[] = data.week;
+    weeklyGoals.reverse();
+    return weeklyGoals;        
+}

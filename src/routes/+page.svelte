@@ -11,7 +11,7 @@
     import { getLastCourse } from '$lib/scripts/CourseHandler';
     import Load from './Load.svelte';
     import type { DailyPerformance } from '$lib/scripts/DailyPerformanceHandler';
-    import {getDailyPerformance, getGoals} from '$lib/scripts/DailyPerformanceHandler';
+    import {getDailyPerformance, getGoals, getWeeklyGoals} from '$lib/scripts/DailyPerformanceHandler';
     import GoalSelector from './GoalSelector.svelte';
     import {getLastDeck} from '$lib/scripts/DeckHandler'
     import type {Deck} from '$lib/scripts/DeckHandler';
@@ -38,6 +38,8 @@
     let todaysPerformance: DailyPerformance|undefined;
        // New words learned, New words goal, Words guessed, Words guessed goal, Streak
     let goals: number[] = [0,0,0,0,0];
+       // 14 days of Words guessed
+    let weeklyWordsGuessed: number[] = [];
     // ----------------------------------
     let pageReady = false;
 
@@ -60,6 +62,7 @@
             todaysPerformance = await getDailyPerformance();
             goals = await getGoals();
             name = await UserHandler.getName();
+            weeklyWordsGuessed = await getWeeklyGoals();
         }
         pageReady = true;
     });
@@ -180,18 +183,18 @@
             <h2>{$_(weekOr2Weeks === 'week' ? 'home.this_week' : 'home.last_2_weeks')}</h2>
             <div class="week-graph" class:week-graph-m={$isNarrowScreen}>
                 {#if weekOr2Weeks == 'week'}
-                    {#each lastSevenDays as day}
+                    {#each weeklyWordsGuessed.slice(6,14) as day}
                         <div class="week-day">
-                            <div class="week-day-fill"></div>
-                            <span style="position: absolute;top: -1.5rem;color: var(--fg-color);">{Math.round(Math.random() * 50)}</span>
+                            <div class="week-day-fill" style="height: {(day/goals[3])*100}%;"></div>
+                            <span style="position: absolute;top: -1.5rem;color: var(--fg-color);">{goals[3]-day}</span>
                             <span style="position: absolute;bottom: -1.5rem;color: var(--fg-color-2);">{day}</span>
                         </div>
                     {/each}
                 {:else if weekOr2Weeks == '2weeks'}
-                    {#each lastTwoWeeks as day}
+                    {#each weeklyWordsGuessed as day}
                         <div class="week-day" style="width:0.75rem">
-                            <div class="week-day-fill"></div>
-                            <span style="position: absolute;top: -1.5rem;color: var(--fg-color); font-size:0.9rem;">{Math.round(Math.random() * 50)}</span>
+                            <div class="week-day-fill" style="height: {(day/goals[3])*100}%;"></div>
+                            <span style="position: absolute;top: -1.5rem;color: var(--fg-color); font-size:0.9rem;">{goals[3]-day}</span>
                             <span style="position: absolute;bottom: -1.5rem;color: var(--fg-color-2); font-size:0.9rem;">{day}</span>
                         </div>
                     {/each}
