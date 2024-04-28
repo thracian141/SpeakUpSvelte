@@ -126,3 +126,43 @@ export async function getLastDeck() {
         return deck;
     }
 }
+
+export async function editDeck(deckId: number, deckName: string, deckDescription: string) {
+    let values: string[] = [String(deckId), deckName, deckDescription];
+    let token = await getToken();
+    const response = await fetch('https://localhost:5000/deck/editDeck', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(values)
+    });
+
+    if (!response.ok) {
+        throw new Error('Error editing deck');
+    }
+
+    const data = await response.json();
+    const deck: Deck = data.deck;
+
+    return deck;
+}
+
+export async function deleteDeck(deckId: number) {
+    let token = await getToken();
+    const response = await fetch(`https://localhost:5000/deck/deleteDeck?deckId=${deckId}`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error('Error deleting deck');
+    }
+
+    return response.text();
+}
+        
+        
