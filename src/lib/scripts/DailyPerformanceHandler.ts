@@ -1,4 +1,5 @@
 import { getToken } from "./UserHandler";
+import { url } from "$lib/url";
 
 export interface DailyPerformance {
     id: number;
@@ -11,7 +12,7 @@ export interface DailyPerformance {
 
 export async function getDailyPerformance() {
     const token = await getToken();
-    const response = await fetch('https://localhost:5000/dailyperformance/today', {
+    const response = await fetch(`${url}/dailyperformance/today`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -30,7 +31,7 @@ export async function getDailyPerformance() {
 
 export async function getGoals() {
     const token = await getToken();
-    const response = await fetch('https://localhost:5000/dailyperformance/streak', {
+    const response = await fetch(`${url}/dailyperformance/streak`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -49,7 +50,7 @@ export async function getGoals() {
 
 export async function changeDailyGoal(newGoal: number) {
     const token = await getToken();
-    const response = await fetch(`https://localhost:5000/dailyperformance/changeDailyGoal?newGoal=${newGoal}`, {
+    const response = await fetch(`${url}/dailyperformance/changeDailyGoal?newGoal=${newGoal}`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -67,7 +68,7 @@ export async function changeDailyGoal(newGoal: number) {
 
 export async function hasStudiedWeek() {
     const token = await getToken();
-    const response = await fetch('https://localhost:5000/dailyperformance/hasStudiedWeek', {
+    const response = await fetch(`${url}/dailyperformance/hasStudiedWeek`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -88,7 +89,7 @@ export async function hasStudiedWeek() {
 
 export async function hasStudiedMonth() {
     const token = await getToken();
-    const response = await fetch('https://localhost:5000/dailyperformance/hasStudiedMonth', {
+    const response = await fetch(`${url}/dailyperformance/hasStudiedMonth`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -109,7 +110,7 @@ export async function hasStudiedMonth() {
 
 export async function getWeeklyGoals() {
     const token = await getToken();
-    const response = await fetch('https://localhost:5000/dailyperformance/weeklyGoals', {
+    const response = await fetch(`${url}/dailyperformance/weeklyGoals`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`

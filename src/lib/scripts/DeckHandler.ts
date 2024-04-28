@@ -1,5 +1,6 @@
 import { goto } from '$app/navigation';
-import {getToken} from './UserHandler';
+import { getToken } from './UserHandler';
+import { url } from '$lib/url';
 
 export interface DeckInput {
     deckName: string;
@@ -16,7 +17,7 @@ export interface Deck {
 
 export async function createDeck(deckInput: DeckInput) {
     let token = await getToken();
-    const response = await fetch('https://localhost:5000/deck/create', {
+    const response = await fetch(`${url}/deck/create`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -34,7 +35,7 @@ export async function createDeck(deckInput: DeckInput) {
 
 export async function getDeckById(id: number) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/deck/getById?id=${id}`, {
+    const response = await fetch(`${url}/deck/getById?id=${id}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -53,7 +54,7 @@ export async function getDeckById(id: number) {
 
 export async function getDecksList() {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/deck/list`, {
+    const response = await fetch(`${url}/deck/list`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -69,7 +70,7 @@ export async function getDecksList() {
 
 export async function searchDecks(search: string) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/deck/search?search=${search}`, {
+    const response = await fetch(`${url}/deck/search?search=${search}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -90,7 +91,7 @@ export async function searchDecks(search: string) {
 
 export async function setActiveDeck(deckId: number) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/deck/setactivedeck?deckId=${deckId}`, {
+    const response = await fetch(`${url}/deck/setactivedeck?deckId=${deckId}`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -107,7 +108,7 @@ export async function setActiveDeck(deckId: number) {
 
 export async function getLastDeck() {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/deck/getlastdeck`, {
+    const response = await fetch(`${url}/deck/getlastdeck`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -130,7 +131,7 @@ export async function getLastDeck() {
 export async function editDeck(deckId: number, deckName: string, deckDescription: string) {
     let values: string[] = [String(deckId), deckName, deckDescription];
     let token = await getToken();
-    const response = await fetch('https://localhost:5000/deck/editDeck', {
+    const response = await fetch(`${url}/deck/editDeck`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -151,7 +152,7 @@ export async function editDeck(deckId: number, deckName: string, deckDescription
 
 export async function deleteDeck(deckId: number) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/deck/deleteDeck?deckId=${deckId}`, {
+    const response = await fetch(`${url}/deck/deleteDeck?deckId=${deckId}`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`

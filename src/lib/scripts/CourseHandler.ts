@@ -1,5 +1,6 @@
 import { goto } from "$app/navigation";
 import { getToken } from "./UserHandler";
+import { url } from "$lib/url";
 
 export interface Course {
     courseCode: string;
@@ -73,7 +74,7 @@ export async function getCourseNameByCode(courseCode:string) {
 
 export async function getLastCourse() {
     let token = await getToken();
-    const response = await fetch("https://localhost:5000/course/getlast", {
+    const response = await fetch(`${url}/course/getlast`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -93,7 +94,7 @@ export async function getLastCourse() {
 
 export async function setActiveCourse(courseCode: string) {
     let token = await getToken();
-    const response = await fetch("https://localhost:5000/course/setactive", {
+    const response = await fetch(`${url}/course/setactive`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -111,7 +112,7 @@ export async function setActiveCourse(courseCode: string) {
 
 export async function changeActiveCourse(courseCode: string) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/course/changeactive`, {
+    const response = await fetch(`${url}/course/changeactive`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -130,7 +131,7 @@ export async function changeActiveCourse(courseCode: string) {
 
 export async function listActiveCourses() {
     let token = await getToken();
-    const response = await fetch("https://localhost:5000/course/getactive", {
+    const response = await fetch(`${url}/course/getactive`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -156,7 +157,7 @@ export async function listActiveCourses() {
 
 export async function getLastEdit(courseCode: string) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/course/getlastedit?courseCode=${courseCode}`, {
+    const response = await fetch(`${url}/course/getlastedit?courseCode=${courseCode}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -177,7 +178,7 @@ export async function getLastEdit(courseCode: string) {
 
 export async function listActiveCourseCodes() {
     let token = await getToken();
-    const response = await fetch("https://localhost:5000/course/listactivecoursecodes", {
+    const response = await fetch(`${url}/course/listactivecoursecodes`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -195,7 +196,7 @@ export async function listActiveCourseCodes() {
 
 export async function getCoursePerformance(courseCode: string) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/course/getCoursePerformance?courseCode=${courseCode}`, {
+    const response = await fetch(`${url}/course/getCoursePerformance?courseCode=${courseCode}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -211,7 +212,7 @@ export async function getCoursePerformance(courseCode: string) {
 
 export async function getLastCourseCode() {
     let token = await getToken();
-    const response = await fetch("https://localhost:5000/course/getLastCourseCode", {
+    const response = await fetch(`${url}/course/getLastCourseCode`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`

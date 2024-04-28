@@ -1,5 +1,6 @@
 import { getToken } from "./UserHandler";
-import { _, locale} from "svelte-i18n";
+import { _ } from "svelte-i18n";
+import { url } from "$lib/url";
 
 export let partsOfSpeech = [
     "Noun",
@@ -119,7 +120,7 @@ export interface CardLink {
 
 export async function addCardToDeck(cardInput:DeckCardInput) {
     let token = await getToken();   
-    const response = await fetch("https://localhost:5000/card/addToDeck", {
+    const response = await fetch(`${url}/card/addToDeck`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -138,7 +139,7 @@ export async function addCardToDeck(cardInput:DeckCardInput) {
 
 export async function addCardToSection(cardInput: CourseCardInput) {
     let token = await getToken();   
-    const response = await fetch("https://localhost:5000/card/addToCourseSection", {
+    const response = await fetch(`${url}/card/addToCourseSection`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -158,7 +159,7 @@ export async function addCardToSection(cardInput: CourseCardInput) {
 
 export async function listCardsByDeck(deckId:number) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/card/listByDeck?deckId=${deckId}`, {
+    const response = await fetch(`${url}/card/listByDeck?deckId=${deckId}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -174,7 +175,7 @@ export async function listCardsByDeck(deckId:number) {
 }
 export async function listCardsBySection(sectionId: number) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/card/listBySection?sectionId=${sectionId}`, {
+    const response = await fetch(`${url}/card/listBySection?sectionId=${sectionId}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -189,7 +190,7 @@ export async function listCardsBySection(sectionId: number) {
 
 export async function deleteCard(cardId:number) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/card/deleteFromCourse?id=${cardId}`, {
+    const response = await fetch(`${url}/card/deleteFromCourse?id=${cardId}`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -204,7 +205,7 @@ export async function deleteCard(cardId:number) {
 
 export async function editCardFromCourse(edit:EditCourseCardModel) { 
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/card/editFromCourse`, {
+    const response = await fetch(`${url}/card/editFromCourse`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -224,7 +225,7 @@ export async function editCardFromCourse(edit:EditCourseCardModel) {
 
 export async function getCourseCardById(id: number) {
     let token = await getToken();
-    let response = await fetch(`https://localhost:5000/card/getCourseCardById?id=${id}`, {
+    let response = await fetch(`${url}/card/getCourseCardById?id=${id}`, {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${token}`

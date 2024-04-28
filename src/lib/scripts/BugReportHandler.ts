@@ -1,5 +1,6 @@
 import type { CourseCard } from "./CardHandler";
 import { getToken, type User } from "./UserHandler";
+import { url } from '$lib/url';
 
 export interface BugReport {
     id: number;
@@ -19,7 +20,7 @@ export async function sendBugReport(text: string, courseCode: string, cardId: nu
         cardId: cardId
     };
     
-    const response = await fetch("https://localhost:5000/bugs/reportbug", {
+    const response = await fetch(`${url}/bugs/reportbug`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -39,7 +40,7 @@ export async function sendBugReport(text: string, courseCode: string, cardId: nu
 
 export async function listBugReports(courseCode:string) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/bugs/listbugs?courseCode=${courseCode}`, {
+    const response = await fetch(`${url}/bugs/listbugs?courseCode=${courseCode}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -59,7 +60,7 @@ export async function listBugReports(courseCode:string) {
 export async function resolveBug(id: number) {
     let token = await getToken();
 
-    const response = await fetch(`https://localhost:5000/bugs/resolvebug?id=${id}`, {
+    const response = await fetch(`${url}/bugs/resolvebug?id=${id}`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,

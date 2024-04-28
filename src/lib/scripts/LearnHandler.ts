@@ -2,6 +2,7 @@ import { getToken } from "./UserHandler";
 import type { DeckCard, CourseCard, CardLink } from "./CardHandler";
 import { writable } from "svelte/store";
 import { goto } from "$app/navigation";
+import { url } from "$lib/url";
 
 export interface Sentence {
     id: number;
@@ -23,7 +24,7 @@ export let deckLearnStore = writable<DeckCard[]>([]);
 
 export async function updateCourseLearnStore() {
     let token = await getToken();
-    let response = await fetch("https://localhost:5000/learn/updateCourse", {
+    let response = await fetch(`${url}/learn/updateCourse`, {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${token}`
@@ -51,7 +52,7 @@ export async function updateCourseLearnStore() {
 
 export async function updateDeckLearnStore() {
     let token = await getToken();
-    let response = await fetch("https://localhost:5000/learn/updateDeck", {
+    let response = await fetch(`${url}/learn/updateDeck`, {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${token}`
@@ -70,7 +71,7 @@ export async function updateDeckLearnStore() {
 
 export async function nextCourseCard(skipId: number) {
     let token = await getToken();
-    let response = await fetch(`https://localhost:5000/learn/nextcoursecard?skipId=${skipId}`, {
+    let response = await fetch(`${url}/learn/nextcoursecard?skipId=${skipId}`, {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${token}`
@@ -97,7 +98,7 @@ export async function nextCourseCard(skipId: number) {
 
 export async function sendAnswer(levelModel: LevelCardInputModel) {
     let token = await getToken();
-    let response = await fetch("https://localhost:5000/learn/levelcoursecard", {
+    let response = await fetch(`${url}/learn/levelcoursecard`, {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${token}`,
@@ -115,7 +116,7 @@ export async function sendAnswer(levelModel: LevelCardInputModel) {
 
 export async function checkIfAnyCards() {
     let token = await getToken();
-    let response = await fetch("https://localhost:5000/learn/anyCards", {
+    let response = await fetch(`${url}/learn/anyCards`, {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${token}`
@@ -133,7 +134,7 @@ export async function checkIfAnyCards() {
 
 export async function nextDeckCard(skipId: number) {
     let token = await getToken();
-    let response = await fetch(`https://localhost:5000/learn/nextdeckcard?skipId=${skipId}`, {
+    let response = await fetch(`${url}/learn/nextdeckcard?skipId=${skipId}`, {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${token}`
@@ -158,7 +159,7 @@ export async function nextDeckCard(skipId: number) {
 
 export async function sendDeckAnswer(levelModel: LevelCardInputModel) {
     let token = await getToken();
-    let response = await fetch("https://localhost:5000/learn/leveldeckcard", {
+    let response = await fetch(`${url}/learn/leveldeckcard`, {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${token}`,

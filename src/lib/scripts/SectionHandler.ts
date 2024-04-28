@@ -1,4 +1,5 @@
 import { getToken } from "./UserHandler";
+import { url } from "$lib/url";
 
 export interface SectionInput {
     title: string;
@@ -27,7 +28,7 @@ export interface SectionLink {
 
 export async function getSectionById(id:number) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/section/getbyid?id=${id}`, {
+    const response = await fetch(`${url}/section/getbyid?id=${id}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -45,7 +46,7 @@ export async function getSectionById(id:number) {
 
 export async function listSectionsByCourse(courseCode:string) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/section/listbycourse?courseCode=${courseCode}`, {
+    const response = await fetch(`${url}/section/listbycourse?courseCode=${courseCode}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -65,7 +66,7 @@ export async function listSectionsByCourse(courseCode:string) {
 
 export async function createSection(sectionInput: SectionInput) {
     let token = await getToken();
-    const response = await fetch("https://localhost:5000/section/create", {
+    const response = await fetch(`${url}/section/create`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -85,7 +86,7 @@ export async function createSection(sectionInput: SectionInput) {
 
 export async function deleteSection(sectionId: number) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/section/delete/${sectionId}`, {
+    const response = await fetch(`${url}/section/delete/${sectionId}`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -103,7 +104,7 @@ export async function deleteSection(sectionId: number) {
 
 export async function orderSectionUp(sectionId: number) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/section/orderup?sectionId=${sectionId}`, {
+    const response = await fetch(`${url}/section/orderup?sectionId=${sectionId}`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -121,7 +122,7 @@ export async function orderSectionUp(sectionId: number) {
 
 export async function orderSectionDown(sectionId: number) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/section/orderdown?sectionId=${sectionId}`, {
+    const response = await fetch(`${url}/section/orderdown?sectionId=${sectionId}`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -139,7 +140,7 @@ export async function orderSectionDown(sectionId: number) {
 
 export async function listSectionLinksByCourse() {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/section/linksPerCourse`, {
+    const response = await fetch(`${url}/section/linksPerCourse`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
