@@ -1,5 +1,6 @@
 import { browser } from "$app/environment";
 import { goto } from "$app/navigation";
+import { url } from "$lib/url";
 
 export interface User {
     id: number;
@@ -38,7 +39,7 @@ export async function getToken() {
 
 export async function getName() {
     let token = await getToken();
-    const response = await fetch('https://localhost:5000/account/getname', {
+    const response = await fetch(`${url}/account/getname`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -56,7 +57,7 @@ export async function getName() {
 
 export async function learningDeckOverride() {
     let token = await getToken();
-    const response = await fetch('https://localhost:5000/learn/learningDeck', {
+    const response = await fetch(`${url}/learn/learningDeck`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -76,7 +77,7 @@ export async function learningDeckOverride() {
 
 export async function getUserName() {
     let token = await getToken();
-    const response = await fetch('https://localhost:5000/account/getusername', {
+    const response = await fetch(`${url}/account/getusername`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -98,7 +99,7 @@ export async function getUserName() {
 
 export async function getDisplayName() {
     let token = await getToken();
-    const response = await fetch('https://localhost:5000/account/getdisplayname', {
+    const response = await fetch(`${url}/account/getdisplayname`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -120,7 +121,7 @@ export async function getDisplayName() {
 
 export async function getUser() {
     let token = await getToken();
-    const response = await fetch('https://localhost:5000/account/allInfo', {
+    const response = await fetch(`${url}/account/allInfo`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -151,7 +152,7 @@ export async function isLoggedIn() {
 
 export async function getPfp(profilePictureUrl: string) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/account/profilepicture?profilePictureUrl=${encodeURIComponent(profilePictureUrl)}`, {
+    const response = await fetch(`${url}/account/profilepicture?profilePictureUrl=${encodeURIComponent(profilePictureUrl)}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -159,13 +160,13 @@ export async function getPfp(profilePictureUrl: string) {
     });
 
     const blob = await response.blob();
-    const url = URL.createObjectURL(blob);
-    return url;
+    const burl = URL.createObjectURL(blob);
+    return burl;
 }
 
 export async function getLastDeck(userLastDeckId : number) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/account/userlastdeck?userLastDeckId=${userLastDeckId}`, {
+    const response = await fetch(`${url}/account/userlastdeck?userLastDeckId=${userLastDeckId}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -185,7 +186,7 @@ export async function register(event: Event, username:string, email:string, pass
         Email: email
     };
 
-    const response = await fetch('https://localhost:5000/authenticate/register', {
+    const response = await fetch(`${url}/authenticate/register`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -212,7 +213,7 @@ export async function editUsername(currentPassword:string, newUsername:string) {
         newInput: newUsername
     };
 
-    const response = await fetch('https://localhost:5000/account/editusername', {
+    const response = await fetch(`${url}/account/editusername`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -232,7 +233,7 @@ export async function editPassword(currentPassword:string, newPassword:string) {
         newInput: newPassword
     };
 
-    const response = await fetch('https://localhost:5000/account/editpassword', {
+    const response = await fetch(`${url}/account/editpassword`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -252,7 +253,7 @@ export async function editEmail(currentPassword:string, newEmail:string) {
         newInput: newEmail
     };
 
-    const response = await fetch('https://localhost:5000/account/editemail', {
+    const response = await fetch(`${url}/account/editemail`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -272,7 +273,7 @@ export async function editDisplayName(currentPassword:string, newDisplayName:str
         newInput: newDisplayName
     };
 
-    const response = await fetch('https://localhost:5000/account/editdisplayname', {
+    const response = await fetch(`${url}/account/editdisplayname`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -287,7 +288,7 @@ export async function editDisplayName(currentPassword:string, newDisplayName:str
 
 export async function checkIfAdmin() {
     let token = await getToken();
-    const response = await fetch('https://localhost:5000/account/checkifadmin', {
+    const response = await fetch(`${url}/account/checkifadmin`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -306,7 +307,7 @@ export async function checkIfAdmin() {
 
 export async function checkIfDev() {
     let token = await getToken();
-    const response = await fetch('https://localhost:5000/bugs/checkifdev', {
+    const response = await fetch(`${url}/bugs/checkifdev`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -322,7 +323,7 @@ export async function checkIfDev() {
 
 export async function searchUsers(search: string) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/account/searchAccounts?search=${search}`, {
+    const response = await fetch(`${url}/account/searchAccounts?search=${search}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -342,7 +343,7 @@ export async function searchUsers(search: string) {
 
 export async function deleteAccount(userId: number) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/account/deleteaccount?userId=${userId}`, {
+    const response = await fetch(`${url}/account/deleteaccount?userId=${userId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -359,7 +360,7 @@ export async function deleteAccount(userId: number) {
 
 export async function amHigherRole(than: number) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/account/amhigherrole?than=${than}`, {
+    const response = await fetch(`${url}/account/amhigherrole?than=${than}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -377,7 +378,7 @@ export async function amHigherRole(than: number) {
 
 export async function getRole(userId: number) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/account/getrole?userId=${userId}`, {
+    const response = await fetch(`${url}/account/getrole?userId=${userId}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -394,7 +395,7 @@ export async function getRole(userId: number) {
 
 export async function getOwnRole() {
     let token = await getToken();
-    const response = await fetch('https://localhost:5000/account/getownrole', {
+    const response = await fetch(`${url}/account/getownrole`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -411,7 +412,7 @@ export async function getOwnRole() {
 
 export async function makeDev(userId: number) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/account/makedev?userId=${userId}`, {
+    const response = await fetch(`${url}/account/makedev?userId=${userId}`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -428,7 +429,7 @@ export async function makeDev(userId: number) {
 
 export async function makeAdmin(userId: number) {
     let token = await getToken();
-    const response = await fetch(`https://localhost:5000/account/makeadmin?userId=${userId}`, {
+    const response = await fetch(`${url}/account/makeadmin?userId=${userId}`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`

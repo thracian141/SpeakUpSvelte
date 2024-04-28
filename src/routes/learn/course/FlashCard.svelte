@@ -1,11 +1,15 @@
 <script lang='ts'>
 	import { slide } from 'svelte/transition';
-    import { onMount } from "svelte";
+    import { createEventDispatcher, onDestroy, onMount } from "svelte";
     import LevelBar from "./LevelBar.svelte";
-    import ReportBug from '../course/ReportBug.svelte';
+    import ReportBug from './ReportBug.svelte'
     import { type CourseCard, type CardLink, getPOS } from "$lib/scripts/CardHandler";
     import {_} from "$lib/i18n";
     import type { Sentence } from '$lib/scripts/SentenceHandler';
+    import {sendAnswer, type LevelCardInputModel} from '$lib/scripts/LearnHandler';
+
+    //create a dispatcher
+    const dispatch = createEventDispatcher();
 
     export let currentCardLink: CardLink;
     export let currentSentence: Sentence;
@@ -25,10 +29,18 @@
     async function checkAnswer() {
         let regex = new RegExp(currentCardLink.card.back, 'i');
         let answer = currentInput.replace(regex, currentCardLink.card.back);
-
+        let inputModel: LevelCardInputModel = {linkId: currentCardLink.id,
+            level: currentCardLink.level,
+            difficulty: currentCardLink.card.difficulty,
+            correct: true
+        };
         if (answer.toLowerCase() == currentCardLink.card.back.toLowerCase()) {
             answerElement.classList.add("correct");
+            setTimeout(() => {
+                dispatch("answered");
+            }, 1000);
         } else {
+            inputModel.correct = false;
             answerElement.classList.add("incorrect");
             setTimeout(() => {
                 answerElement.classList.remove("incorrect");
@@ -36,7 +48,9 @@
                 answerElement.placeholder = currentCardLink.card.back;
             }, 1500);
         }
+        await sendAnswer(inputModel);
     }
+
     onMount(async() => {
         answerPseudoWidth = answerPseudoElement.clientWidth;
         let regex = new RegExp(currentCardLink.card.back, 'i');
@@ -51,14 +65,15 @@
     }
 </script>
 
+
 <svelte:window on:click={onWindowClick}/>
 <div id="answer-pseudo" bind:this={answerPseudoElement}>
     {currentCardLink.card.back}
 </div>
-<div class="flashcard" class:important={currentCardLink.flaggedAsImportant}>
+<form class="flashcard" class:important={currentCardLink.flaggedAsImportant}>
     <div class="flashcard-top">
         <LevelBar level={currentCardLink?.level}/>
-        <button class="card-options-btn" on:click={()=>dropdownOpen = !dropdownOpen} bind:this={dropdownButtonElement}>
+        <button type="button" class="card-options-btn" on:click={()=>dropdownOpen = !dropdownOpen} bind:this={dropdownButtonElement}>
             <i class="bi bi-three-dots-vertical"></i>
             {#if dropdownOpen}
             <div class="dropdown" transition:slide>
@@ -85,9 +100,9 @@
             <span class="front-word">{currentCardLink.card.front}</span>
             <span class="front-sentence">{currentSentence ? currentSentence.front : ""}</span>
         </div>
-        <button class="answer-btn" on:click={async()=>{await checkAnswer()}}>{$_('learn.check_answer')}</button>
+        <button type="submit" class="answer-btn" on:click={async()=>{await checkAnswer()}}>{$_('learn.check_answer')}</button>
     </div>
-</div>
+</form>
 {#if reportBugOpen}
     <ReportBug card={currentCardLink.card} on:close={()=>reportBugOpen=false}/>
 {/if}

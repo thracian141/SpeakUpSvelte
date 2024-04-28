@@ -10,9 +10,15 @@
     import type { Course } from '$lib/scripts/CourseHandler';
     import { getLastCourse } from '$lib/scripts/CourseHandler';
     import Load from './Load.svelte';
+    import type { DailyPerformance } from '$lib/scripts/DailyPerformanceHandler';
+    import {getDailyPerformance, getGoals, getWeeklyGoals} from '$lib/scripts/DailyPerformanceHandler';
+    import GoalSelector from './GoalSelector.svelte';
+    import {getLastDeck} from '$lib/scripts/DeckHandler'
+    import type {Deck} from '$lib/scripts/DeckHandler';
 
-    let weeklyStreakTest = 3;
-    let wordCountTest = Math.floor(Math.random() * 1000);
+
+    let infoOpen = false;
+    let goalDropdownOpen = false;
     let weekOr2Weeks = 'week';
 
     let days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
@@ -22,25 +28,41 @@
     let name = '';
     let isLoggedIn = UserHandler.isLoggedIn();
     let lastCourse: Course|null = null;
+    let lastDeck: Deck|null = null;
     // ----------------------------------
     let sectionLinks: SectionLink[] = [];
     let finishedSections: SectionLink[] = [];
     let activeSection: SectionLink|undefined = undefined;
     let unfinishedSections: SectionLink[] = [];
     // ----------------------------------
+    let todaysPerformance: DailyPerformance|undefined;
+       // New words learned, New words goal, Words guessed, Words guessed goal, Streak
+    let goals: number[] = [0,0,0,0,0];
+       // 14 days of Words guessed
+    let weeklyWordsGuessed: number[] = [];
+    // ----------------------------------
     let pageReady = false;
 
     onMount(async () => {
         if (await isLoggedIn) {
-            name = await UserHandler.getName();
-            lastCourse = await getLastCourse();
-            if (lastCourse != null) {
-                sectionLinks = await listSectionLinksByCourse();
+            const lastDeckData: any = await getLastDeck();
+            if (lastDeckData == null) {
+                lastCourse = await getLastCourse();
+                if (lastCourse != null) {
+                    sectionLinks = await listSectionLinksByCourse();
+                }
+                finishedSections = await sectionLinks.filter(link=> link.finished);
+                unfinishedSections = await sectionLinks.filter(link=> !link.finished);
+                activeSection = await unfinishedSections[0];
+                unfinishedSections = await unfinishedSections.slice(1);
+            } else if (lastDeckData != null) {
+                lastDeck = lastDeckData;
             }
-            finishedSections = await sectionLinks.filter(link=> link.finished);
-            unfinishedSections = await sectionLinks.filter(link=> !link.finished);
-            activeSection = await unfinishedSections[0];
-            unfinishedSections = await unfinishedSections.slice(1);
+            // -------------------------------------------
+            todaysPerformance = await getDailyPerformance();
+            goals = await getGoals();
+            name = await UserHandler.getName();
+            weeklyWordsGuessed = await getWeeklyGoals();
         }
         pageReady = true;
     });
@@ -67,7 +89,15 @@
             <div class="last-course-row-1">
                 {$_('home.jump_back_into_your_last_course')}
             </div>
-            {#if lastCourse != null}
+            {#if lastDeck != null}
+            <a href="/learn" class="last-course-row-2">
+                <span class="course-txts">
+                    <span>{lastDeck.deckName}</span>
+                    <span>{lastDeck.deckDescription.slice(0,30)}...</span>
+                </span>
+                <i class="bi bi-play-fill"></i>
+            </a>
+            {:else if lastCourse != null}
             <a href="/learn" class="last-course-row-2">
                 <img class="course-img" src={lastCourse.image} alt="Last Course" />
                 <span class="course-txts">
@@ -81,24 +111,51 @@
             {/if}
         </div>
         <div class="statistics-row-1">
-            <div class="daily-goal stat">
-                <span style="font-weight: bold; font-size:3rem; color:var(--cyan)">3</span>
-                <span class="daily-goal-txt-2">{$_('home.day_streak')} <button class="streak-info-btn">i</button></span>
-                <div class="daily-goal-bar">
-                    <div style="width:{weeklyStreakTest/7*100}%; height:100%; background-color:var(--green); border-radius:inherit">
-                    </div>
-                    <i class="bi bi-star-fill"></i>
-                    <span>{weeklyStreakTest}/{$_('home.7_days')}</span>
-                </div>
+            <div class="daily-goal stat" style="width:39.5%;">
+                <span style="font-weight: bold; font-size:3rem; margin-top:0.2rem; color:var(--cyan)">{goals[4]}</span>
+                <span class="daily-goal-txt-2">
+                    {$_('home.day_streak')} 
+                    <button class="streak-info-btn" on:click={()=>{infoOpen = !infoOpen}}>
+                        i
+                        {#if infoOpen}
+                            <span transition:slide>{$_('home.continue_streak')}</span>
+                        {/if}
+                    </button>
+                    </span>
+                <span style="text-align: center; margin-top:0.6rem; color:var(--green)">{$_('home.study_today')}</span>
             </div>
-            <div class="word-count stat">
-                <span style="font-weight: bold; font-size:3rem; color:var(--cyan)">{wordCountTest}</span>
-                <span class="daily-goal-txt-2">{$_('home.words_learnt')}</span>
-                <span style="margin: 1.5rem 0 auto 0; color:var(--fg-color-2); font-size:1.1rem;">
-                {$_('home.out_of')} <span style="color: var(--selected-text); font-weight:bold;">6173</span></span>
+            <div class="word-count stat" style="z-index:99; flex-direction: row; width:59.5%; padding-right:0; padding-left:0; padding-top:0; position:relative;">
+                <div class="stat-panel">
+                    <span style="font-weight: bold; font-size:3rem; color:var(--cyan)">{goals[0]}</span>
+                    <span class="daily-goal-txt-2">{$_('home.words_learnt')}</span>
+                    <span style="margin: 1.5rem 0 auto 0; color:var(--fg-color-2); font-size:1.1rem;">
+                    {$_('home.out_of')} <span style="color: var(--selected-text); font-weight:bold;">{goals[1]}</span></span>
+                </div>
+                <div class="stat-panel">
+                    <span style="font-weight: bold; font-size:3rem; color:var(--cyan)">{goals[2]}</span>
+                    <span class="daily-goal-txt-2" >{$_('home.cards_guessed')}</span>
+                    <span style="margin: 1.5rem 0 auto 0; color:var(--fg-color-2); font-size:1.1rem;">
+                    {$_('home.out_of')} <span style="color: var(--selected-text); font-weight:bold;">{goals[3]}</span></span>
+                </div>
+                <button class="change-goals-btn" on:click={()=>{goalDropdownOpen = !goalDropdownOpen}}>
+                    <i class="bi bi-bullseye"></i>
+                    <span style="position: absolute; top:100%; left:50%; transform:translateX(-50%); font-size:1rem; color:var(--fg-color); background-color:var(--bg-color); width:13rem; border-radius:0.5rem; border:1px solid var(--bg-highlight); height:2rem; padding-top:0.4rem; display:none;">
+                        {$_('home.change_your_daily_goal')}
+                    </span>
+                </button>
+                {#if goalDropdownOpen}
+                    <GoalSelector currentDailyGoal={goals[1]} />
+                {/if}
             </div>
         </div>
         <div class="sections">
+            {#if lastDeck != null}
+                <span style="font-size: 2rem; margin-bottom:1.5rem;">You are currently learning a personal deck.</span>
+                <span style="font-size: 1.3rem;">
+                    To set an active <span style="color:var(--selected-text)">Course</span> instead, please visit the 
+                    <a href="/decks/all" class="decks-anchor">Decks</a> page.
+                </span>
+            {/if}
             {#each finishedSections as link, i}
                 <div class="section section-learned=">
                     <div class="section-line"><div class="section-line-point"></div></div>
@@ -126,18 +183,18 @@
             <h2>{$_(weekOr2Weeks === 'week' ? 'home.this_week' : 'home.last_2_weeks')}</h2>
             <div class="week-graph" class:week-graph-m={$isNarrowScreen}>
                 {#if weekOr2Weeks == 'week'}
-                    {#each lastSevenDays as day}
+                    {#each weeklyWordsGuessed.slice(6,14) as day}
                         <div class="week-day">
-                            <div class="week-day-fill"></div>
-                            <span style="position: absolute;top: -1.5rem;color: var(--fg-color);">{Math.round(Math.random() * 50)}</span>
+                            <div class="week-day-fill" style="height: {(day/goals[3])*100}%;"></div>
+                            <span style="position: absolute;top: -1.5rem;color: var(--fg-color);">{goals[3]-day}</span>
                             <span style="position: absolute;bottom: -1.5rem;color: var(--fg-color-2);">{day}</span>
                         </div>
                     {/each}
                 {:else if weekOr2Weeks == '2weeks'}
-                    {#each lastTwoWeeks as day}
+                    {#each weeklyWordsGuessed as day}
                         <div class="week-day" style="width:0.75rem">
-                            <div class="week-day-fill"></div>
-                            <span style="position: absolute;top: -1.5rem;color: var(--fg-color); font-size:0.9rem;">{Math.round(Math.random() * 50)}</span>
+                            <div class="week-day-fill" style="height: {(day/goals[3])*100}%;"></div>
+                            <span style="position: absolute;top: -1.5rem;color: var(--fg-color); font-size:0.9rem;">{goals[3]-day}</span>
                             <span style="position: absolute;bottom: -1.5rem;color: var(--fg-color-2); font-size:0.9rem;">{day}</span>
                         </div>
                     {/each}
@@ -158,7 +215,48 @@
 
 
 <style>
-
+    .decks-anchor {
+        color:var(--cyan); 
+        text-decoration:1px solid underline; 
+        text-underline-offset:3px;
+    }
+        .decks-anchor:hover {
+            color:var(--selected-text);
+        }
+    .change-goals-btn {
+        position: absolute;
+        bottom:0;
+        left:50%;
+        transform: translateX(-50%);
+        background:var(--bg-color);
+        border:1px solid var(--bg-highlight-2);
+        color:var(--fg-color-2);
+        font-size:2rem;
+        height:3rem;
+        width:3rem;
+        border-radius: 1rem 1rem 0 0;
+        padding-top: 0.4rem;
+        cursor: pointer;
+        transition: all 0.1s ease-in-out;
+    }
+        .change-goals-btn:hover {
+            background:var(--bg-highlight);
+            color: var(--fg-color);
+        }
+        .change-goals-btn:has(.bi-bullseye:hover) span {
+            display:inline-block !important;
+        }
+    .stat-panel {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 50%;
+        justify-content: space-around;
+        position: relative;
+    }
+        .stat-panel:first-child {
+            border-right: 1px solid var(--bg-highlight-2);
+        }
     .outter-wrap {
         display: flex;
         flex-direction: column;
@@ -176,6 +274,7 @@
                 justify-content: space-between;
                 width: 100%;
                 height: 100%;
+                min-height: 40rem;
             }
                 .courses>.last-course {
                     width:49.5%;
@@ -290,10 +389,6 @@
                                 border: 3px solid var(--bg-highlight);
                                 background-color: var(--bg-color);
                                 border-radius: 999px;
-                            }
-                            .section-learned > .section-line >.section-line-point {
-                                background-color: var(--green);
-                                border-color: var(--green);
                             }
                             .section-current {
                                 min-height: 2rem;
@@ -455,34 +550,22 @@
                             cursor: pointer;
                             transition: all 0.1s ease-in-out;
                         }
+                            .streak-info-btn > span {
+                                position: absolute;
+                                top: 50%;
+                                right: 100%;
+                                transform: translate(0%, -50%);
+                                background-color: var(--bg-highlight);
+                                color: var(--fg-color);
+                                padding: 0.5rem;
+                                border-radius: 0.5rem;
+                                width: 10rem;
+                                font-size: 1rem;
+                            }
                         .streak-info-btn:hover {
                             background-color: var(--bg-midle);
                             box-shadow: 0px 0px 2px 2px var(--bg-highlight-2);
                             color: var(--selected-text);
-                        }
-                    .daily-goal-bar {
-                        width: 100%;
-                        height: 0.5rem;
-                        background-color: var(--bg-highlight-2);
-                        border-radius: 999px;
-                        margin-top: 1.5rem;
-                        margin-bottom: 1.5rem;
-                        position:relative;
-                    }
-                        .daily-goal-bar > span {
-                            position: absolute;
-                            left: 50%;
-                            transform: translateX(-50%);
-                            color: var(--fg-color);
-                            top:190%;
-                        }
-                        .bi-star-fill {
-                            position:absolute;
-                            top:50%;
-                            right:-4%; 
-                            transform: translateY(-60%); 
-                            font-size: 1.75rem;
-                            color: var(--gold);
                         }
     * {
         box-sizing: border-box;

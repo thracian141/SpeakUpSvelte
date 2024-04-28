@@ -3,13 +3,22 @@
     import { onMount } from 'svelte';
     import {_} from '$lib/i18n';
 	import { isNarrowScreen } from '$lib/store';
-    import {getDecksList} from '$lib/scripts/DeckHandler';
+    import {setActiveDeck, getDecksList} from '$lib/scripts/DeckHandler';
     import type {Deck} from '$lib/scripts/DeckHandler';
     import type { Course } from '$lib/scripts/CourseHandler';
     import {listActiveCourses} from '$lib/scripts/CourseHandler';
     import {changeActiveCourse} from '$lib/scripts/CourseHandler';
+    import Edit from './Edit.svelte';
+    import Delete from './Delete.svelte';
 
-
+    let activeDropdown: any = null;
+    let editorOpen = false;
+    let editingDeck: Deck|null = null;
+    let editingDeckIndex: number|null = null;
+    let deleteOpen = false;
+    let deletingDeckName: string|null = null;
+    let deletingDeckIndex: number|null = null;
+    let deletingDeckId: number|null = null;
     let searchbarInput = '';
 
     let decksList:Deck[] = [];
@@ -23,6 +32,28 @@
         coursesList = await listActiveCourses();
     });
 
+    function closeEditor() {
+        editorOpen = false;
+        editingDeck = null;
+        editingDeckIndex = null;
+    }
+    async function handleEdit(event: CustomEvent<Deck>) {
+        if (editingDeckIndex == null) return;
+        decksList[editingDeckIndex] = event.detail;
+        closeEditor();
+    }
+    function closeDelete() {
+        deleteOpen = false;
+        deletingDeckName = null;
+        deletingDeckIndex = null;
+        deletingDeckId = null;
+    }
+    async function handleDelete(event: CustomEvent<number>) {
+        if (deletingDeckIndex == null) return;
+        decksList = await decksList.filter(deck => deck.id != deletingDeckId);
+        closeDelete();
+    }
+
     $: {
         filteredDecks = decksList.filter(deck => deck.deckName.toLowerCase().includes(searchbarInput.toLowerCase()));
         filteredCourses = coursesList.filter(course => course.title.toLowerCase().includes(searchbarInput.toLowerCase()));
@@ -32,6 +63,7 @@
 
 <input type="text" placeholder="{$_('decks.all.search')}" class="searchbar" bind:value={searchbarInput} transition:slide/>
 <div class="bottom-wrap" style="{$isNarrowScreen ? 'flex-direction: column;' : 'flex-direction:row; height: 26rem;'}" transition:slide>
+    <!-- COURSES -->
     <div class="courses" style="{$isNarrowScreen ? 'width:100%; height:35vh !important;' : 'width:34rem; height: 100%;'}">
         <h2>{$_('decks.all.your_active_courses')}</h2>
         {#if coursesList.length > 0}
@@ -39,7 +71,13 @@
             {#each filteredCourses as course}
                 <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <div class="course-wrap" transition:slide on:click={async()=>{await changeActiveCourse(course.courseCode)}}>
-                    <button><i class="bi bi-gear-fill"></i></button>
+                    <button on:click|stopPropagation={()=>{
+                        if (activeDropdown==course.courseCode){activeDropdown=null} else{activeDropdown=course.courseCode}}}>
+                        <i class="bi bi-gear-fill"></i>
+                        <div class="options-dropdown" class:dropped={activeDropdown==course.courseCode}>
+                            a
+                        </div>
+                    </button>
                     <img src="{course.image}" alt="{course.courseCode}" />
                     <span style="margin-right: 1rem;">{course.title}</span>
                     <p>78%</p>
@@ -59,25 +97,76 @@
         'width:100%; height:1px; flex-direction: row; margin: 1.5rem 0;' : 
         'width:1px; height:100%; flex-direction: column; margin: 0 1.5rem;'}">
     </div>
+    <!-- DECKS -->
     <div class="courses" style="{$isNarrowScreen ? 'width:100%; height:50vh;' : 'width:34rem; height: 100%;'}">
         <h2>{$_('decks.all.your_personal_decks')}</h2>
         {#if decksList.length !== 0}
-        {#each filteredDecks as deck}
-            <a href="/create/deck/{deck.id}" class="course-wrap" style="height:6rem;" transition:slide>
-                <button><i class="bi bi-gear-fill"></i></button>
+        <!-- svelte-ignore a11y-no-static-element-interactions -->
+        {#each filteredDecks as deck, index (deck.deckName)}
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <div on:click={async()=>{await setActiveDeck(deck.id)}} class="course-wrap" style="height:6rem;" transition:slide>
+                <button on:click|stopPropagation={()=>{if(activeDropdown==deck.id){activeDropdown=null} else{activeDropdown=deck.id}}}>
+                    <i class="bi bi-gear-fill"></i>
+                    <div class="options-dropdown" class:dropped={activeDropdown==deck.id}>
+                        <a href="/create/deck/{deck.id}">Cards</a>
+                        <button on:click={() => {editorOpen=!editorOpen; editingDeck=deck, editingDeckIndex = index}}>Edit</button>
+                        <button on:click={() => {deleteOpen=!deleteOpen; deletingDeckName=deck.deckName; deletingDeckIndex = index, deletingDeckId=deck.id}}>Delete</button>
+                    </div>
+                </button>
                 <span style="font-size: 1.8rem;">{deck.deckName}</span>
                 <p style="font-size: 1rem;">{deck.level}%</p>
                 <div class="overlay">
                     {$_('decks.language.learn')}
                 </div>
-            </a>
+            </div>
         {/each}
         {/if}
     </div>
+    {#if editorOpen && editingDeck != null && editingDeckIndex != null}
+        <Edit deck={editingDeck} index={editingDeckIndex} on:close={closeEditor} on:edit={handleEdit}/>
+    {/if}
+    {#if deleteOpen && deletingDeckName != null && deletingDeckIndex != null && deletingDeckId != null}
+        <Delete deckName={deletingDeckName} index={deletingDeckIndex} id={deletingDeckId} on:close={closeDelete} on:deleted={handleDelete}/>
+    {/if}
 </div>
 
 
 <style>
+    .options-dropdown {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        height:0;
+        width:0;
+        visibility: hidden;
+        background-color: var(--bg-middle);
+        z-index: 999;
+        transition: height 0.15s ease-in-out;
+        border-radius: 0.5rem;
+        right:0;
+        overflow: hidden;
+    }
+        .dropped {
+            visibility: visible;
+            height: fit-content;
+            width: fit-content;
+            transition: height 0.15s ease-in-out;
+        }
+        .options-dropdown > a, .options-dropdown > button {
+            padding: 0.5rem 3rem;
+            font-size: 1.5rem;
+            color: var(--fg-color);
+            text-align: center;
+            width: 100%;
+            border:none;
+            background:none;
+            outline:none;
+            cursor: pointer;
+            transition: all 0.1s ease-in-out;
+        }
+            .options-dropdown > a:hover, .options-dropdown > button:hover {
+                background-color: var(--bg-highlight);
+            }
     .add-course {
         display: flex;
         flex-direction: row;
@@ -108,7 +197,6 @@
     }
     .course-wrap {
         position: relative;
-        overflow: hidden;
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -129,6 +217,7 @@
             font-size: 2rem;
             z-index: 2;
             order: 3;
+            position: relative;
         }
             .course-wrap > button:hover {
                 color: var(--fg-color-2);
@@ -185,6 +274,7 @@
     .courses {
         padding-right: 1rem;
         overflow-y: scroll;
+        overflow-x: hidden;
     }
         .courses > h2 {
             width:100%;
@@ -203,6 +293,7 @@
         align-items: center;
         justify-content: center;
         width: 100%;
+        z-index: 99;
         overflow: hidden;
     }
     .searchbar {

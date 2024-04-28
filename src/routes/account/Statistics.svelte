@@ -3,13 +3,49 @@
     import Calendar from './Calendar.svelte';
     import { _ } from '$lib/i18n';
     import { isNarrowScreen } from '$lib/store';
-    let languages = ["English", "Bulgarian", "Turkish", "German"];
-    let currentLanguage = languages[0];
-    let wordsTotal = 5138;
-    let wordsLearnt = 2134;
-    let goalWords = 3000;
+    import {getCoursePerformance, listActiveCourseCodes, getLastCourseCode, getCourseNameByCode} from '$lib/scripts/CourseHandler';
+    import { onMount } from 'svelte';
+
+    let pageReady = false;
+
+    let languages: string[] = [];
+    let languageNames: string[] = [];
+    let currentCourseData: any = {};
+
+    let currentLanguage: string = '';
+    let currentLanguageName: string = '';
+
+    let learnedWords = 0;
+    let totalWords = 0;
+    let totalLeft = 0;
+    let percentageTotalLeft: number|null = null;
+    let goalWords = 0;
+    let goalLeft = 0;
+    let percentageGoalLeft: number|null = null;
 
     let langDropdown = false;
+
+    onMount(async () => {
+        const lastCourseCode = await getLastCourseCode();
+        languages = await listActiveCourseCodes();
+        languageNames = await Promise.all(languages.map(async (code) => await getCourseNameByCode(code)));
+        await changeViewedLanguage(lastCourseCode);
+
+        pageReady = true;
+    });
+    async function changeViewedLanguage(courseCode: string) {
+        currentCourseData = await getCoursePerformance(courseCode);
+
+        currentLanguage = courseCode;
+        currentLanguageName = await getCourseNameByCode(courseCode);
+        learnedWords = currentCourseData.learnedWords;
+        totalWords = currentCourseData.totalWords;
+        totalLeft = currentCourseData.totalLeft;
+        percentageTotalLeft = currentCourseData.percentageTotalLeft;
+        percentageGoalLeft = currentCourseData.percentageGoalLeft;
+        goalWords = currentCourseData.goalWords;
+        goalLeft = currentCourseData.goalLeft;
+    }
 
     function handleClick() {
         langDropdown = !langDropdown;
@@ -38,18 +74,21 @@
     }
 </script>
 
+{#if pageReady}
 <div class="panel" style="{$isNarrowScreen ? "width:100%; border-radius:0; padding: 1.5rem 1rem 0 1rem" : ""}">
     <div class="top" style="{$isNarrowScreen ? "margin-bottom:1rem;" : ""}">
         <div class="words-learnt-wrap" style="{$isNarrowScreen ? "width:8.5rem;" : ""}">
-            <span style="font-size:0.95rem; color:var(--fg-color); margin-right:auto; margin-left:0.8rem;">{wordsTotal}</span>
-            <span style="position: absolute; right:0%; bottom:0%; font-size:0.95rem; font-weight:bold;">{Math.round((wordsLearnt/wordsTotal)*100)}%</span>
-            <span style="position: absolute; right:0%; top:5%; font-size:0.95rem;">{wordsLearnt}</span>
+            <span style="font-size:0.95rem; color:var(--fg-color); margin-right:auto; margin-left:0.8rem;">{totalWords}</span>
+            <span style="position: absolute; right:0%; bottom:0%; font-size:0.95rem; font-weight:bold;">{percentageTotalLeft}%</span>
+            <span style="position: absolute; right:0%; top:5%; font-size:0.95rem;">{learnedWords}</span>
             <span style="position: absolute; right:0%; top:17%; font-size:0.95rem; color:var(--fg-color-2)">{$_('account.learned')}</span>
-            <span style="position: absolute; right:0%; top:44%; font-size:0.95rem;">{wordsTotal-wordsLearnt}</span>
+            <span style="position: absolute; right:0%; top:44%; font-size:0.95rem;">{totalLeft}</span>
             <span style="position: absolute; right:0%; top:56%; font-size:0.95rem; color:var(--fg-color-2)">{$_('account.left')}</span>
             <div class="words-learnt-bar" on:mouseenter={async()=>handleHover("wlearnt")} role="presentation">
-                <div id="wlearnt" class="words-learnt-progress" style="height: {(wordsLearnt/wordsTotal)*100}%;transform: scaleY(1)"></div>
-                <span style="position: absolute; color:var(--bg-color); left:8%; font-size:0.95rem;">{wordsLearnt}</span>
+                {#if percentageTotalLeft!=null}
+                <div id="wlearnt" class="words-learnt-progress" style="height: {percentageTotalLeft}%;transform: scaleY(1)"></div>
+                {/if}
+                <span style="position: absolute; color:var(--bg-color); left:8%; font-size:0.95rem;">{learnedWords}</span>
             </div>
             <span style="position: absolute; bottom:-25%; font-size:0.9rem; color:var(--fg-color); 
               font-weight:bold; transform:scaleY(0.92)">{$_('account.total_number')}</span>
@@ -60,13 +99,13 @@
                 <span style="font-weight: bold; transform:scaleY(0.95); font-size:0.9rem;">{$_('account.language')}</span>
                 <button style="font-size: 1.5rem; cursor:pointer;" id="lang" 
                 on:click|stopPropagation={handleClick}>
-                    {currentLanguage}
+                    {currentLanguageName}
                 </button>
                 {#if langDropdown}
                     <div id="lang-dropdown" in:slide out:slide={{duration:100}}>
                         {#each languages as language, index }
                             <button class="lang-dropdown-option" style="cursor:pointer;" 
-                            on:click={async()=>{currentLanguage=languages[index]; langDropdown=false;}}>{language}</button>
+                            on:click={async()=>{currentLanguage=languages[index]; langDropdown=false; await changeViewedLanguage(language)}}>{languageNames[index]}</button>
                         {/each}
                     </div>
                 {/if}
@@ -74,19 +113,21 @@
             <div style="font-size: 1.3rem; padding: 0.4rem 1rem 0.4rem 1rem; font-weight:bold; border: 1px solid var(--bg-highlight);
                         border-radius:0 0 0.6rem 0.6rem; border-top:0; ">
                 {$_('account.youve_learned')} <br/> 
-                <span style="color:var(--green);font-size:2rem;">{wordsLearnt}</span> {$_('account.words')}.
+                <span style="color:var(--green);font-size:2rem;">{learnedWords}</span> {$_('account.words')}.
             </div>
         </div>
         <div class="words-learnt-wrap" style="{$isNarrowScreen ? "width:8.5rem;" : ""}">
             <span style="font-size:0.95rem; color:var(--fg-color); margin-left:auto; margin-right:0.8rem;">{goalWords}</span>
-            <span style="position: absolute; left:0%; bottom:0%; font-size:0.95rem; font-weight:bold;">{Math.round((wordsLearnt/goalWords)*100)}%</span>
-            <span style="position: absolute; left:0%; top:5%; font-size:0.95rem;">{wordsLearnt}</span>
+            <span style="position: absolute; left:0%; bottom:0%; font-size:0.95rem; font-weight:bold;">{percentageGoalLeft}%</span>
+            <span style="position: absolute; left:0%; top:5%; font-size:0.95rem;">{learnedWords}</span>
             <span style="position: absolute; left:0%; top:17%; font-size:0.95rem; color:var(--fg-color-2)">{$_('account.learned')}</span>
-            <span style="position: absolute; left:0%; top:44%; font-size:0.95rem;">{goalWords-wordsLearnt}</span>
+            <span style="position: absolute; left:0%; top:44%; font-size:0.95rem;">{goalLeft}</span>
             <span style="position: absolute; left:0%; top:56%; font-size:0.95rem; color:var(--fg-color-2)">{$_('account.left')}</span>
             <div class="words-learnt-bar" on:mouseenter={async()=>handleHover("ygoal")} role="presentation" style="margin-right:0;margin-left:auto;">
-                <div id="ygoal" class="words-learnt-progress your-goal" style="height: {(wordsLearnt/goalWords)*100}%;transform: scaleY(1)"></div>
-                <span style="position: absolute; color:var(--bg-color); right:8%; font-size:0.95rem;">{wordsLearnt}</span>
+                {#if percentageGoalLeft!=null}
+                <div id="ygoal" class="words-learnt-progress your-goal" style="height: {percentageGoalLeft}%;transform: scaleY(1)"></div>
+                {/if}
+                <span style="position: absolute; color:var(--bg-color); right:8%; font-size:0.95rem;">{learnedWords}</span>
             </div>
             <span style="position: absolute; bottom:-25%; font-size:0.9rem; color:var(--fg-color); 
               font-weight:bold; transform:scaleY(0.92)">{$_('account.your_goal')}</span>
@@ -94,6 +135,7 @@
     </div>
     <Calendar />
 </div>
+{/if}
 
 <style>
     #lang-dropdown {

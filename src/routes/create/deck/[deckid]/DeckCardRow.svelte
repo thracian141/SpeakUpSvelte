@@ -98,13 +98,13 @@
     {/if}
     <div class="card-row-number">
         <div class="level-wrap">
-            {#each Array(card.level | Number(Math.floor)) as _}
+            {#each Array(Math.floor(card.level / 10)) as _}
                 <div class="level-bar full"></div>
             {/each}
-            {#if card.level % 1 !== 0}
+            {#if card.level % 10 >= 5}
                 <div class="level-bar half"></div>
             {/if}
-            {#each Array(5 - card.level | Number(Math.ceil)) as _}
+            {#each Array(5 - Math.ceil(card.level / 10)) as _}
                 <div class="level-bar null"></div>
             {/each}
         </div>

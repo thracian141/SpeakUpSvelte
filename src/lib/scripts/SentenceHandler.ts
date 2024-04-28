@@ -1,5 +1,6 @@
 import { writable } from "svelte/store";
 import { getToken } from "./UserHandler";
+import { url } from "$lib/url";
 
 export interface Sentence {
     id: number;
@@ -13,7 +14,7 @@ export let sentencesStore = writable<Sentence[]>([]);
 
 export async function listSentences(cardId: number) {
     let token = getToken();
-    const response = await fetch(`https://localhost:5000/sentence/listByCard?cardId=${cardId}`, {
+    const response = await fetch(`${url}/sentence/listByCard?cardId=${cardId}`, {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${token}`
@@ -37,7 +38,7 @@ export async function addSentenceToCard(front:string, back:string, wordId: numbe
     let token = getToken();
     const input = { front, back, wordId } 
 
-    const response = await fetch("https://localhost:5000/sentence/add", {
+    const response = await fetch(`${url}/sentence/add`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -54,7 +55,7 @@ export async function addSentenceToCard(front:string, back:string, wordId: numbe
 
 export async function deleteSentence(sentenceId: number) {
     let token = getToken();
-    const response = await fetch(`https://localhost:5000/sentence/delete?id=${sentenceId}`, {
+    const response = await fetch(`${url}/sentence/delete?id=${sentenceId}`, {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${token}`
@@ -71,7 +72,7 @@ export async function deleteSentence(sentenceId: number) {
 
 export async function deleteAllSentences(cardId: number) {
     let token = getToken();
-    const response = await fetch(`https://localhost:5000/sentence/deleteAll?cardId=${cardId}`, {
+    const response = await fetch(`${url}/sentence/deleteAll?cardId=${cardId}`, {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${token}`

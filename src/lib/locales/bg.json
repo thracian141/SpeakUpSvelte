@@ -6,7 +6,7 @@
         "jump_back_into_your_last_course": "Върнете се обратно в последния си курс",
         "day_streak": "дни серия",
         "days": "дни",
-        "words_learnt": "думи научени",
+        "words_learnt": "научени думи",
         "out_of": "от",
         "this_week": "Тази седмица",
         "last_2_weeks": "Последните 2 седмици",
@@ -19,7 +19,14 @@
         "friday_short": "П",
         "saturday_short": "С",
         "sunday_short": "Н",
-        "no_active_course": "Не сте избрали курс!"
+        "no_active_course": "Не сте избрали курс!",
+        "study_today": "Учи днес и задръж серията си!",
+        "cards_guessed": "познати карти",
+        "continue_streak": "Продължи серията ти като учиш всеки ден бройката нови думи поставена от дневната ти цел.",
+        "current_goal": "Текуща цел",
+        "new_goal": "Нова цел",
+        "new_words_a_day": "Нови думи на ден",
+        "change_your_daily_goal": "Промени дневната си цел"
     },
     "layout": {
         "highly_experimental": "Сайтът ще се презареди",
@@ -74,7 +81,8 @@
         "learn": "Научи",
         "this_word_is_new": "Тази дума е нова!",
         "you_know_this_lets_keep_going": "Вече знаеш тази дума, нека продължаваме!",
-        "check_answer": "Провери отговор"
+        "check_answer": "Провери отговор",
+        "youve_marked_this_as_important": "Отбелязали сте тази карта като важна."
     },
     "authenticate": {
         "sign_up_to": "Създай профил в",
@@ -159,5 +167,12 @@
         "reported_bugs": "Докладвани бъгове",
         "for_course": "По курс",
         "mark_as_solved": "Маркирай като решен"
+    },
+    "no_content": {
+        "no_more_cards": "Няма повече карти за учене в това тесте.",
+        "wait_until_more_cards": "Изчакайте докато повече карти се нуждаят от преглед",
+        "add_more_cards_to": "Добавете повече карти към",
+        "or_pick_a": "или изберете",
+        "different_deck": "различно тесте"
     }
 }

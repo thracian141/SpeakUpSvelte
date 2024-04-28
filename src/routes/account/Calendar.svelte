@@ -2,8 +2,11 @@
     import { slide } from "svelte/transition";
     import { isNarrowScreen } from "$lib/store";
     import {_, locale} from "$lib/i18n";
+    import { hasStudiedWeek, hasStudiedMonth } from "$lib/scripts/DailyPerformanceHandler";
+    import { onMount } from "svelte";
 
     let currentDate = new Date();
+
     let dateRangeSelection = "week";
     let localeVar = "en-GB";
     $: localeVar = $locale == "bg" ? "bg-BG" : "en-GB";
@@ -19,7 +22,8 @@
         d.setDate(d.getDate() - i);
         return d;
     }).reverse();
-    $: lastMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1);
+
+    $: lastMonth = new Date();
 
     let hasStudied = new Map();
     for (let i = 0; i < 90; i++) {
@@ -29,16 +33,43 @@
         hasStudied.set(date.toISOString().split('T')[0], randomValue);
     }
 
+    let pageReady = false;
+    let weekStudies: boolean[] = [];
+    let monthStudies: boolean[] = [];
+    
+    let thisMonthDates: Date[] = [];
+    let lastMonthDates: Date[] = [];
+    onMount(async () => {
+        weekStudies = await hasStudiedWeek();
+        monthStudies = await hasStudiedMonth();
+        console.log(weekStudies, monthStudies);
+
+        thisMonthDates = Array.from({length: new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate()}, (_, i) => {
+            let d = new Date(currentDate);
+            d.setDate(i + 1);
+            return d;
+        });
+        lastMonthDates = Array.from({length: 35 - thisMonthDates.length}, (_, i) => {
+            let d = new Date(lastMonth);
+            d.setDate(lastMonth.getDate() - i);
+            return d;
+        });
+
+        lastMonth.setMonth(currentDate.getMonth() - 1);
+
+        pageReady = true;
+    });
+
 </script>
 
-
+{#if pageReady}
 <div class="wrap" style="{$isNarrowScreen ? "margin-top:0;" : ""}">
     <h3 style="margin:0; margin-bottom:1rem">{$_('account.daily_goals')}</h3>
     {#if dateRangeSelection == "week"}
         <div class="week-wrapper" in:slide out:slide>
-            {#each weekDates as day (day)}
+            {#each weekDates as day, index}
                 <div class="day-box" style="{$isNarrowScreen ? "padding:0.21rem; width:14%;" : ""}">
-                    <div class="week-day-box" class:filled={hasStudied.get(day.split('T')[0])}
+                    <div class="week-day-box" class:filled={weekStudies[index]}
                                      style="{$isNarrowScreen ? " width:100%;" : ""}">
                         <i class="bi bi-check-lg"></i>
                     </div>
@@ -47,10 +78,10 @@
             {/each}
         </div>
         <div in:slide out:slide>
-            {#if hasStudied.get(currentDate.toISOString().split('T')[0]) == true}
+            {#if weekStudies[6] == true}
                 <h1 style="margin-bottom: 0;">{$_('account.you')} <span style="color: var(--green);">{$_('account.have_studied')}</span> {$_('account.today')}</h1>
                 <h1>{$_('account.great_job')}</h1>        
-            {:else if hasStudied.get(currentDate.toISOString().split('T')[0]) == false}
+            {:else}
                 <h1 style="margin-bottom: 0;">{$_('account.you')} <span style="color: var(--red);">{$_('account.have_not_studied')}</span> {$_('account.today')}</h1>
                 <h1>{$_('account.try_to_reach_your_goal')}</h1>
             {/if}
@@ -59,11 +90,11 @@
         <!-- Previous month -->
     <div class="month-wrap" style="flex-wrap:wrap; {$isNarrowScreen ? "align-content:flex-start" : ""}" in:slide out:slide>
         <div class="month-text"><h3 style="{$isNarrowScreen ? "margin-top:-0.8rem;" : ""}">
-            {new Date(lastMonth.getMonth()).toLocaleString(localeVar, { month: 'long' })}
+            {new Date(currentDate.getFullYear(), lastMonth.getMonth()).toLocaleString(localeVar, { month: 'long' })}
         </h3></div>
-        {#each monthDates.filter(day => day.getMonth() !== currentDate.getMonth()) as day (day)}
+        {#each lastMonthDates as day, index}
         <div class="day-box" style="opacity: 0.4; {$isNarrowScreen ? "padding:0.21rem; margin-bottom:1.4rem; margin-right:0.25rem; width:2.3rem;" : ""}">
-            <div class="week-day-box month" class:filled={hasStudied.get(day.toISOString().split('T')[0])}>
+            <div class="week-day-box month" class:filled={monthStudies[index]}>
                 <i class="bi bi-check-lg"></i>
             </div>
             <span style="{$isNarrowScreen ? "margin-top:0rem;" : ""}">{day.getDate()}</span>
@@ -72,9 +103,9 @@
         <div class="month-text"><h3 style="{$isNarrowScreen ? "margin-top:-0.8rem;" : ""}">
             {new Date().toLocaleString(localeVar, { month: 'long' })}
         </h3></div>
-        {#each monthDates.filter(day => day.getMonth() === currentDate.getMonth()) as day (day)}
+        {#each thisMonthDates as day, index}
         <div class="day-box" style="{$isNarrowScreen ? "padding:0.21rem; margin-bottom:1rem; margin-right:0.25rem; width:2.3rem;" : ""}">
-            <div class="week-day-box month" class:filled={hasStudied.get(day.toISOString().split('T')[0])}>
+            <div class="week-day-box month" class:filled={monthStudies[index+lastMonthDates.length]}>
                 <i class="bi bi-check-lg"></i>
             </div>
             <span style="{$isNarrowScreen ? "margin-top:0rem;" : ""}">{day.getDate()}</span>
@@ -87,6 +118,7 @@
     <i class="bi" class:bi-calendar3={dateRangeSelection=="week"} class:bi-calendar3-week={dateRangeSelection=="month"}></i>
     <span>View goals for the current {dateRangeSelection}</span>
 </button>
+{/if}
 
 
 <style>

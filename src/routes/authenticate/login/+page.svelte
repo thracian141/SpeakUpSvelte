@@ -4,6 +4,7 @@
     import {_} from '$lib/i18n';
     import '../styles.css';
     import { isNarrowScreen } from '$lib/store';
+    import { url } from '$lib/url';
 
     let password = '';
     let email = '';
@@ -16,7 +17,7 @@
             Password: password,
         };
         console.log(model);
-        const response = await fetch('https://localhost:5000/authenticate/login', {
+        const response = await fetch(`${url}/authenticate/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
