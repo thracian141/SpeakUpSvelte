@@ -12,9 +12,6 @@
     .wrap-m > div {
         width:100% !important;
     }
-.last-course-m {
-    margin-bottom: 0.5rem !important;
-}
 .week-graph-m {
     padding: 0 !important;
     justify-content: space-between !important;

@@ -12,6 +12,8 @@
     let confirmpassword = '';
     let email = '';
 
+    let error = '';
+
     onMount(async () => {
         langs = await Array.from(document.getElementsByClassName("language") as HTMLCollectionOf<HTMLDivElement>);
         //check if any language is hovered and set anyHovered to true and hoveredLang to the hovered language
@@ -91,7 +93,7 @@
         </div>
         {#if selectedLang != '' && selectedLang != undefined}
         <form class="register" name="register" in:slide={{duration:600}} out:slide 
-        on:submit={async(e)=>{await register(e, username,email,password,null)}}>
+        on:submit={async(e)=>{error = await register(e, username,email,password,null)}}>
             <h1>Create a <span>free</span> account<br>and 
                 <span>
                     speak up
@@ -114,6 +116,9 @@
                 <label for="confirmpassword" class:filled={confirmpassword!=''}>CONFIRM PASSWORD</label>
                 <input bind:value={confirmpassword} type="password" style="padding-right: 18rem;" autocomplete="off"/>
             </div>
+            {#if error}
+                <div style="width:100%; margin: 1rem 0; text-align:center; color:var(--red); font-size:2rem;">{error}</div>
+            {/if}
             <div class="buttons">
                 <button type="submit">
                     REGISTER

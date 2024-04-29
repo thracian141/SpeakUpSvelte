@@ -152,9 +152,9 @@
         height:3.3rem;
     }
     nav {
-        position:fixed;
-        z-index: 5;
-        min-height: 100%;
+        z-index: 999;
+        align-self: stretch;
+        min-height: 100vh;
         width: 5.5rem;
         background-color: var(--el-bg-color);
         transition: width 0.3s ease-in-out;
@@ -163,7 +163,6 @@
         flex-direction: column;
         pointer-events:painted;
         box-shadow: var(--bg-middle) 0 0 40px 10px;
-        overflow: hidden;
     }
     .nav-expanded {
         width: 12rem;

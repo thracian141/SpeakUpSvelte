@@ -69,13 +69,7 @@
 </script>
 
 {#if pageReady}
-<div class="outter-wrap {$isNarrowScreen ? "outter-wrap-m" : ""}" transition:slide >
-    <div style="position: absolute; gap:1rem; display:flex; flex-direction:row; right:11%; top:6%;">
-        <a href="https://www.instagram.com/speakup.support/" style=" display:flex;flex-direction:row; gap:0.4rem;">
-            <i class="bi bi-instagram"></i>
-            <span>Support page</span>
-        </a>
-    </div>            
+<div class="outter-wrap {$isNarrowScreen ? "outter-wrap-m" : ""}" transition:slide >         
     {#if name != '' || name != null}
     <p class="p-welcome-back">{$_('home.welcome_back')} 
         <span style="font-weight: bold;">
@@ -85,7 +79,7 @@
     {/if}
     <div style="height:1px; width:100%; background-color:var(--bg-highlight-2); margin-bottom:2rem; color:#00000000">SpeakUp</div>
     <div class="courses wrap" class:wrap-m={$isNarrowScreen}>
-        <div class="last-course" class:last-course-m={$isNarrowScreen}>
+        <div class="last-course">
             <div class="last-course-row-1">
                 {$_('home.jump_back_into_your_last_course')}
             </div>
@@ -215,6 +209,33 @@
 
 
 <style>
+    @media (hover: none) {
+        .last-course {
+            margin-bottom: 0.5rem !important;
+        }
+        .statistics-row-1 {
+            height: auto !important;
+        }
+            .streak-info-btn {
+                top: -2.9rem !important;
+                right: 1.5rem !important;
+                z-index: 999;
+            }   
+                .streak-info-btn > span {
+                    left: 100% !important;
+                    top: 0% !important;
+                    z-index: 999;
+                }
+        .stat-panel {
+            text-align: center !important;
+            justify-content: flex-start;
+            height: 100%;
+        }
+            .stat-panel > .daily-goal-txt-2 {
+                font-size: 1rem !important;
+                height: 2rem !important;
+            }
+    }
     .decks-anchor {
         color:var(--cyan); 
         text-decoration:1px solid underline; 
@@ -568,6 +589,6 @@
                             color: var(--selected-text);
                         }
     * {
-        box-sizing: border-box;
+        box-sizing: border-box !important;
     }
 </style>

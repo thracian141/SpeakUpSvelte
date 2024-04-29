@@ -7,13 +7,15 @@
     import { url } from '$lib/url';
 
     let password = '';
-    let email = '';
+    let username = '';
+
+    let error = '';
 
     async function handleSubmit(event: Event) {
         event.preventDefault();
 
         const model = {
-            Email: email,
+            UserName: username,
             Password: password,
         };
         console.log(model);
@@ -25,16 +27,17 @@
             body: JSON.stringify(model),
         });
 
+        if (!response.ok) {
+            error = await response.text();
+            return;
+        }
+
         const data = await response.json();
 
-        if (response.ok) {
-            console.log("Login successful!");
-            document.cookie = `token=${data.token};path=/;Secure;SameSite=Strict;`;
-            await goto('/');
-            location.reload();
-        } else {
-            console.error("Login failed: ", data.message);
-        }
+        console.log("Login successful!");
+        document.cookie = `token=${data.token};path=/;Secure;SameSite=Strict;`;
+        await goto('/');
+        location.reload();
     }
 </script>
 
@@ -43,15 +46,18 @@ style="{$isNarrowScreen ? "width:100%; padding: 1rem 0.2rem; border-radius:0;" :
     <h2 style="{$isNarrowScreen ? "font-size:2rem;" : ""}">{$_('authenticate.sign_in')}</h2>
     <form method="post" style="position: relative;">
         <div class="form-section">
-            <i class="bi bi-at"></i>
-            <p class:label-filled={email !== ''} class="form-label" >{$_('authenticate.email')}</p>
-            <input type="text" name="email" id="email" class="form-control" bind:value={email}/>
+            <i class="bi bi-person"></i>
+            <p class:label-filled={username !== ''} class="form-label" >{$_('authenticate.username')}</p>
+            <input type="text" name="username" id="username" class="form-control" bind:value={username}/>
         </div>
         <div class="form-section">
             <i class="bi bi-key" style="font-size: 2.4rem;"></i>
             <p class:label-filled={password !== ''} class="form-label" >{$_('authenticate.password')}</p>
             <input type="password" name="password" id="password" class="form-control" bind:value={password} />
         </div>
+        {#if error}
+            <div transition:slide style="width:100%; margin-top:2rem; text-align:center; color:var(--red)">{error}</div>
+        {/if}
         <div style="width:80%; {$isNarrowScreen ? "flex-direction:column;" : "flex-direction:row;height:20%;"}  display: flex; align-items:center; justify-content:space-between; 
             margin-top:auto; margin-bottom:1rem; margin-top:4rem;">
             <button type="submit" class="submit-button" >

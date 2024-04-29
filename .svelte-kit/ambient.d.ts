@@ -41,6 +41,8 @@ declare module '$env/static/private' {
 	export const CUDA_PATH_V12_3: string;
 	export const DriverData: string;
 	export const EDITOR: string;
+	export const FPS_BROWSER_APP_PROFILE_STRING: string;
+	export const FPS_BROWSER_USER_PROFILE_STRING: string;
 	export const FR_CUSTOMDATA_PATH: string;
 	export const GHCUP_INSTALL_BASE_PREFIX: string;
 	export const GIT_ASKPASS: string;
@@ -156,6 +158,8 @@ declare module '$env/dynamic/private' {
 		CUDA_PATH_V12_3: string;
 		DriverData: string;
 		EDITOR: string;
+		FPS_BROWSER_APP_PROFILE_STRING: string;
+		FPS_BROWSER_USER_PROFILE_STRING: string;
 		FR_CUSTOMDATA_PATH: string;
 		GHCUP_INSTALL_BASE_PREFIX: string;
 		GIT_ASKPASS: string;

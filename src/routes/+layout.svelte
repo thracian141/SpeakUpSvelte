@@ -27,7 +27,7 @@
     onMount(async () => {
         loggedIn = await isLoggedIn();
         if (!loggedIn) {
-            goto('welcome');
+            goto('/welcome');
         } 
         //In Svelte, the check for "browser" toggles client-side rendering
         if (browser) {
@@ -43,6 +43,12 @@
 
 <div class="app">
     {#if loggedIn}
+    <div style="position: absolute; gap:1rem; display:flex; flex-direction:row; right:10rem; top:2.8rem; {$isNarrowScreen ? "top:1.8rem; right:9rem" : ""}">
+        <a href="https://www.instagram.com/speakup.support/" style=" display:flex;flex-direction:row; gap:0.4rem;">
+            <i class="bi bi-instagram"></i>
+            <span>Support page</span>
+        </a>
+    </div>   
     <button class="change-theme" on:click={changeTheme} style="{$isNarrowScreen ? "top:1rem; right:0.75rem" : ""}">
         {#if theme === 'dark'}
             <i class="bi bi-moon" in:slide out:slide></i>
@@ -61,8 +67,8 @@
             <NavbarPhone />
         {/if}
     {/if}
-    <main style="padding-left: {$isNarrowScreen == true || !loggedIn ? "0" : "4rem"}">
-        <div class="wrap" style="{$isNarrowScreen || !loggedIn ? "padding-left:0rem; width:100%;" : "padding-left:1rem;"}">
+    <main>
+        <div class="wrap" style="{$isNarrowScreen || !loggedIn ? "padding-left:0rem; width:100%;" : ""}">
             <slot />
         </div>
     </main>
@@ -99,11 +105,15 @@
     .app {
 		display: flex;
 		flex-direction: row;
-		min-height: 100vh;
+        min-height: 100%;
         box-sizing: border-box;
         position: relative;
         background-color: var(--bg-color);
+        padding: 0 !important;
+        align-items: stretch;
+        justify-content: stretch;
         overflow: hidden;
+        overflow-x: auto;
 	}
     main {
         position: relative;
@@ -111,7 +121,6 @@
 		flex-direction: column;
 		box-sizing: border-box;
         flex-grow: 1;
-        max-width: 100%;
         background-color: #00000000;
 	}
     .wrap {
@@ -121,5 +130,8 @@
         justify-content: center;
         height: 100%;
         width: 100%;
+    }
+    * {
+        box-sizing: border-box;
     }
 </style>

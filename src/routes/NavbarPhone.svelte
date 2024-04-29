@@ -180,7 +180,7 @@
         width: 0vw;
         background-color: var(--el-bg-color);
         transition: width 0.3s ease-in-out;
-        z-index: 5;
+        z-index: 998;
         overflow: hidden;
         box-sizing: border-box;
         overflow-y: scroll;
@@ -199,7 +199,7 @@
         padding: 0;
         color: var(--fg-color);
         transition: color 0.1s ease-in-out;
-        z-index: 5;
+        z-index: 999;
     }
         .nav-button:focus {
             color: var(--fg-color-2);

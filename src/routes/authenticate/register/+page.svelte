@@ -12,21 +12,31 @@
     let confirmpassword = '';
     let email = '';
 
+    let error = '';
+
     export async function handleSubmit(event: Event) {
         event.preventDefault();
 
         const model = {
             UserName: username,
+            DisplayName: displayname,
+            Email: email,
             Password: password,
         };
 
-        const response = await fetch(`${url}/authenticate/login`, {
+        const response = await fetch(`${url}/authenticate/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(model),
         });
+
+        if (!response.ok) {
+            const data = await response.json();
+            error = data.errors;
+            return;
+        }
 
         const data = await response.json();
 
@@ -76,6 +86,9 @@ style="{$isNarrowScreen ? "width:100%; padding: 1rem 0.2rem; height:100%; margin
             <input type="password" name="confirmpassword" class="form-control" bind:value={confirmpassword} style="padding-left: 3.5rem;" />
             <span>*</span>
         </div>
+        {#if error}
+            <div transition:slide style="width:100%; margin-top:2rem; text-align:center; color:var(--red); font-size:1.2rem;">{error}</div>
+        {/if}
         <div style="width:80%; height:20%; display: flex; {$isNarrowScreen ? "flex-direction:column-reverse; gap:30%; margin-top:auto; " : "flex-direction:row; justify-content:space-between; margin-top:4rem;"}  align-items:center; margin-bottom:1rem; ">
             <button type="submit" class="submit-button" >
                 {$_('authenticate.register')}

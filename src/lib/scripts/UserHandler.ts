@@ -194,16 +194,18 @@ export async function register(event: Event, username:string, email:string, pass
         body: JSON.stringify(model),
     });
 
+    if (!response.ok) {
+        let errors = await response.json();
+        return errors.errors;
+    }
+
     const data = await response.json();
 
-    if (response.ok) {
-        console.log("Login successful!");
-        document.cookie = `token=${data.token};path=/;Secure;SameSite=Strict;`;
-        await goto('/');
-        location.reload();
-    } else {
-        console.error("Login failed: ", data.message);
-    }
+    console.log("Login successful!");
+    document.cookie = `token=${data.token};path=/;Secure;SameSite=Strict;`;
+    await goto('/');
+    location.reload();
+    return '';
 }
 
 export async function editUsername(currentPassword:string, newUsername:string) {
@@ -344,7 +346,7 @@ export async function searchUsers(search: string) {
 export async function deleteAccount(userId: number) {
     let token = await getToken();
     const response = await fetch(`${url}/account/deleteaccount?userId=${userId}`, {
-        method: 'DELETE',
+        method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`
         }
