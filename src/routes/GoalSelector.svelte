@@ -12,7 +12,7 @@
 </script>
 
 
-<div transition:slide style="position: absolute; left:50%; top:100%; z-index:9999; transform:translateX(-50%); background-color:var(--bg-color); padding:1.5rem; border-radius:0.5rem; border:1px solid var(--bg-highlight-2); width:14rem; height:12rem; display:flex; flex-direction:column; justify-content:center; align-items:left;">
+<div transition:slide class="wrapper-drop">
     <span style="font-size: 1.1rem;">{$_('home.current_goal')}: <span style="color: var(--selected-text); font-weight:bold;">{currentDailyGoal}</span></span>
     <div class="input-row">
         <span style="margin-right: 0.2rem;">{$_('home.new_goal')}:</span> 
@@ -27,6 +27,44 @@
 </div>
 
 <style>
+    @media (hover: none) {
+        .submit-btn {
+            height: 3rem !important;
+        }
+        .wrapper-drop {
+            height:20rem !important;
+            padding: 1rem 1rem !important;
+            justify-content: space-between !important;
+        }
+        input[type="number"] {
+            height: 4.5rem !important;
+            width: 3.5rem !important;
+            font-size: 2rem !important;
+        }
+        .btn {
+            width: 2.25rem !important;
+            height: 2.25rem !important;
+            font-size: 2rem !important;
+        }
+
+    }
+    .wrapper-drop {
+        position: absolute; 
+        left:50%; 
+        top:100%; 
+        z-index:9999; 
+        transform:translateX(-50%); 
+        background-color:var(--bg-color); 
+        padding:1.5rem; 
+        border-radius:0.5rem; 
+        border:1px solid var(--bg-highlight-2); 
+        width:14rem; 
+        height:12rem; 
+        display:flex; 
+        flex-direction:column; 
+        justify-content:center; 
+        align-items:left;
+    }
     .submit-btn {
         background-color: var(--green);
         color: white;

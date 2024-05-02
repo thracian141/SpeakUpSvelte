@@ -385,4 +385,112 @@
         padding: 2rem;
         background: radial-gradient(at bottom, var(--cyan-half) 0%, var(--bg-color) 100%);
     }
+    @media (pointer: coarse) {
+        .outwrap {
+            width: 100vw !important;
+            padding: 0.5rem !important;
+            overflow-x: hidden !important;
+            overflow-y: scroll !important;
+        }
+            .outwrap::-webkit-scrollbar {
+                visibility: hidden !important;
+                width: 0 !important;
+            }
+        .top {
+            text-align: center !important;
+            height: 80vh !important;
+            padding-bottom: 0 !important;
+        }
+            .top h1 {
+                margin-left: 0rem !important;
+                font-size: 3.5rem !important;
+            }
+                .top > h1 > img {
+                    height: 4rem !important;
+                }
+            .top a {
+                margin-left: 0rem !important;
+                font-size: 1.5rem !important;
+            }
+        .cards {
+            flex-direction: column !important;
+            align-items: center !important;
+            height: fit-content;
+        }
+            .card {
+                rotate: 0deg !important;
+                width: 85vw;
+                height: 120vw;
+                margin-top: 0 !important;
+            }
+                .card:hover {
+                    width: 95vw !important;
+                }
+        .offeredlangs {
+            padding: 1rem;
+        }
+            .language {
+                width: 90vw;
+                height: 30vw;
+                align-items: center;
+                padding: 1.25rem;
+            }
+                .language > .imgwrap {
+                    width:5.75rem;
+                    height: 90%;
+                }
+                .language span {
+                    font-size: 2rem;
+                }
+            .register {
+                width: 95vw;
+                padding: 2rem 2rem;
+            }
+                .register > h1 {
+                    font-size: 2.3rem;
+                    width: 100%;
+                    margin-bottom: 1rem !important;
+                }
+                    .register > h1 > span > img {
+                        height: 3rem !important;
+                    }
+                .register > .group {
+                    width: 100%;
+                    height: 5rem;
+                }
+                    .group > label {
+                        height: 100%;
+                        text-align: right;
+                        width: 40%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-end;
+                        font-size: 1.2rem;
+                        white-space: wrap;
+                    }
+                    .group > input {
+                        padding-right: 42% !important;
+                    }
+            .buttons {
+                flex-direction: column;
+                width: 100%;
+                padding: 0.25rem;
+            }
+                .buttons > button[type="submit"] {
+                    width: 100%;
+                    height: 4rem;
+                    font-size: 1.6rem;
+                }
+                .anchors {
+                    width: 100%;
+                    margin-top: 0.5rem;
+                    padding: 0.25rem;
+                    height: 8rem;
+                    flex-direction: column;
+                    justify-content: space-around;
+                }
+                    .anchors > a {
+                        font-size: 1.2rem;
+                    }
+    }
 </style>

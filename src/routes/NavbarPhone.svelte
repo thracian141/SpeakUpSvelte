@@ -176,14 +176,15 @@
         position: absolute;
         display: flex;
         flex-direction: column;
-        height: 100vh;
+        min-height: 100vh;
+        height: 100%;
         width: 0vw;
         background-color: var(--el-bg-color);
         transition: width 0.3s ease-in-out;
         z-index: 998;
-        overflow: hidden;
         box-sizing: border-box;
-        overflow-y: scroll;
+        overflow-x: hidden;
+        overflow-y: auto;
     }
         .nav-open {
             width: 100vw;

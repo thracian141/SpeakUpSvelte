@@ -219,7 +219,7 @@
             .streak-info-btn {
                 top: -2.9rem !important;
                 right: 1.5rem !important;
-                z-index: 999;
+                z-index: 200;
             }   
                 .streak-info-btn > span {
                     left: 100% !important;
@@ -232,10 +232,27 @@
             height: 100%;
         }
             .stat-panel > .daily-goal-txt-2 {
-                font-size: 1rem !important;
+                font-size: 1.1rem !important;
                 height: 2rem !important;
             }
+            .change-goals-btn {
+                height:2.5rem !important;
+                font-size: 1.75rem !important;
+                padding-top: 0.26rem !important;
+            }
+        .sections {
+            border: 1px solid var(--bg-highlight-2) !important;
+        }
+        .sections::-webkit-scrollbar {
+            display: none !important;
+        }
+        .statistics-row-2 {
+            padding: 1rem 1rem !important;
+        }
     }
+
+
+
     .decks-anchor {
         color:var(--cyan); 
         text-decoration:1px solid underline; 

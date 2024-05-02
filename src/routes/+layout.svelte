@@ -105,7 +105,7 @@
     .app {
 		display: flex;
 		flex-direction: row;
-        min-height: 100%;
+        min-height: 100vh;
         box-sizing: border-box;
         position: relative;
         background-color: var(--bg-color);
