@@ -257,4 +257,10 @@
         flex-grow: 1;
         overflow: hidden;
     }
+    @media (pointer: coarse) {
+        .wrap > h3 {
+            margin-bottom: 2rem !important;
+            
+        }
+    }
 </style>
