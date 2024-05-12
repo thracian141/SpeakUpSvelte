@@ -73,4 +73,10 @@
         box-sizing: border-box;
         min-width: 0;
     }
+    @media (pointer: coarse) {
+        .outwrap {
+            width: 100vw;
+            max-width: 100vw;
+        }
+    }
 </style>

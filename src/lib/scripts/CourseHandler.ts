@@ -155,6 +155,23 @@ export async function listActiveCourses() {
     return courseList;
 }
 
+export async function removeActiveCourse(courseCode: string) {
+    let token = await getToken();
+    const response = await fetch(`${url}/course/removeactive?courseCode=${courseCode}`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (!response.ok) 
+        throw new Error('Error removing active course');
+
+    const code = await response.text();
+    return code;
+}
+
 export async function getLastEdit(courseCode: string) {
     let token = await getToken();
     const response = await fetch(`${url}/course/getlastedit?courseCode=${courseCode}`, {

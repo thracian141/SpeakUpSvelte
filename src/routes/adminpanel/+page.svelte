@@ -6,6 +6,8 @@
     import { onMount } from 'svelte';
     import DeckRow from './DeckRow.svelte';
     import UserRow from './UserRow.svelte';
+    import {checkIfAdmin} from '$lib/scripts/UserHandler';
+    import {isNarrowScreen} from '$lib/store'
 
     let ready = false;
 
@@ -14,8 +16,10 @@
     let roles: string[] = [];
     let decks: Deck[] = [];
     let search = '';
+    let isAdmin = false;
 
     onMount(async()=>{
+        isAdmin = await checkIfAdmin();
         let data = await searchUsers('sys');
         users = data.users;
         roles = data.roles;
@@ -23,7 +27,11 @@
     });
 </script>
 
-{#if ready}
+{#if !isAdmin}
+    <h1 >Unauthorized</h1>
+{:else if $isNarrowScreen}
+    <h1 style="margin: 0 1rem;">Моля посетете страницата от десктоп компютър.</h1>
+{:else if ready}
 <div class="panel" transition:slide style="position: relative; z-index:999;">
     <h1 style="margin:0; align-self:flex-start; margin-bottom:1rem;">Admin Panel</h1>
     <div class="wrap-search">

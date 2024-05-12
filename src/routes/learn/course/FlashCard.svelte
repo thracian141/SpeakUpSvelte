@@ -52,6 +52,7 @@
     }
 
     onMount(async() => {
+        answerElement.focus();
         answerPseudoWidth = answerPseudoElement.clientWidth;
         let regex = new RegExp(currentCardLink.card.back, 'i');
         sentenceBackParts = currentSentence.back.split(regex);
@@ -308,6 +309,75 @@
                         border-color: var(--bg-highlight-2);
                         color: var(--fg-color);
                     }
+    @media (pointer: coarse) {
+        #answer-pseudo {
+            font-size: 1.75rem;
+        }
+        .flashcard {
+            width: 100%;
+            border-radius: 0;
+            padding: 0;
+            height: fit-content;
+        }
+            .flashcard-top {
+                position: relative;
+                height: 5rem;
+                padding-left: 4rem;
+            }
+                .flashcard-top > .card-options-btn {
+                    margin-top: 0.5rem;
+                    margin-right: 0.5rem;
+                    position: static;
+                }
+                    .dropdown {
+                        width: 100vw;
+                        top:4.5rem;
+                        right: 0;
+                        left:auto;
+                        transform: translateX(0);
+                    }
+            .flashcard-middle {
+                padding-top: 0.25rem;
+                padding-bottom: 0.75rem;
+                flex-grow: 0;
+            }
+                .sentence-and-input {
+                    font-size: 1.75rem;
+                }
+                    #answer-input {
+                        font-size: 1.75rem;
+                        height:2.5rem;
+                        border-radius: 0.25rem;
+                    }
+                .part-of-speech {
+                    margin-top: 1rem;
+                    height:2rem;
+                    background: none;
+                    align-self: center;
+                    font-size: 1rem;
+                    color: var(--fg-color-2) !important; 
+                }
+            .flashcard-bottom {
+                height: fit-content;
+            }
+                .front-wrap {
+                    gap:0.25rem;
+                    padding:0.25rem 0;
+                }
+                    .front-word {
+                        font-size: 1.5rem;
+                    }
+                    .front-sentence {
+                        font-size: 1rem;
+                        margin-left: 0;
+                        text-align: left;
+                    }
+                .answer-btn {
+                    width: fit-content;
+                    height: 3rem;
+                    font-size: 1rem;
+                }
+    }
     * {
         box-sizing: border-box;
     }

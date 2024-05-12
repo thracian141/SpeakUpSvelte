@@ -101,7 +101,7 @@
     </div>
     {/if}
     <div class="cards-list" id='list' bind:this={cardsListElement}>
-        <div class="card-input-row">
+        <div class="card-input-row" style="order:0">
             <input type="text" placeholder="{$_('create.course.front')}" id="front" bind:value={currentFront}/>
             <input type="text" placeholder="{$_('create.course.back')}"  bind:value={currentBack}/>
             <button class="pos-dropdown" on:click={togglePOSDropdown}>
@@ -129,7 +129,7 @@
                 <span style="width:100%; text-align:center;">{$_('create.course.no_cards_added_yet')}</span>
             </div>
         {:else}
-            <div class="info-row" transition:slide>
+            <div class="info-row" style="order: 0;" transition:slide>
                 <span style="width:23.5%;">{$_('create.course.front')}</span>
                 <span style="width:23%;">{$_('create.course.back')}</span>
                 <span style="width:20%; margin-right:0;">{$_('create.course.part_of_speech')}</span>
@@ -276,12 +276,13 @@
             }
     .cards-list {
         display: flex;
-        flex-direction: column-reverse;
-        justify-content: flex-end;
+        flex-direction: column;
+        justify-content: flex-start;
         width: 100%;
         height: 80%;
-        overflow-y: scroll;        
+        overflow: auto;      
         overflow-x: hidden;
+        overflow-y: scroll !important;
     }
         .cards-list::-webkit-scrollbar-track {
             background: var(--el-bg-color);

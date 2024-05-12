@@ -3,6 +3,7 @@
 	import type { Deck } from '$lib/scripts/DeckHandler';
     import { createEventDispatcher } from 'svelte';
     import { editDeck } from '$lib/scripts/DeckHandler';
+    import {_} from 'svelte-i18n';
 
     const dispatch = createEventDispatcher();
     
@@ -20,14 +21,14 @@
 <div class="overlay" on:click={()=>dispatch('close')} transition:fade>
     <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <form class="modal" on:click|stopPropagation transition:slide>
-        <h1 style="margin:0; margin-bottom:2rem;">Edit <span>{deck.deckName}</span></h1>
+        <h1 style="margin:0; margin-bottom:2rem;">{$_('decks.all.edit')} <span>{deck.deckName}</span></h1>
         <button class="close-btn" on:click={()=>{dispatch('close')}}><i class="bi bi-x-lg"></i></button>
         <div class="group">
-            <label for="deckName">Deck Name</label>
+            <label for="deckName">{$_('decks.all.deck_name')}</label>
             <input style="height:3rem;" type="text" id="deckName" bind:value={deckName} />
         </div>
         <div class="">
-            <label for="deckDescription">Deck Description</label>
+            <label for="deckDescription">{$_('decks.all.deck_description')}</label>
             <textarea id="deckDescription" bind:value={deckDescription}></textarea>
         </div>
         <button type="submit" on:click={async()=>{deck = await editDeck(deck.id, deckName, deckDescription); dispatch('edit', deck)}}>

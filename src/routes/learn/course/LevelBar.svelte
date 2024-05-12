@@ -1,6 +1,7 @@
 <script lang='ts'>
     import { onMount } from "svelte";
     import { _ } from "$lib/i18n";
+  import { isNarrowScreen } from "$lib/store";
 
     export let level: number;
 
@@ -42,9 +43,9 @@
                 
         </div>
     {/each}
-    {#if level == 0}
+    {#if level == 0 && !$isNarrowScreen}
         <span style="color:{barColor}">{$_('learn.this_word_is_new')}</span>
-    {:else if level == 50}
+    {:else if level == 50 && !$isNarrowScreen}
         <span style="color:{barColor}">{$_("learn.you_know_this_lets_keep_going")}</span>
     {/if}
 </div>

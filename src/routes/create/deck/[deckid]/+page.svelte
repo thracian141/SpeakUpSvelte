@@ -11,6 +11,7 @@
     import { page } from '$app/stores';
     import { listCardsByDeck, type Card, type DeckCardInput as CardInput, addCardToDeck as addCard, type DeckCard, addCardToDeck } from '$lib/scripts/CardHandler';
     import DeckCardRow from './DeckCardRow.svelte';
+  import { url } from '$lib/url';
 
     let cardsListElement: HTMLDivElement;
 
@@ -74,7 +75,7 @@
                 {/if}
             </span>
         </p>
-        <button><i class="bi bi-three-dots-vertical"></i></button>
+        <a class="go-back" href="/decks/all"><i class="bi bi-arrow-90deg-left"></i></a>
     </div>
     <div class="cards-list" id='list' bind:this={cardsListElement}>
         <div class="card-input-row">
@@ -96,7 +97,11 @@
                 <span style="width:35%;">{$_('create.course.front')}</span>
                 <span style="width:35%;">{$_('create.course.back')}</span>
                 <span style="width:10%; margin-right:0;">{$_('create.course.level')}</span>
+                {#if !$isNarrowScreen}
                 <span style="width:10%; ">{$_('create.course.difficulty')}</span>
+                {:else}
+                <span style="width:10%; ">{$_('create.course.difficulty').slice(0,4)}.</span>
+                {/if}
                 <span style="width: 8%;"></span>
             </div>
         {/if}
@@ -111,6 +116,9 @@
 
 
 <style>
+    .go-back {
+        font-size: 2rem;
+    }
     .info-row {
         display: flex;
         flex-direction: row;
@@ -195,7 +203,7 @@
         justify-content: flex-end;
         width: 100%;
         height: 80%;
-        overflow-y: scroll;        
+        overflow-y: auto;       
         overflow-x: hidden;
     }
         .cards-list::-webkit-scrollbar-track {
@@ -218,6 +226,7 @@
         padding: 1rem;
         color: var(--fg-color);
         font-weight: normal;
+        z-index: 50;
     }
     .top-row {
         display: flex;
@@ -229,20 +238,6 @@
         align-items: center;
         justify-content: space-between;
     }
-        .top-row > button {
-            background:none;
-            border: none;
-            color: var(--fg-color);
-            height:80%;
-            aspect-ratio: 1/1;
-            font-size: 2.25rem;
-            border-radius: 999px;
-            transition: all 0.12s ease-in-out;
-        }
-            .top-row > button:hover {
-                background: var(--bg-highlight);
-                cursor: pointer;
-            }
         .top-row > p {
             font-size: 2rem;
             margin: 0;
@@ -270,5 +265,51 @@
     * {
         box-sizing: border-box;
         min-width: 0;
+    }
+    @media (pointer: coarse) {
+        .outwrap {
+            width: 100vw !important;
+        }
+        .go-back {
+            font-size: 1.2rem;
+        }
+        .cards-list {
+            width: 100vw !important;
+            padding: 0 !important;
+        }
+        .card-input-row {
+            width: 100%;
+            justify-content: space-between;
+        }
+            .card-input-row > input {
+                margin-right:0;
+                font-size: 1rem;
+                width: 35%;
+            }
+            .card-input-row > button {
+                margin-right: 0;
+            }
+            .card-input-row > button:last-child {
+                margin-right: 0;
+            }
+        .info-row {
+            padding: 0;
+            margin-left: 1rem;
+            justify-content: flex-start;
+        }
+            .info-row > span {
+                font-size: 1rem;
+                margin-right: 0;
+                text-align: left;
+            }
+                .info-row > span:nth-child(1) {
+                    width:27.5% !important;
+                }
+                .info-row > span:nth-child(2) {
+                    width:24% !important;
+                }
+                .info-row > span:nth-child(3) {
+                    width:15% !important;
+                }
     }
 </style>

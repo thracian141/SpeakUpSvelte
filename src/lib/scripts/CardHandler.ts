@@ -51,6 +51,13 @@ export interface DeckCardInput {
     difficulty:number;
     deckId: number;
 }
+    export interface EditDeckCardModel {
+        id: number;
+        front: string;
+        back: string;
+        difficulty: number;
+        flaggedAsImportant: boolean;
+    }
 
 export interface CourseCardInput {
     front: string;
@@ -220,6 +227,25 @@ export async function editCardFromCourse(edit:EditCourseCardModel) {
     const data = await response.json();
     const card:CourseCard = data.oldCard; // the old car is now updated
 
+    return card;
+}
+
+export async function editCardFromDeck(edit: EditDeckCardModel) {
+    let token = await getToken();
+    const response = await fetch(`${url}/card/editFromDeck`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(edit)
+    });
+
+    if (!response.ok) 
+        throw new Error('Error editing card');
+
+    const data = await response.json();
+    const card:DeckCard = data.oldCard; // the old car is now updated
     return card;
 }
 

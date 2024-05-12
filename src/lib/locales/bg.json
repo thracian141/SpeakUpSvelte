@@ -70,7 +70,13 @@
             "create_personal_deck": "Създай персонално тесте",
             "this_is_already_your_active_course": "Това вече е вашият активен курс.",
             "this_is_already_your_active_deck": "Това вече е вашето активно тесте.",
-            "add_cards": "Добави карти"
+            "add_cards": "Добави карти",
+            "stop_learning": "Прекрати курс",
+            "cards": "Карти",
+            "edit": "Редактирай",
+            "delete": "Изтрий",
+            "deck_name": "Име на тестето",
+            "deck_description": "Описание на тестето"
         }
     },
     "learn": {

@@ -6,6 +6,7 @@
     import { onMount } from 'svelte';
     import {_} from 'svelte-i18n';
     import { slide } from 'svelte/transition';
+  import { isNarrowScreen } from '$lib/store';
 
     let isDev = false;
     let ready = false;
@@ -23,6 +24,8 @@
 
 {#if !isDev}
     <h1>Unauthorized</h1>
+{:else if $isNarrowScreen}
+    <h1 style="margin: 0 1rem;">Моля посетете страницата от десктоп компютър.</h1>
 {:else if ready}
 <div class="bugs-wrap" transition:slide>
     <div style="display: flex; flex-direction:row; justify-content:space-between; align-items:center;">

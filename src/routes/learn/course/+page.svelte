@@ -7,6 +7,7 @@
     import { fade, fly } from "svelte/transition";
     import {_} from 'svelte-i18n'
   import { circInOut, cubicInOut, elasticInOut, expoInOut, quadInOut, quintInOut, sineInOut } from "svelte/easing";
+  import { isNarrowScreen } from "$lib/store";
 
     interface Data {
         cardLink: CardLink;
@@ -46,6 +47,7 @@
         <div class="flashcard-wrap" in:fly={{ x: 1000, y: 0, duration: 500, easing:sineInOut }}>
             {#if currentCardLink && currentSentence}
                 <FlashCard {currentCardLink} {currentSentence} on:answered={async()=>{await nextCard(0)}}/>
+                {#if !$isNarrowScreen}
                 <button id="next-card-btn" on:click={async()=>{
                     if (currentCardLink){
                         await nextCard(currentCardLink.id);
@@ -53,6 +55,7 @@
                     }}>
                     <i class="bi bi-chevron-compact-right"></i>
                 </button>
+                {/if}
             {/if}
         </div>
     {/if}
@@ -94,4 +97,13 @@
             #next-card-btn:hover > i {
                 filter: drop-shadow(0 0 0.1rem var(--fg-color-2));
             }
+    @media (pointer: coarse) {
+        .flashcard-wrap {
+            width: 100vw;
+            height: 100vh;
+            z-index: 50;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+    }
 </style>

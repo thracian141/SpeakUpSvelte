@@ -261,6 +261,11 @@
                         border-color: var(--bg-highlight-2);
                         color: var(--fg-color);
                     }
+    @media (pointer: coarse) {
+        .flashcard {
+            width: 100% !important;
+        }
+    }
     * {
         box-sizing: border-box;
     }

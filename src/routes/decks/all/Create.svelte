@@ -217,4 +217,21 @@
         display: flex;
         flex-direction: column;
     }
+    @media (pointer: coarse) {
+        h1 {
+            font-size: 1.5rem;
+        }
+        form {
+            overflow-x: hidden;
+        }
+            .inner-wrap {
+                width: 100%;
+            }
+            #name {
+                width: 100%;
+            }
+            #description {
+                width: 100%;
+            }
+    }
 </style>

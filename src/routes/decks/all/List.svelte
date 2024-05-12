@@ -6,8 +6,7 @@
     import {setActiveDeck, getDecksList} from '$lib/scripts/DeckHandler';
     import type {Deck} from '$lib/scripts/DeckHandler';
     import type { Course } from '$lib/scripts/CourseHandler';
-    import {listActiveCourses} from '$lib/scripts/CourseHandler';
-    import {changeActiveCourse} from '$lib/scripts/CourseHandler';
+    import {changeActiveCourse, listActiveCourses, removeActiveCourse} from '$lib/scripts/CourseHandler';
     import Edit from './Edit.svelte';
     import Delete from './Delete.svelte';
 
@@ -53,6 +52,10 @@
         decksList = await decksList.filter(deck => deck.id != deletingDeckId);
         closeDelete();
     }
+    async function handleStopLearning() {
+        await removeActiveCourse(activeDropdown);
+        coursesList = coursesList.filter(course => course.courseCode != activeDropdown);
+    }
 
     $: {
         filteredDecks = decksList.filter(deck => deck.deckName.toLowerCase().includes(searchbarInput.toLowerCase()));
@@ -68,14 +71,14 @@
         <h2>{$_('decks.all.your_active_courses')}</h2>
         {#if coursesList.length > 0}
             <!-- svelte-ignore a11y-no-static-element-interactions -->
-            {#each filteredCourses as course}
+            {#each filteredCourses as course, index (course.courseCode)}
                 <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <div class="course-wrap" transition:slide on:click={async()=>{await changeActiveCourse(course.courseCode)}}>
                     <button on:click|stopPropagation={()=>{
                         if (activeDropdown==course.courseCode){activeDropdown=null} else{activeDropdown=course.courseCode}}}>
                         <i class="bi bi-gear-fill"></i>
                         <div class="options-dropdown" class:dropped={activeDropdown==course.courseCode}>
-                            a
+                            <button on:click={async()=>{await handleStopLearning()}}>{$_('decks.all.stop_learning')}</button>
                         </div>
                     </button>
                     <img src="{course.image}" alt="{course.courseCode}" />
@@ -108,9 +111,9 @@
                 <button on:click|stopPropagation={()=>{if(activeDropdown==deck.id){activeDropdown=null} else{activeDropdown=deck.id}}}>
                     <i class="bi bi-gear-fill"></i>
                     <div class="options-dropdown" class:dropped={activeDropdown==deck.id}>
-                        <a href="/create/deck/{deck.id}">Cards</a>
-                        <button on:click={() => {editorOpen=!editorOpen; editingDeck=deck, editingDeckIndex = index}}>Edit</button>
-                        <button on:click={() => {deleteOpen=!deleteOpen; deletingDeckName=deck.deckName; deletingDeckIndex = index, deletingDeckId=deck.id}}>Delete</button>
+                        <a href="/create/deck/{deck.id}">{$_('decks.all.cards')}</a>
+                        <button on:click={() => {editorOpen=!editorOpen; editingDeck=deck, editingDeckIndex = index}}>{$_('decks.all.edit')}</button>
+                        <button on:click={() => {deleteOpen=!deleteOpen; deletingDeckName=deck.deckName; deletingDeckIndex = index, deletingDeckId=deck.id}}>{$_('decks.all.delete')}</button>
                     </div>
                 </button>
                 <span style="font-size: 1.8rem;">{deck.deckName}</span>
@@ -330,5 +333,21 @@
     * {
         box-sizing: border-box;
         min-width: 0;
+    }
+    @media (pointer: coarse) {
+        .course-wrap {
+            height: 5rem !important;
+        }
+            .course-wrap > img {
+                width: 4rem;
+                height: 2.75rem;
+            }
+            .course-wrap > span {
+                font-size: 1.2rem !important;
+            }
+            .course-wrap > p {
+                font-size: 1rem !important;
+            }
+        
     }
 </style>

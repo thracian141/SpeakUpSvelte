@@ -70,7 +70,13 @@
             "create_personal_deck": "Create personal deck",
             "this_is_already_your_active_course": "This is already your active course.",
             "this_is_already_your_active_deck": "This is already your active deck.",
-            "add_cards": "Add cards"
+            "add_cards": "Add cards",
+            "stop_learning": "Stop learning",
+            "cards": "Cards",
+            "edit": "Edit",
+            "delete": "Delete",
+            "deck_name": "Deck name",
+            "deck_description": "Deck description"
         }
     },
     "learn": {

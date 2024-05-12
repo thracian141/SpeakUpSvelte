@@ -166,4 +166,17 @@
     * {
         box-sizing: border-box;
     }
+    @media (pointer: coarse) {
+        .overlay { 
+            width: 100vw;
+        }
+        .container {
+            width: 100%;
+            border-radius: 0;
+        }
+        .buttons-row {
+            align-items: center;
+            gap: 0.5rem;
+        }
+    }
 </style>

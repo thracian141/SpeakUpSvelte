@@ -4,10 +4,15 @@
     import { browser } from '$app/environment';
     import { onMount } from 'svelte';
     import { _, locale } from '$lib/i18n';
+    import { getLastCourse } from '$lib/scripts/CourseHandler';
+    import {checkIfAdmin, checkIfDev} from '$lib/scripts/UserHandler';
     let isOpen = false;
 
     let isLogoutConfirmed = false;
+    let lastCourse:any|undefined = undefined;
     let isLoggedIn: boolean | undefined;
+    let isAdmin = false;
+    let isDev = false;
     function logout() {
         if (browser){
             document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
@@ -31,6 +36,11 @@
     }
     onMount(async () => {
         isLoggedIn = await UserHandler.isLoggedIn();
+        lastCourse = await getLastCourse();
+        isAdmin = await checkIfAdmin();
+        isDev = await checkIfDev();
+        if (isAdmin)
+            isDev = true;
         await document.querySelectorAll('.nav-option').forEach((element) => {
             element.addEventListener('click', () => {
                 setTimeout(() => {
@@ -50,7 +60,7 @@
     <div class="nav-top">
         <div class="logo" style="display: flex; flex-direction:row;">
             <img src="/logo.svg" alt="SpeakUp Logo"/>
-            <p>SPEAK <span>-</span>UP</p>
+            <p style="overflow:hidden; text-wrap:nowrap">SPEAK <span>-</span>UP</p>
         </div>
         <button class="nav-button" on:click={()=>isOpen=false}>
             <i class="bi bi-list-nested"></i>
@@ -63,14 +73,9 @@
         <a href="/learn" class="nav-option" class:active={$page.url.pathname.includes("/learn")}>
             <i class="bi bi-play-btn"></i><p>{$_('layout.learn')}</p>
         </a>
-        <a href="/decks" class="nav-option" class:active={$page.url.pathname.includes("/decks")}>
+        <a href="{lastCourse != null ? "/decks/all" : "/decks"}" class="nav-option" class:active={$page.url.pathname.includes("/decks")}>
             <i class="bi bi-card-list"></i><p>{$_('layout.decks')}</p>
         </a>
-        {#if true}
-        <a href="/create" class="nav-option" class:active={$page.url.pathname.includes('/create')}>
-            <i class="bi bi-pencil-square"></i><p>{$_('layout.create')}</p>
-        </a>
-        {/if}
         <a href="/account" class="nav-option" class:active={$page.url.pathname.includes('/account')}>
             <i class="bi bi-person" style="font-size:5rem; margin-left:-0.5rem;"></i><p>{$_('layout.account')}</p>
         </a>
