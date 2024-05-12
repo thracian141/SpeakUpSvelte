@@ -566,7 +566,12 @@
     }
 
     @media (pointer: coarse) {
-        
+        .wrap-m {
+            justify-content: flex-start !important;
+        }
+            .wrap-m > div {
+                margin-bottom: 0.5rem !important;
+            }
         .last-course {
             margin-bottom: 0.5rem !important;
         }
@@ -605,6 +610,8 @@
         }
         .statistics-row-2 {
             padding: 1rem 1rem !important;
+            margin-top: 0 !important;
+            margin-bottom: 1rem !important;
         }
     }
 </style>
