@@ -1,5 +1,5 @@
 import { goto } from '$app/navigation';
-import { getToken } from './UserHandler';
+import { getToken, type User } from './UserHandler';
 import { url } from '$lib/url';
 
 export interface DeckInput {
@@ -164,6 +164,23 @@ export async function deleteDeck(deckId: number) {
     }
 
     return response.text();
+}
+
+export async function getDeckOwner(deckId: number) {
+    let token = await getToken();
+    const response = await fetch(`${url}/deck/getowner?deckId=${deckId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error('Error getting owner');
+    }
+
+    const data = await response.text();
+    return data;
 }
         
         

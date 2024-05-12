@@ -13,6 +13,9 @@
     let isLoggedIn: boolean | undefined;
     let isAdmin = false;
     let isDev = false;
+    $: if (isOpen) {
+        isLogoutConfirmed = false;
+    }
     function logout() {
         if (browser){
             document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
@@ -41,12 +44,15 @@
         isDev = await checkIfDev();
         if (isAdmin)
             isDev = true;
-        await document.querySelectorAll('.nav-option').forEach((element) => {
+        const navOptions = document.querySelectorAll('.nav-option');
+        navOptions.forEach((element, index) => {
+            if (index !== navOptions.length - 1) {
             element.addEventListener('click', () => {
                 setTimeout(() => {
-                    isOpen = false;
+                isOpen = false;
                 }, 100);
             });
+            }
         });
     });
 </script>
@@ -88,7 +94,7 @@
                 <p style="text-overflow:clip; white-space:nowrap">{$_('layout.sign in')}</p>
             </a>
             {:else}
-            <a id="authForm" class="nav-option" href="/" class:active={isLogoutConfirmed} on:click|preventDefault={handleLogoutClick}>
+            <a id="authForm" class="nav-option" href="/" class:active={isLogoutConfirmed} on:click|stopPropagation={handleLogoutClick}>
                 <i class="bi bi-box-arrow-right" style="margin-left: 0.5rem !important; font-size:5rem"></i>
                 <p style="text-overflow:clip; white-space:nowrap">{isLogoutConfirmed ? 'Confirm' : 'Sign Out'}</p>
             </a>

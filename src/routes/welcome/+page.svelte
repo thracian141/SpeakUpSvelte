@@ -5,7 +5,7 @@
     let langs: HTMLDivElement[] = [];
     let anyHovered = false;
     let hoveredLang: string;
-    let selectedLang: string;
+    let selectedLang: string = 'none';
 
     let username = '';
     let password = '';
@@ -61,39 +61,39 @@
     </div>
     <div class="offeredlangs">
         <h1>Choose a language <span style="color: var(--selected-text);">you</span> want to learn</h1>
-        <div class="language" id="de" class:unhovered={(anyHovered && hoveredLang!='de')} on:mouseenter={()=>{anyHovered=true; hoveredLang='de'}} on:mouseleave={()=>{anyHovered=false;hoveredLang=''}} role='button' tabindex='-1'>
+        <div class="language" id="en-to-de" class:unhovered={(anyHovered && hoveredLang!='en-to-de')} on:mouseenter={()=>{anyHovered=true; hoveredLang='en-to-de'}} on:mouseleave={()=>{anyHovered=false;hoveredLang=''}} role='button' tabindex='-1'>
             <div class="imgwrap">
-                <img src="https://upload.wikimedia.org/wikipedia/en/thumb/b/ba/Flag_of_Germany.svg/1920px-Flag_of_Germany.svg.png" alt="de" />
+                <img src="https://upload.wikimedia.org/wikipedia/en/thumb/b/ba/Flag_of_Germany.svg/1920px-Flag_of_Germany.svg.png" alt="en-to-de" />
             </div>
             <span>German</span>
         </div>
-        <div class="language" id="it" class:unhovered={(anyHovered && hoveredLang!='it')} on:mouseenter={()=>{anyHovered=true; hoveredLang='it'}} on:mouseleave={()=>{anyHovered=false;hoveredLang=''}} role='button' tabindex='-1'>
+        <div class="language" id="en-to-it" class:unhovered={(anyHovered && hoveredLang!='en-to-it')} on:mouseenter={()=>{anyHovered=true; hoveredLang='en-to-it'}} on:mouseleave={()=>{anyHovered=false;hoveredLang=''}} role='button' tabindex='-1'>
             <div class="imgwrap">
-                <img src="https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Flag_of_Italy.svg/1920px-Flag_of_Italy.svg.png" alt="it" />
+                <img src="https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Flag_of_Italy.svg/1920px-Flag_of_Italy.svg.png" alt="en-to-it" />
             </div>
             <span>Italian</span>
         </div>
-        <div class="language" id="en" class:unhovered={(anyHovered && hoveredLang!='en')} on:mouseenter={()=>{anyHovered=true; hoveredLang='en'}} on:mouseleave={()=>{anyHovered=false;hoveredLang=''}} role='button' tabindex='-1'>
+        <div class="language" id="bg-to-en" class:unhovered={(anyHovered && hoveredLang!='bg-to-en')} on:mouseenter={()=>{anyHovered=true; hoveredLang='bg-to-en'}} on:mouseleave={()=>{anyHovered=false;hoveredLang=''}} role='button' tabindex='-1'>
             <div class="imgwrap">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Flag_of_England.svg/1920px-Flag_of_England.svg.png" alt="en" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Flag_of_England.svg/1920px-Flag_of_England.svg.png" alt="bg-to-en" />
             </div>
             <span>English</span>
         </div>
-        <div class="language" id="bg" class:unhovered={(anyHovered && hoveredLang!='bg')} on:mouseenter={()=>{anyHovered=true; hoveredLang='bg'}} on:mouseleave={()=>{anyHovered=false;hoveredLang=''}} role='button' tabindex='-1'>
+        <div class="language" id="en-to-bg" class:unhovered={(anyHovered && hoveredLang!='en-to-bg')} on:mouseenter={()=>{anyHovered=true; hoveredLang='en-to-bg'}} on:mouseleave={()=>{anyHovered=false;hoveredLang=''}} role='button' tabindex='-1'>
             <div class="imgwrap">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Flag_of_Bulgaria.svg/1920px-Flag_of_Bulgaria.svg.png" alt="bg" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Flag_of_Bulgaria.svg/1920px-Flag_of_Bulgaria.svg.png" alt="en-to-bg" />
             </div>
             <span>Bulgarian</span>
         </div>
-        <div class="language" id="tr" class:unhovered={(anyHovered && hoveredLang!='tr')} on:mouseenter={()=>{anyHovered=true; hoveredLang='tr'}} on:mouseleave={()=>{anyHovered=false;hoveredLang=''}} role='button' tabindex='-1'>
+        <div class="language" id="en-to-tr" class:unhovered={(anyHovered && hoveredLang!='en-to-tr')} on:mouseenter={()=>{anyHovered=true; hoveredLang='en-to-tr'}} on:mouseleave={()=>{anyHovered=false;hoveredLang=''}} role='button' tabindex='-1'>
             <div class="imgwrap">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Flag_of_Turkey.svg/1200px-Flag_of_Turkey.svg.png" alt="tr" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Flag_of_Turkey.svg/1200px-Flag_of_Turkey.svg.png" alt="en-to-tr" />
             </div>
             <span>Turkish</span>
         </div>
-        {#if selectedLang != '' && selectedLang != undefined}
+        {#if selectedLang != '' && selectedLang != undefined && selectedLang != 'none'}
         <form class="register" name="register" in:slide={{duration:600}} out:slide 
-        on:submit={async(e)=>{error = await register(e, username,email,password,null)}}>
+        on:submit={async(e)=>{error = await register(e, username,email,password,null, selectedLang)}}>
             <h1>Create a <span>free</span> account<br>and 
                 <span>
                     speak up

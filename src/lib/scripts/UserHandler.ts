@@ -176,14 +176,15 @@ export async function getLastDeck(userLastDeckId : number) {
     return response.json();
 }
 
-export async function register(event: Event, username:string, email:string, password:string, displayname:string|null) {
+export async function register(event: Event, username:string, email:string, password:string, displayname:string|null, courseCode:string) {
     event.preventDefault();
 
     const model = {
         UserName: username,
         DisplayName: displayname,
         Password: password,
-        Email: email
+        Email: email,
+        CourseCode: courseCode
     };
 
     const response = await fetch(`${url}/authenticate/register`, {

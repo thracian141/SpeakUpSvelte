@@ -180,5 +180,10 @@
         "add_more_cards_to": "Add more cards to",
         "or_pick_a": "or pick a",
         "different_deck": "different deck"
+    },
+    "admin": {
+        "admin_panel": "Admin panel",
+        "search_for_user_or_deck": "Search for a user or deck",
+        "results_will_appear_here": "Results will appear here"
     }
 }

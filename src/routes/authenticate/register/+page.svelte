@@ -22,6 +22,7 @@
             DisplayName: displayname,
             Email: email,
             Password: password,
+            CourseCode: 'none'
         };
 
         const response = await fetch(`${url}/authenticate/register`, {

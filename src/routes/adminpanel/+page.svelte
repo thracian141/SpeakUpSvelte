@@ -7,7 +7,8 @@
     import DeckRow from './DeckRow.svelte';
     import UserRow from './UserRow.svelte';
     import {checkIfAdmin} from '$lib/scripts/UserHandler';
-    import {isNarrowScreen} from '$lib/store'
+    import {isNarrowScreen} from '$lib/store';
+    import { _ } from 'svelte-i18n'
 
     let ready = false;
 
@@ -25,6 +26,17 @@
         roles = data.roles;
         ready = true;
     });
+
+    let searchHTML = '';
+
+    // Reactive statement to check if search input contains "@all"
+    $: {
+        if (search.includes('@all')) {
+            searchHTML = search.replace('@all', '<span contenteditable="false" class="blue">@all</span>');
+        } else {
+            searchHTML = search;
+        }
+    }
 </script>
 
 {#if !isAdmin}
@@ -33,15 +45,17 @@
     <h1 style="margin: 0 1rem;">Моля посетете страницата от десктоп компютър.</h1>
 {:else if ready}
 <div class="panel" transition:slide style="position: relative; z-index:999;">
-    <h1 style="margin:0; align-self:flex-start; margin-bottom:1rem;">Admin Panel</h1>
+    <h1 style="margin:0; align-self:flex-start; margin-bottom:1rem;">{$_('admin.admin_panel')}</h1>
     <div class="wrap-search">
-        <input type="text" placeholder="Search for a user or deck" bind:value={search}/>
+        <div contenteditable="true" id="search" class="search-input" bind:innerHTML={searchHTML} on:input={(e) => search = e.currentTarget.innerHTML}></div>
+        {#if search==''}<label for="search" class="search-label">{$_('admin.search_for_user_or_deck')}</label>{/if}
         <button class="search-btn" title="Search users" on:click={async()=>{decks = []; currentData = await searchUsers(search); users = currentData.users; roles = currentData.roles;}}><i class="bi bi-people"></i></button>
         <button class="search-btn" title="Search decks" on:click={async()=>{users = []; roles=[]; decks = await searchDecks(search)}}><i class="bi bi-card-list"></i></button>
+        <button class="search-btn" title="Clear search" on:click={()=>{search = ''; users = []; roles = []; decks = []}}><i class="bi bi-x"></i></button>
     </div>
     <div class="search-results">
         {#if users.length == 0 && search.length == 0}
-            <h3 style="margin:0; color:var(--fg-color); opacity:0.7;">Results will appear here...</h3>
+            <h3 style="margin:0; color:var(--fg-color); opacity:0.7;">{$_("admin.results_will_appear_here")}...</h3>
         {/if}
         {#each users as user, index}
             {#key user.id}
@@ -59,6 +73,23 @@
 
 
 <style>
+    .search-label {
+        position: absolute;
+        left: 3rem;
+        font-size: 1.2rem;
+        color: var(--fg-color-2);
+        height:fit-content;
+        pointer-events: none;
+    }
+    :global(.blue) {
+        color: var(--cyan);
+        font-weight: bold;
+        text-decoration: solid underline var(--cyan);
+        border: 1px solid var(--bg-highlight-2);
+        box-sizing: content-box;
+        padding: 0.2rem 0.5rem;
+        border-radius: 0.5rem;
+    }
     .panel {
         height: 45rem;
         width: 70rem;
@@ -89,14 +120,19 @@
             justify-content: space-between;
             gap:1rem;
         }
-            .wrap-search > input {
+            .search-input {
+                position: relative;
+                display: flex;
+                flex-direction: row;
+                justify-content: left;
+                align-items: center;
                 width: 100%;
                 height: 3rem;
                 border-radius: 0.5rem;
                 background-color: var(--bg-color);
                 color:var(--fg-color);
                 border: 1px solid var(--bg-highlight);
-                padding: 0 1rem;
+                padding: 0.25rem 1rem;
                 font-size: 1.2rem;
             }
             .search-btn {
