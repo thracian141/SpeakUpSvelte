@@ -231,4 +231,9 @@
         flex-direction: column;
         position: relative;
     }
+    @media (pointer: coarse) {
+        .words-learnt-wrap > span {
+            z-index: 6;
+        }
+    }
 </style>

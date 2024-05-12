@@ -75,10 +75,10 @@
     }
 </script>
 
-<div class="wrap" style="{$isNarrowScreen ? "width:100vw; max-width:100vw; padding:0; padding-top:4.75rem;": ""}">
-    <div class="panel" style="{$isNarrowScreen ? "border-radius: 0 !important; height:35rem;" : ""}">
+<div class="wrap">
+    <div class="panel">
         {#if user != undefined}
-        <div class="fields" style="{$isNarrowScreen ? "padding-bottom:0;" : "height:100%;"}" transition:slide>
+        <div class="fields" style="height:100%;" transition:slide>
             <div class="row">
                 <div class="user-field">
                     <span>{$_('account.account_created')}</span>
@@ -343,6 +343,18 @@
         gap:1rem;
         justify-content: center;
         align-items: center;
+    }
+    @media (pointer: coarse) {
+        .wrap {
+            width: 100vw !important;
+            max-width: 100vw !important;
+            margin-top: 5rem;
+            padding: 0;
+        }
+        .panel {
+            width: 100% !important;
+            border-radius: 0;
+        }
     }
     * {
         box-sizing: border-box;
