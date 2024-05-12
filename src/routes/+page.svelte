@@ -209,50 +209,6 @@
 
 
 <style>
-    @media (hover: none) {
-        .last-course {
-            margin-bottom: 0.5rem !important;
-        }
-        .statistics-row-1 {
-            height: auto !important;
-        }
-            .streak-info-btn {
-                top: -2.9rem !important;
-                right: 1.5rem !important;
-                z-index: 200;
-            }   
-                .streak-info-btn > span {
-                    left: 100% !important;
-                    top: 0% !important;
-                    z-index: 999;
-                }
-        .stat-panel {
-            text-align: center !important;
-            justify-content: flex-start;
-            height: 100%;
-        }
-            .stat-panel > .daily-goal-txt-2 {
-                font-size: 1.1rem !important;
-                height: 2rem !important;
-            }
-            .change-goals-btn {
-                height:2.5rem !important;
-                font-size: 1.75rem !important;
-                padding-top: 0.26rem !important;
-            }
-        .sections {
-            border: 1px solid var(--bg-highlight-2) !important;
-        }
-        .sections::-webkit-scrollbar {
-            display: none !important;
-        }
-        .statistics-row-2 {
-            padding: 1rem 1rem !important;
-        }
-    }
-
-
-
     .decks-anchor {
         color:var(--cyan); 
         text-decoration:1px solid underline; 
@@ -607,5 +563,48 @@
                         }
     * {
         box-sizing: border-box !important;
+    }
+
+    @media (pointer: coarse) {
+        
+        .last-course {
+            margin-bottom: 0.5rem !important;
+        }
+        .statistics-row-1 {
+            height: auto !important;
+        }
+            .streak-info-btn {
+                top: -2.9rem !important;
+                right: 1.5rem !important;
+                z-index: 200;
+            }   
+                .streak-info-btn > span {
+                    left: 100% !important;
+                    top: 0% !important;
+                    z-index: 999;
+                }
+        .stat-panel {
+            text-align: center !important;
+            justify-content: flex-start;
+            height: 100%;
+        }
+            .stat-panel > .daily-goal-txt-2 {
+                font-size: 1.1rem !important;
+                height: 2rem !important;
+            }
+            .change-goals-btn {
+                height:2.5rem !important;
+                font-size: 1.75rem !important;
+                padding-top: 0.26rem !important;
+            }
+        .sections {
+            border: 1px solid var(--bg-highlight-2) !important;
+        }
+        .sections::-webkit-scrollbar {
+            display: none !important;
+        }
+        .statistics-row-2 {
+            padding: 1rem 1rem !important;
+        }
     }
 </style>
