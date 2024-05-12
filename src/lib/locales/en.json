@@ -36,7 +36,9 @@
         "account": "Account",
         "sign in": "Sign in",
         "create": "Create",
-        "bug_reports": "Bugs"
+        "bug_reports": "Bugs",
+        "sign_out": "Sign out",
+        "confirm": "Confirm"
     },
     "languages": {
         "english": "English",

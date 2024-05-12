@@ -96,7 +96,7 @@
             {:else}
             <a id="authForm" class="nav-option" href="/" class:active={isLogoutConfirmed} on:click|stopPropagation={handleLogoutClick}>
                 <i class="bi bi-box-arrow-right" style="margin-left: 0.5rem !important; font-size:5rem"></i>
-                <p style="text-overflow:clip; white-space:nowrap">{isLogoutConfirmed ? 'Confirm' : 'Sign Out'}</p>
+                <p style="text-overflow:clip; white-space:nowrap">{isLogoutConfirmed ? `${$_('layout.confirm')}` : `${$_('layout.sign_out')}`}</p>
             </a>
             {/if}
         {/await}

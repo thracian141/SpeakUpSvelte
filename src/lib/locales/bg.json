@@ -36,7 +36,9 @@
         "account": "Профил",
         "sign in": "Вход",
         "create": "Създай",
-        "bug_reports": "Грешки"
+        "bug_reports": "Грешки",
+        "sign_out": "Изход",
+        "confirm": "Потвърди"
     },
     "languages": {
         "english": "Английски",
