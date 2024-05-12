@@ -82,6 +82,7 @@
         border-radius: 0.5rem;
         width: 100%;
         height:6rem;
+        margin-bottom: 0.75rem;
     }
 
     * {

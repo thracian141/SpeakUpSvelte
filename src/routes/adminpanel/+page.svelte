@@ -15,7 +15,11 @@
     let users: User[] = [];
     let currentData: any;
     let roles: string[] = [];
+
+    let decksData: any = [];
     let decks: Deck[] = [];
+    let owners: string[] = [];
+
     let search = '';
     let isAdmin = false;
 
@@ -46,11 +50,12 @@
 {:else if ready}
 <div class="panel" transition:slide style="position: relative; z-index:999;">
     <h1 style="margin:0; align-self:flex-start; margin-bottom:1rem;">{$_('admin.admin_panel')}</h1>
+    <p style="margin: 0; position:absolute; font-size:1.1rem; color:var(--cyan); right:2.5rem; top:2.5rem;">{$_('admin.hint')}</p>
     <div class="wrap-search">
         <div contenteditable="true" id="search" class="search-input" bind:innerHTML={searchHTML} on:input={(e) => search = e.currentTarget.innerHTML}></div>
         {#if search==''}<label for="search" class="search-label">{$_('admin.search_for_user_or_deck')}</label>{/if}
         <button class="search-btn" title="Search users" on:click={async()=>{decks = []; currentData = await searchUsers(search); users = currentData.users; roles = currentData.roles;}}><i class="bi bi-people"></i></button>
-        <button class="search-btn" title="Search decks" on:click={async()=>{users = []; roles=[]; decks = await searchDecks(search)}}><i class="bi bi-card-list"></i></button>
+        <button class="search-btn" title="Search decks" on:click={async()=>{users = []; roles=[]; decksData = await searchDecks(search); decks = decksData.decks; owners = decksData.owners}}><i class="bi bi-card-list"></i></button>
         <button class="search-btn" title="Clear search" on:click={()=>{search = ''; users = []; roles = []; decks = []}}><i class="bi bi-x"></i></button>
     </div>
     <div class="search-results">
@@ -62,9 +67,9 @@
                 <UserRow {user} role={roles[index]} on:delete={async()=>{users = [...users].filter(u => u.id != user.id)}} />
             {/key}
         {/each}
-        {#each decks as deck (deck.id)}
+        {#each decks as deck, index}
             {#key deck.id}
-                <DeckRow {deck} />
+                <DeckRow {deck} owner={owners[index]}/>
             {/key}
         {/each}
     </div>

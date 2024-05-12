@@ -1,17 +1,12 @@
 <script lang="ts">
     import type {Deck} from '$lib/scripts/DeckHandler';
     import { slide } from 'svelte/transition';
-    import {getDeckOwner} from '$lib/scripts/DeckHandler';
-    import { onMount } from 'svelte';
     import Edit from '../decks/all/Edit.svelte';
 
     export let deck: Deck;
-    let owner = '';
+    export let owner: string;
     let isEditing = false;
 
-    onMount(async()=>{
-        owner = await getDeckOwner(deck.ownerId);
-    });
 </script>
 
 
@@ -67,6 +62,7 @@
         border-radius: 0.5rem;
         width: 100%;
         height:6rem;
+        margin-bottom: 0.75rem;
     }
 
     * {

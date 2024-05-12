@@ -184,6 +184,7 @@
     "admin": {
         "admin_panel": "Admin panel",
         "search_for_user_or_deck": "Search for a user or deck",
-        "results_will_appear_here": "Results will appear here"
+        "results_will_appear_here": "Results will appear here",
+        "hint": "Type @all in the search bar to see all users or decks."
     }
 }

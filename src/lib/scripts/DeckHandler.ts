@@ -83,10 +83,10 @@ export async function searchDecks(search: string) {
     }
 
     const data = await response.json();
-    console.log(data.list);
-    const decksList: Deck[] = data.list;
+    const decks: Deck[] = data.list;
+    const owners: string[] = data.owners;
 
-    return decksList;
+    return {decks, owners};
 }
 
 export async function setActiveDeck(deckId: number) {
