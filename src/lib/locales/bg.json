@@ -1,6 +1,28 @@
 {
     "yes": "Да",
     "no": "Не",
+    "welcome": {
+        "welcome_to": "Добре дошли в",
+        "already_have_an_account": "Вече имате профил?",
+        "learn": "Научете",
+        "your1": "вашия",
+        "favorite_language": "любим език!",
+        "simple_engaging_and": "Прости, интересни и",
+        "FREE": "БЕЗПЛАТНИ",
+        "courses_in": "курсове на",
+        "languages": "езика",
+        "you_need_just": "Трябват Ви само",
+        "minutes": "минути",
+        "a_day": "на ден",
+        "choose_a_language": "Изберете език който",
+        "you": "вие",
+        "want_to_learn": "искате да научите",
+        "create_a": "Създайте",
+        "free": "безплатен",
+        "account_and": "акаунт и",
+        "speak_up": "говорeте",
+        "or_pick_a_language_later": "Искате да изберете езика по-късно?"
+    },
     "home" : {
         "welcome_back": "Добре дошли отново,",
         "jump_back_into_your_last_course": "Върнете се обратно в последния си курс",

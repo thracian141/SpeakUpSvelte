@@ -19,7 +19,12 @@
     function changeLang() {
         $locale === 'en' ? locale.set('bg') : locale.set('en');
         localStorage.setItem('websiteLanguage', JSON.stringify($locale));
-        goto('/');
+        if (loggedIn) {
+            goto('/');
+        } else {
+            goto('/welcome/');
+        }
+
     }
 
     let loggedIn:boolean;
@@ -56,10 +61,10 @@
             <i class="bi bi-brightness-high" in:slide out:slide></i>
         {/if}
     </button>
+    {/if}
     <button class="change-theme" style="right:6rem; {$isNarrowScreen ? "top:1rem; right:5rem;" : ""}" on:click={changeLang}>
         <i class="bi bi-translate" in:slide out:slide></i>
     </button>
-    {/if}
     {#if loggedIn}
         {#if !$isNarrowScreen}
             <Navbar />

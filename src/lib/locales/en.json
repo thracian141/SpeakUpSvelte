@@ -1,6 +1,28 @@
 {
     "yes": "Yes",
     "no": "No",
+    "welcome": {
+        "welcome_to": "Welcome to",
+        "already_have_an_account": "Already have an account?",
+        "learn": "Learn",
+        "your1": "your",
+        "favorite_language": "favorite language!",
+        "simple_engaging_and": "Simple, engaging, and",
+        "FREE": "FREE",
+        "courses_in": "courses in",
+        "languages": "languages",
+        "you_need_just": "You need just",
+        "minutes": "minutes",
+        "a_day": "a day",
+        "choose_a_language": "Choose a language",
+        "you": "you",
+        "want_to_learn": "want to learn",
+        "create_a": "Create a",
+        "free": "free",
+        "account_and": "account and",
+        "speak_up": "speak up",
+        "or_pick_a_language_later": "Or pick a language later"
+    },
     "home" : {
         "welcome_back": "Welcome back,",
         "jump_back_into_your_last_course": "Jump back into your last course",

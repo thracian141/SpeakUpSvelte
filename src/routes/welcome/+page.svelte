@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition'; import { onMount } from "svelte";
     import {register} from '$lib/scripts/UserHandler';
+    import {_} from 'svelte-i18n'
 
     let langs: HTMLDivElement[] = [];
     let anyHovered = false;
@@ -39,28 +40,28 @@
 <div class="outwrap">
     <div class="top">
         <h1 style="text-shadow: -1px 5px 6px var(--cyan-half);">
-            <span style="font-family: var(--font-important); color:var(--fg-ultra); font-weight:normal">Welcome to</span> 
+            <span style="font-family: var(--font-important); color:var(--fg-ultra); font-weight:normal">{$_('welcome.welcome_to')}</span> 
             <img src="/logo.svg" style="height:6rem; width:auto; margin-bottom:-1rem; margin-right:-0.5rem; filter:drop-shadow(-2px 4px 3px var(--fg-color-half))" alt="logo"/>
-            <span style="color: var(--selected-text); text-shadow: -1px 5px 6px var(--cyan-half);">SPEAKUP</span>
+            <span style="color: var(--selected-text); text-shadow: -1px 5px 6px var(--cyan-half);">SPEAK-UP</span>
         </h1>
-        <a href="/authenticate/login" style="text-shadow: -1px 3px 5px var(--cyan-half);">already have an account?</a>
+        <a href="/authenticate/login" style="text-shadow: -1px 3px 5px var(--cyan-half); text-transform:lowercase">{$_('welcome.already_have_an_account')}</a>
     </div>
     <div class="cards">
         <div class="card" style="rotate:-5deg">
-            <h1>Learn <span style="color: var(--cyan);">your</span> favorite <br>language!</h1>
+            <h1>{$_('welcome.learn')} <span style="color: var(--cyan);">{$_('welcome.your1')}</span> {$_('welcome.favorite_language')}</h1>
             <img src="/art2.svg" alt="ai art" class="art" style="rotate:-1.5deg"/>
         </div>
         <div class="card" style="z-index:1;">
-            <h1>Simple, engaging, and <span style="color:var(--green)">FREE</span> courses in <span style="color:var(--red)">5</span> languages.</h1>
+            <h1>{$_('welcome.simple_engaging_and')} <span style="color:var(--green)">{$_('welcome.FREE')}</span> {$_('welcome.courses_in')} <span style="color:var(--red)">5</span> {$_('welcome.languages')}.</h1>
             <img src="/languagesart.png" alt="people speaking different languages" class="art" style="width: 120%; height:auto; margin-right:1rem;"/>
         </div>
         <div class="card" style="rotate:5deg; text-align:right">
-            <h1>You need just <span style="color: var(--selected-text);"><br>15 minutes<br></span> a day</h1>
+            <h1>{$_('welcome.you_need_just')} <span style="color: var(--selected-text);"><br>15 {$_('welcome.minutes')}<br></span> {$_('welcome.a_day')}</h1>
             <img src="/hourglass.svg" alt="hourglass" class="art" style="rotate:1deg">
         </div>
     </div>
     <div class="offeredlangs">
-        <h1>Choose a language <span style="color: var(--selected-text);">you</span> want to learn</h1>
+        <h1>{$_('welcome.choose_a_language')} <span style="color: var(--selected-text);">{$_('welcome.you')}</span> {$_('welcome.want_to_learn')}</h1>
         <div class="language" id="en-to-de" class:unhovered={(anyHovered && hoveredLang!='en-to-de')} on:mouseenter={()=>{anyHovered=true; hoveredLang='en-to-de'}} on:mouseleave={()=>{anyHovered=false;hoveredLang=''}} role='button' tabindex='-1'>
             <div class="imgwrap">
                 <img src="https://upload.wikimedia.org/wikipedia/en/thumb/b/ba/Flag_of_Germany.svg/1920px-Flag_of_Germany.svg.png" alt="en-to-de" />
@@ -94,26 +95,26 @@
         {#if selectedLang != '' && selectedLang != undefined && selectedLang != 'none'}
         <form class="register" name="register" in:slide={{duration:600}} out:slide 
         on:submit={async(e)=>{error = await register(e, username,email,password,null, selectedLang)}}>
-            <h1>Create a <span>free</span> account<br>and 
+            <h1>{$_('welcome.create_a')} <span>{$_('welcome.free')}</span> {$_('welcome.account_and')}
                 <span>
-                    speak up
+                    {$_('welcome.speak_up')}
                     <img src="/logo.svg" style="height:4rem; width:auto; margin: 0 -0.5rem -0.5rem -0.5rem" alt="logo"/>
                 </span>!
             </h1>
             <div class="group">
-                <label for="username" class:filled={username!=''}>USERNAME</label>
+                <label for="username" class:filled={username!=''}>{$_('authenticate.username')}</label>
                 <input bind:value={username} type="text" style="padding-right: 11rem;" autocomplete="off"/>
             </div>
             <div class="group">
-                <label for="email" class:filled={email!=''}>EMAIL</label>
+                <label for="email" class:filled={email!=''}>{$_('authenticate.email')}</label>
                 <input bind:value={email} type="email" style="padding-right: 7rem;" autocomplete="off"/>
             </div>
             <div class="group">
-                <label for="password" class:filled={password!=''}>PASSWORD</label>
+                <label for="password" class:filled={password!=''}>{$_('authenticate.password')}</label>
                 <input bind:value={password} type="password"  style="padding-right: 11rem;" autocomplete="off"/>
             </div>
             <div class="group">
-                <label for="confirmpassword" class:filled={confirmpassword!=''}>CONFIRM PASSWORD</label>
+                <label for="confirmpassword" class:filled={confirmpassword!=''}>{$_('authenticate.confirm_password')}</label>
                 <input bind:value={confirmpassword} type="password" style="padding-right: 18rem;" autocomplete="off"/>
             </div>
             {#if error}
@@ -121,14 +122,14 @@
             {/if}
             <div class="buttons">
                 <button type="submit">
-                    REGISTER
+                    {$_('authenticate.register')}
                 </button>
                 <div class="anchors">
                     <a href="./authenticate/login">
-                        Already have an account?
+                        {$_('welcome.already_have_an_account')}
                     </a>
                     <a href="./authenticate/register">
-                        Or pick a language later
+                        {$_('welcome.or_pick_a_language_later')}
                     </a>
                 </div>
             </div>
