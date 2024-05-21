@@ -16,12 +16,17 @@
         "a_day": "на ден",
         "choose_a_language": "Изберете език който",
         "you": "вие",
-        "want_to_learn": "искате да научите",
+        "want_to_learn": "искате да учите",
         "create_a": "Създайте",
         "free": "безплатен",
         "account_and": "акаунт и",
         "speak_up": "говорeте",
-        "or_pick_a_language_later": "Искате да изберете езика по-късно?"
+        "or_pick_a_language_later": "Искате да изберете езика по-късно?",
+        "german": "Немски",
+        "italian": "Италиански",
+        "english": "Английски",
+        "bulgarian": "Български",
+        "turkish": "Турски"
     },
     "home" : {
         "welcome_back": "Добре дошли отново,",
@@ -185,7 +190,12 @@
             "back": "Гръб",
             "level": "Ниво",
             "difficulty": "Сложност",
-            "part_of_speech": "Част на речта"
+            "part_of_speech": "Част на речта",
+            "add_sentences_to": "Добави изречения към",
+            "sentence": "Изречение",
+            "translation": "Превод",
+            "clear_all": "Изчисти",
+            "include": "Включи лицето и гърба на картата в изречението и превода."
         }
     },
     "bugs": {

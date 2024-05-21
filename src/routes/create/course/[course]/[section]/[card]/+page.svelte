@@ -6,7 +6,7 @@
     import {getCourseCardById} from "$lib/scripts/CardHandler";
     import type {CourseCard} from "$lib/scripts/CardHandler";
     import { addSentenceToCard, deleteAllSentences, listSentences, type Sentence } from "$lib/scripts/SentenceHandler";
-    import { writable } from 'svelte/store';
+    import { _ } from 'svelte-i18n';
     import {sentencesStore} from '$lib/scripts/SentenceHandler';
 
     let ready = false;
@@ -20,11 +20,6 @@
     let currentBulkAddFile: FileList | undefined = undefined;
 
     let fileName: string | undefined = undefined;
-    $: {
-        if (currentBulkAddFile && currentBulkAddFile.item(0)) {
-            fileName = currentBulkAddFile.item(0)?.name;
-        }
-    }
 
     let isRotating = false;
     function rotateIcon() {
@@ -69,7 +64,7 @@
 <div class="outwrap">
     <div class="top-row">
         <h1>
-            Add sentences to 
+            {$_('create.course.add_sentences_to')}
             <span>{card?.front}</span>
         </h1>
         <a href="/create/course/{$page.params.course}/{$page.params.section}">
@@ -83,8 +78,8 @@
                     <i class="bi bi-arrow-counterclockwise"></i>
                 </div>
             </button>
-            <input type="text" placeholder="Sentence" bind:value={currentFrontSentence} />
-            <input type="text" placeholder="Translation" bind:value={currentBackSentence} />
+            <input type="text" placeholder="{$_('create.course.sentence')}" bind:value={currentFrontSentence} />
+            <input type="text" placeholder="{$_('create.course.translation')}" bind:value={currentBackSentence} />
             <button id="add-btn" style="font-size: 2rem;" on:click={async()=>{handleAdd()}} 
             class:disabled-btn={currentBackSentence=='' || currentFrontSentence==''}>
                 <i class="bi bi-plus"></i>
@@ -96,8 +91,8 @@
     </div>
     <div class="bottom-row">
         <p style="margin: 0;">{card?.front} - {card?.back}</p>
-        <span style="font-size: 1rem; margin-left:auto; color:var(--cyan)">Include the Front and Back of the card in the sentence.</span>
-        <button class="file-label" on:click={async()=>{await deleteAllSentences(Number(cardId)); await window.location.reload()}}>Clear All</button>
+        <span style="font-size: 1rem; margin-left:auto; color:var(--cyan)">{$_('create.course.include')}</span>
+        <button class="file-label" on:click={async()=>{await deleteAllSentences(Number(cardId)); await window.location.reload()}}>{$_('create.course.clear_all')}</button>
     </div>
 </div>
 {:else}

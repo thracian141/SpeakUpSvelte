@@ -21,7 +21,12 @@
         "free": "free",
         "account_and": "account and",
         "speak_up": "speak up",
-        "or_pick_a_language_later": "Or pick a language later"
+        "or_pick_a_language_later": "Or pick a language later",
+        "german": "German",
+        "italian": "Italian",
+        "english": "English",
+        "bulgarian": "Bulgarian",
+        "turkish": "Turkish"
     },
     "home" : {
         "welcome_back": "Welcome back,",
@@ -185,7 +190,12 @@
             "back": "Back",
             "level": "Level",
             "difficulty": "Difficulty",
-            "part_of_speech": "Part of speech"
+            "part_of_speech": "Part of speech",
+            "add_sentences_to": "Add sentences to",
+            "sentence": "Sentence",
+            "translation": "Translation",
+            "clear_all": "Clear all",
+            "include": "Include the Front and Back of the card in the sentence."
         }
     },
     "bugs": {
