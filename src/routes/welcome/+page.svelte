@@ -40,7 +40,7 @@
 <div class="outwrap">
     <div class="top">
         <h1 style="text-shadow: -1px 5px 6px var(--cyan-half);">
-            <span style="font-family: var(--font-important); color:var(--fg-ultra); font-weight:normal">{$_('welcome.welcome_to')}</span> 
+            <span style="font-family: var(--font-important); color:var(--fg-ultra); font-weight:normal">{$_('welcome.welcome_to')}</span><br>
             <img src="/logo.svg" style="height:6rem; width:auto; margin-bottom:-1rem; margin-right:-0.5rem; filter:drop-shadow(-2px 4px 3px var(--fg-color-half))" alt="logo"/>
             <span style="color: var(--selected-text); text-shadow: -1px 5px 6px var(--cyan-half);">SPEAK-UP</span>
         </h1>

@@ -8,7 +8,6 @@
     import { browser } from "$app/environment";
     import { goto } from "$app/navigation";
     import { isNarrowScreen } from "$lib/store";
-    import { page } from "$app/stores";
     import { isLoggedIn } from "$lib/scripts/UserHandler";
 
     let theme = 'dark';
