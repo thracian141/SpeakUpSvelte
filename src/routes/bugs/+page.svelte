@@ -6,7 +6,7 @@
     import { onMount } from 'svelte';
     import {_} from 'svelte-i18n';
     import { slide } from 'svelte/transition';
-  import { isNarrowScreen } from '$lib/store';
+    import { isNarrowScreen } from '$lib/store';
 
     let isDev = false;
     let ready = false;
