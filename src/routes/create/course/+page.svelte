@@ -7,6 +7,7 @@
     import { onMount } from 'svelte';
     import { getLastEdit } from '$lib/scripts/CourseHandler';
     import {checkIfAdmin} from '$lib/scripts/UserHandler';
+    import {checkIfDev} from '$lib/scripts/UserHandler'
 
     let date = new Date();
     let todayDate = date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear();
@@ -32,6 +33,9 @@
 
     onMount(async () => {
         isAdmin = await checkIfAdmin();
+        if (!isAdmin) {
+            isAdmin = await checkIfDev();
+        }
     });
 </script>
 
